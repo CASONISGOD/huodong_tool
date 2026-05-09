@@ -4049,26 +4049,28 @@ function _currentSigninInstanceId() {
 
 // ===== 更多福利内容模块数据（按 instanceId 隔离） =====
 const MORE_MAX_GROUPS = 5;  // 最多 5 栏
-const MORE_MAX_ITEMS  = 3;  // 每栏最多 3 个道具
+const MORE_MAX_ITEMS  = 4;  // 每栏最多 4 个道具（按 Figma 新版）
 const MORE_DATA_TEMPLATE = {
     title: '更多福利内容',
     groups: [
         {
             label: '每日抽奖福利',
-            btnText: '去参与',
+            btnText: '立即抽奖',
             items: [
                 { img: 'assets/image/morenjinbi.png', name: '88Q币' },
                 { img: 'assets/image/morenjinbi.png', name: '冰冻结晶头像框*1' },
                 { img: 'assets/image/morenjinbi.png', name: '深渊派对邀请函*200' },
+                { img: 'assets/image/morenjinbi.png', name: '+10装备强化券*1' },
             ],
         },
         {
             label: '新春回归福利',
-            btnText: '去参与',
+            btnText: '立即抽奖',
             items: [
                 { img: 'assets/image/morenjinbi.png', name: '亲密玫瑰*1' },
                 { img: 'assets/image/morenjinbi.png', name: 'QQ浏览器表情*1' },
                 { img: 'assets/image/morenjinbi.png', name: '华为MATE 40*1' },
+                { img: 'assets/image/morenjinbi.png', name: '泰拉石追忆武器装扮*1' },
             ],
         },
     ],
@@ -9988,21 +9990,22 @@ function renderMore(pc, isBgMode, m) {
     const editable = 'contenteditable="true"';
     const S = 0.5;
 
-    // 生成一栏
+    // 生成一栏（按 Figma 628_450 版本：灰底卡片 654×196 放 4 个道具 + 下方 654×80 全宽按钮）
     const renderGroup = (g, gi) => {
+        const count = g.items.length || 1;
         const itemsHtml = g.items.map((it, ii) => `
-            <div style="width:${112*S}px;height:${148*S}px;position:relative;flex-shrink:0">
-                <div style="position:absolute;top:0;left:${20*S}px;width:${72*S}px;height:${72*S}px;background:#fff;border-radius:${16*S}px;overflow:hidden">
-                    <img src="${it.img}" style="width:100%;height:100%;object-fit:cover">
+            <div style="flex:1 1 0;min-width:0;height:${148*S}px;position:relative">
+                <div style="margin:0 auto;width:${72*S}px;height:${72*S}px;background:#fff;border-radius:${16*S}px;overflow:hidden">
+                    <img src="${it.img}" style="width:100%;height:100%;object-fit:cover;display:block">
                 </div>
-                <div style="position:absolute;top:${88*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC">
+                <div style="margin-top:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;padding:0 ${4*S}px;word-break:break-all">
                     <span class="editable-text" ${editable} data-field="mname${gi}_${ii}" onblur="onMoreItemNameEdit(this,${gi},${ii},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${it.name}</span>
                 </div>
             </div>`).join('');
 
         // 小标题行（两侧 32 横线 + 中间文字）
         const labelRow = `
-            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;margin-top:${gi === 0 ? 0 : 36*S}px">
+            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;margin-top:${gi === 0 ? 0 : 36*S}px;height:${30*S}px">
                 <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
                 <span style="font-size:${22*S}px;color:#242424;font-family:PingFang SC">
                     <span class="editable-text" ${editable} data-field="glabel${gi}" onblur="onMoreGroupFieldEdit(this,${gi},'label','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.label}</span>
@@ -10010,19 +10013,21 @@ function renderMore(pc, isBgMode, m) {
                 <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
             </div>`;
 
-        // 灰底卡片：3 个道具 + 右侧按钮
+        // 灰底卡片：道具均分水平排列，居中
         const card = `
-            <div style="position:relative;width:100%;height:${196*S}px;background:#F6F7FA;border-radius:${16*S}px;margin-top:${16*S}px">
-                <!-- 道具区：占据去参与按钮左侧的整片区域（左 24 → 右 192=按钮宽144+右边距24+与按钮间隔 24），内部居中对齐 -->
-                <div style="position:absolute;top:${24*S}px;left:${24*S}px;right:${192*S}px;height:${148*S}px;display:flex;align-items:flex-start;justify-content:center;gap:${42*S}px">
+            <div style="position:relative;width:100%;height:${196*S}px;background:#F6F7FA;border-radius:${16*S}px;margin-top:${16*S}px;padding:${24*S}px ${24*S}px 0;box-sizing:border-box">
+                <div style="display:flex;align-items:flex-start;gap:${12*S}px">
                     ${itemsHtml}
-                </div>
-                <div style="position:absolute;top:${66*S}px;right:${24*S}px;width:${144*S}px;height:${64*S}px;${getBtnStyle(pc,64)};border-radius:${16*S}px;text-align:center;line-height:${64*S}px">
-                    <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC;line-height:${64*S}px;vertical-align:middle" class="editable-text" ${editable} data-field="gbtn${gi}" onblur="onMoreGroupFieldEdit(this,${gi},'btnText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.btnText}</span>
                 </div>
             </div>`;
 
-        return labelRow + card;
+        // 全宽按钮（80 高）
+        const btn = `
+            <div style="width:100%;height:${80*S}px;${getBtnStyle(pc,80)};border-radius:${16*S}px;margin-top:${16*S}px;display:flex;align-items:center;justify-content:center">
+                <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="gbtn${gi}" onblur="onMoreGroupFieldEdit(this,${gi},'btnText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.btnText}</span>
+            </div>`;
+
+        return labelRow + card + btn;
     };
 
     const titleHtml = `<span class="editable-text" ${editable} data-field="title" onblur="onMoreFieldEdit(this,'title','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.title}</span>`;
@@ -12233,7 +12238,7 @@ let _sliceBubbleTimer = null;
 let _sliceBubbleEl = null;
 let _sliceHoverTarget = null;
 const ENTER_BUTTON_SLICE_STATES = ['进入游戏', '下载游戏', '注册领福利', '极速更新', '极速更新中'];
-const REDPACKET_COPY_BUTTON_SLICE_STATES = ['生成', '复制'];
+const REDPACKET_COPY_BUTTON_SLICE_STATES = ['生成', '复制', '已领取'];
 const REDPACKET_USE_BUTTON_SLICE_STATES = ['去使用'];
 const LOTTERY_TASK_BUTTON_SLICE_STATES = ['领取', '已领取'];
 
@@ -12295,7 +12300,7 @@ function showSliceBubble(target) {
                 ${isEnterButton
                     ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：进入游戏 / 下载游戏 / 注册领福利 / 极速更新 / 极速更新中</span>'
                     : isRedpacketCopyButton
-                        ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：生成 / 复制</span>'
+                        ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：生成 / 复制 / 已领取</span>'
                     : isRedpacketUseButton
                         ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：去使用</span>'
                     : isLotteryTaskButton
