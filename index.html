@@ -53,6 +53,174 @@
 
             color-scheme: dark;
         }
+
+        /* ===== Light Mode (日间模式) ===== */
+        :root.light-mode {
+            --primary: #4F7CFF;
+            --primary-dark: #3B6AEE;
+            --primary-hover: #6B92FF;
+            --primary-soft: rgba(79, 124, 255, 0.10);
+            --primary-ring: rgba(79, 124, 255, 0.25);
+
+            --bg-page: #F2F3F5;
+            --bg-panel: #FFFFFF;
+            --bg-elev-1: #F7F8FA;
+            --bg-elev-2: #ECEDF0;
+            --bg-page-inner: #F2F3F5;
+
+            --border: rgba(0, 0, 0, 0.06);
+            --border-strong: rgba(0, 0, 0, 0.12);
+
+            --text-1: #1A1A1A;
+            --text-2: #4A4A4A;
+            --text-3: #8C8C8C;
+            --text-4: #B3B3B3;
+
+            --danger: #E54D4D;
+            --danger-soft: rgba(229, 77, 77, 0.10);
+            --success: #34B36E;
+            --success-soft: rgba(52, 179, 110, 0.10);
+
+            color-scheme: light;
+        }
+        :root.light-mode body {
+            background:var(--bg-page);
+            color:var(--text-1);
+        }
+        .light-mode .header {
+            background:var(--bg-page) !important;
+            border-bottom:none !important;
+        }
+        .light-mode .header-title,
+        .light-mode .header-right .btn {
+            color:var(--text-1) !important;
+        }
+        .light-mode .header-project-info {
+            color:var(--text-2) !important;
+        }
+        .light-mode .header-project-info .header-project-name {
+            color:var(--text-1) !important;
+        }
+        .light-mode .main {
+            background:var(--bg-page) !important;
+            padding-top:0 !important;
+        }
+        .light-mode .tool-rail {
+            background:#FFFFFF !important;
+            border-color:var(--border-strong) !important;
+        }
+        .light-mode .tool-rail-item {
+            color:#242424 !important;
+        }
+        .light-mode .tool-rail-item span {
+            color:#242424 !important;
+        }
+        .light-mode .tool-rail-item:hover,
+        .light-mode .tool-rail-item.active {
+            background:var(--bg-elev-2) !important;
+        }
+        .light-mode .tool-rail-item img {
+            filter:brightness(0) saturate(100%) !important;
+        }
+        .light-mode .header-logo img {
+            filter:brightness(0) saturate(100%) !important;
+        }
+        .light-mode .panel-left {
+            background:#FFFFFF !important;
+            border-color:var(--border-strong) !important;
+        }
+        .light-mode .panel-center {
+            background:var(--bg-page) !important;
+        }
+        .light-mode .panel-center::before {
+            display:none !important;
+        }
+        .light-mode .preview-column-label {
+            background:#FFFFFF !important;
+            border-color:var(--border-strong) !important;
+            color:var(--text-1) !important;
+        }
+        .light-mode .preview-column-label .label-sub {
+            color:var(--text-3) !important;
+        }
+        .light-mode .tool-rail-shortcuts button {
+            color:var(--text-3) !important;
+        }
+        .light-mode .tool-rail-shortcuts button:hover {
+            color:var(--text-1) !important;
+        }
+        .light-mode .section-title,
+        .light-mode .sub-block-title,
+        .light-mode .icon-group-label,
+        .light-mode .detail-sub-title {
+            color:var(--text-1) !important;
+        }
+        .light-mode .module-section {
+            border-color:var(--border-strong) !important;
+        }
+        .light-mode .module-section-header .module-name {
+            color:var(--text-1) !important;
+        }
+        .light-mode input[type="text"],
+        .light-mode input[type="number"],
+        .light-mode .color-hex,
+        .light-mode .prop-input {
+            background:var(--bg-elev-1) !important;
+            border-color:var(--border-strong) !important;
+            color:var(--text-1) !important;
+        }
+        .light-mode .reset-color-btn {
+            background:var(--bg-elev-1) !important;
+            border-color:var(--border-strong) !important;
+            color:var(--text-2) !important;
+        }
+        .light-mode .reset-color-btn:hover {
+            background:var(--bg-elev-2) !important;
+            color:var(--text-1) !important;
+        }
+        .light-mode .upload-area {
+            border-color:var(--border-strong) !important;
+            background:var(--bg-elev-1) !important;
+        }
+        .light-mode .header-save-status.saved { color:#242424 !important; }
+        .light-mode .header-project-info .header-project-name::before {
+            background:rgba(0, 0, 0, 0.20) !important;
+        }
+        .light-mode .header-save-status.dirty { color:#E54D4D !important; }
+        .light-mode .header-project-info.need-info .header-project-name {
+            color:#E54D4D !important;
+        }
+
+        /* 日间模式切换按钮 */
+        .theme-toggle-btn {
+            position:fixed;
+            right:24px;
+            bottom:24px;
+            width:48px;
+            height:48px;
+            border-radius:50%;
+            background:#1B1A1D;
+            border:1px solid #363538;
+            color:#fff;
+            font-size:20px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            z-index:9999;
+            box-shadow:0 4px 16px rgba(0,0,0,0.3);
+            transition:all .2s;
+        }
+        .theme-toggle-btn:hover {
+            transform:scale(1.08);
+            box-shadow:0 6px 24px rgba(0,0,0,0.4);
+        }
+        .light-mode .theme-toggle-btn {
+            background:#FFFFFF;
+            border-color:var(--border-strong);
+            color:#1A1A1A;
+            box-shadow:0 4px 16px rgba(0,0,0,0.08);
+        }
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: var(--font-sans);
@@ -509,6 +677,24 @@
             border-color:var(--primary);
             box-shadow: 0 0 0 2px rgba(0,0,0,.2);
         }
+        .module-section.drag-over-top::before {
+            content:'';
+            position:absolute;
+            top:-6px; left:0; right:0;
+            height:3px;
+            background:var(--primary);
+            border-radius:2px;
+            z-index:10;
+        }
+        .module-section.drag-over-bottom::after {
+            content:'';
+            position:absolute;
+            bottom:-6px; left:0; right:0;
+            height:3px;
+            background:var(--primary);
+            border-radius:2px;
+            z-index:10;
+        }
         .module-section-header {
             display:flex; align-items:center; gap:10px;
             font-size:13px; user-select:none;
@@ -695,7 +881,7 @@
         .header-right .header-redo { display:none; }
         .main {
             background:#141316;
-            padding:16px;
+            padding:0 16px 16px;
             gap:16px;
             align-items:stretch;
             overflow:hidden;
@@ -1423,15 +1609,16 @@
         }
         .main .panel-center::before {
             content:'';
-            position:fixed;
-            left:611px;
-            top:84px;
-            width:1290px;
-            height:993px;
+            position:absolute;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
             pointer-events:none;
             background-image:url('assets/image/bodian.png');
             background-repeat:no-repeat;
             background-size:1290px 993px;
+            background-position:center top;
             z-index:0;
         }
         .main .panel-center > * {
@@ -3390,7 +3577,6 @@
             min-width:var(--panel-left-width, clamp(340px, 30vw, 485px)) !important;
         }
         .main .preview-dual { gap:clamp(24px, 5vw, 80px); }
-        .main .panel-center::before { left:clamp(440px, 33vw, 611px); }
 
         @media (max-width: 1380px) {
             .panel-left {
@@ -8433,21 +8619,34 @@ function onModuleDragOver(e, idx) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     if(_dragIdx === null || _dragIdx === idx) return;
-    const el = document.querySelectorAll('.module-section')[idx];
-    if(el) el.classList.add('drag-over');
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    el.classList.remove('drag-over-top', 'drag-over-bottom');
+    if(e.clientY < midY) {
+        el.classList.add('drag-over-top');
+    } else {
+        el.classList.add('drag-over-bottom');
+    }
+    el.classList.add('drag-over');
 }
 
 function onModuleDragLeave(e) {
-    e.currentTarget.classList.remove('drag-over');
+    e.currentTarget.classList.remove('drag-over', 'drag-over-top', 'drag-over-bottom');
 }
 
 function onModuleDrop(e, targetIdx) {
     e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
+    e.currentTarget.classList.remove('drag-over', 'drag-over-top', 'drag-over-bottom');
     if(_dragIdx === null || _dragIdx === targetIdx) return;
-    // 重新排列 modules 数组
+    // 根据提示条位置决定插入点
+    const rect = e.currentTarget.getBoundingClientRect();
+    const insertBelow = e.clientY >= rect.top + rect.height / 2;
     const item = modules.splice(_dragIdx, 1)[0];
-    modules.splice(targetIdx, 0, item);
+    let insertIdx = targetIdx;
+    if(_dragIdx < targetIdx) insertIdx--;
+    if(insertBelow) insertIdx++;
+    modules.splice(insertIdx, 0, item);
     _dragIdx = null;
     renderModuleList();
     if(_expandedModuleId) _rerenderModuleDetail(_expandedModuleId);
@@ -13007,6 +13206,28 @@ document.addEventListener('keydown', e => {
 });
 
 appStart();
+
+// ===== 日间/夜间模式切换 =====
+function initThemeToggle() {
+    const saved = localStorage.getItem('game_activity_theme');
+    if(saved === 'light') document.documentElement.classList.add('light-mode');
+    updateThemeIcon();
+}
+function toggleThemeMode() {
+    document.documentElement.classList.toggle('light-mode');
+    const isLight = document.documentElement.classList.contains('light-mode');
+    localStorage.setItem('game_activity_theme', isLight ? 'light' : 'dark');
+    updateThemeIcon();
+}
+function updateThemeIcon() {
+    const btn = document.getElementById('themeToggleBtn');
+    if(!btn) return;
+    const isLight = document.documentElement.classList.contains('light-mode');
+    btn.textContent = isLight ? '🌙' : '☀️';
+    btn.title = isLight ? '切换夜间模式' : '切换日间模式';
+}
+initThemeToggle();
 </script>
+<button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleThemeMode()" title="切换日间模式">☀️</button>
 </body>
 </html>
