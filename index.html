@@ -4179,7 +4179,7 @@ const BENEFIT_MAX_ICONS = 3; // 福利卡片每侧最多3个图标
 // ===== 签到模块数据 =====
 let signinData = {
     title: '7天签到领好礼',
-    days: ['第1天','第2天','第3天','第4天','第5天','第6天','第7天'],
+    days: ['道具名称','道具名称','道具名称','道具名称','道具名称','道具名称','道具名称'],
     signinIcons: [
         'assets/CodeBuddyAssets/208_439/30.png',
         'assets/CodeBuddyAssets/208_439/30.png',
@@ -4215,7 +4215,7 @@ const SIGNIN_DATA_TEMPLATE = {
     title: '7天签到领好礼',
     subtitle: '每天签到最高领88Q币',
     mode: 'default', // 'default' | 'lottery'
-    days: ['第1天','第2天','第3天','第4天','第5天','第6天','第7天'],
+    days: ['道具名称','道具名称','道具名称','道具名称','道具名称','道具名称','道具名称'],
     signinIcons: Array(7).fill('assets/image/morenjinbi.png'),
     dayPrize: '6或88',
     dayPrizeUnit: 'Q币',
@@ -6746,6 +6746,7 @@ function resetAllSilent() {
 
 // ===== Init =====
 function init() {
+    _previewNavBound = false; // 重置，确保 bindPreviewModuleClickEvents 重新绑定
     initPanelLeftResize();
     // 同步 UI 控件值
     document.getElementById('colorBg').value = colors.background;
@@ -8475,7 +8476,7 @@ function renderModuleList() {
         const detailHtml = getModuleDetailHtml(m.instanceId);
         const hasDetail = detailHtml.length > 0;
         return `
-        <div class="module-section${expandedClass}" draggable="true" data-idx="${i}"
+        <div class="module-section${expandedClass}" draggable="true" data-idx="${i}" data-instance-id="${m.instanceId||''}" data-module-id="${m.id||''}"
              ondragstart="onModuleDragStart(event,${i})"
              ondragend="onModuleDragEnd(event)"
              ondragover="onModuleDragOver(event,${i})"
@@ -10043,25 +10044,26 @@ function renderSignin(pc, isBgMode, m) {
         return `
         <div style="width:${wPct}%;height:${210*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative;flex-shrink:0">
             <!-- 顶部 tag：带 ↙↘ 圆角 -->
+            <!-- 顶部 tag：固定显示\"第N天\" -->
             <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60);white-space:nowrap">
-                <span class="editable-text" ${editable} data-field="day${dayIdx}" onblur="onSigninDayEdit(this,${dayIdx},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.days[dayIdx]}</span>
+                第${dayIdx+1}天
             </div>
             <!-- 图 72×72，top 46+12=58 ⇒ 图左上到卡顶 46 -->
             <div style="position:absolute;top:${46*S}px;left:50%;transform:translateX(-50%);width:${72*S}px;height:${72*S}px;border-radius:${16*S}px;overflow:hidden">
                 <img src="${d.signinIcons[dayIdx]}" style="width:100%;height:100%;object-fit:cover">
             </div>
-            <!-- 底部文字 -->
-            <div style="position:absolute;top:${130*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC">
-                <span class="editable-text" ${editable} data-field="dayPrize" onblur="onSigninFieldEdit(this,'dayPrize','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.dayPrize}</span><br><span class="editable-text" ${editable} data-field="dayPrizeUnit" onblur="onSigninFieldEdit(this,'dayPrizeUnit','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.dayPrizeUnit}</span>
+            <!-- 底部文字：每天独立道具名，固定2行高度，超出截断 -->
+            <div style="position:absolute;top:${130*S}px;left:${4*S}px;right:${4*S}px;height:${22*1.3*2*S}px;overflow:hidden;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;word-break:break-all">
+                <span class="editable-text" ${editable} data-field="day${dayIdx}" onblur="onSigninDayEdit(this,${dayIdx},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}\">${d.days[dayIdx]}</span>
             </div>
         </div>`;
     };
 
     const signinGrid = `
-        <div style="display:flex;gap:${16*S}px">
+        <div style="display:flex;gap:${16*S}px;align-items:flex-start">
             ${[0,1,2,3].map(dayCard).join('')}
         </div>
-        <div style="display:flex;gap:${16*S}px;margin-top:${16*S}px">
+        <div style="display:flex;gap:${16*S}px;margin-top:${16*S}px;align-items:flex-start">
             ${[4,5].map(dayCard).join('')}
             ${dayCard(6)}
         </div>`;
@@ -13022,24 +13024,23 @@ document.addEventListener('click', function(e) {
 });
 
 // ===== Preview Module Click → Left Panel Navigation =====
+// 使用事件委托，绑定在容器上（只绑一次），避免 renderPreview 重建 DOM 后失效
+let _previewNavBound = false;
 function bindPreviewModuleClickEvents() {
-    const containers = [
-        document.getElementById('previewContainer'),
-        document.getElementById('previewContainerBg'),
-    ].filter(Boolean);
-
-    containers.forEach(container => {
-        const wraps = container.querySelectorAll('.preview-module-wrap[data-module-id]');
-        wraps.forEach(wrap => {
-            if(wrap.dataset.navBound) return;
-            wrap.dataset.navBound = '1';
-            wrap.addEventListener('click', function(e) {
-                // 如果点击的是可编辑文字或切图气泡等，不触发导航
-                if(e.target.closest('.editable-text, .slice-bubble, [contenteditable="true"]')) return;
-                const moduleId = this.dataset.moduleId;
-                const instanceId = this.dataset.instanceId || '';
-                navigateToModule(moduleId, instanceId);
-            });
+    if(_previewNavBound) return;
+    _previewNavBound = true;
+    ['previewContainer', 'previewContainerBg'].forEach(cid => {
+        const container = document.getElementById(cid);
+        if(!container) return;
+        container.addEventListener('click', function(e) {
+            // 如果点击的是可编辑文字或切图气泡等，不触发导航
+            if(e.target.closest('.editable-text, .slice-bubble, [contenteditable="true"]')) return;
+            // 向上找最近的 preview-module-wrap
+            const wrap = e.target.closest('.preview-module-wrap[data-module-id]');
+            if(!wrap) return;
+            const moduleId = wrap.dataset.moduleId;
+            const instanceId = wrap.dataset.instanceId || '';
+            navigateToModule(moduleId, instanceId);
         });
     });
 }
@@ -13206,13 +13207,23 @@ function navigateToModule(moduleId, instanceId) {
     setTimeout(() => {
         const moduleList = document.getElementById('moduleList');
         if(!moduleList) return;
-        const allSections = moduleList.querySelectorAll('.module-section');
         let targetSection = null;
-        const idx = targetInstanceId
-            ? modules.findIndex(m => m.instanceId === targetInstanceId)
-            : modules.findIndex(m => m.id === moduleId);
-        if(idx >= 0 && allSections[idx]) {
-            targetSection = allSections[idx];
+        // 优先用 data-instance-id 精确匹配（不依赖数组下标）
+        if(targetInstanceId) {
+            targetSection = moduleList.querySelector(`.module-section[data-instance-id="${targetInstanceId}"]`);
+        }
+        // 兜底：按 data-module-id 找第一个
+        if(!targetSection && moduleId) {
+            targetSection = moduleList.querySelector(`.module-section[data-module-id="${moduleId}"]`);
+        }
+        if(!targetSection) {
+            // 再兜底：按下标（兼容旧逻辑）
+            const allSections = moduleList.querySelectorAll('.module-section');
+            const enabledModules = modules.filter(m => m.enabled !== false);
+            const idx = targetInstanceId
+                ? enabledModules.findIndex(m => m.instanceId === targetInstanceId)
+                : enabledModules.findIndex(m => m.id === moduleId);
+            if(idx >= 0 && allSections[idx]) targetSection = allSections[idx];
         }
         if(!targetSection) return;
 
@@ -13517,11 +13528,17 @@ function parsePlannerTable(wb) {
         if(mod) currentModule = mod;
         if(!currentModule) continue;
         if(!moduleGroups[currentModule]) moduleGroups[currentModule] = [];
+        const rawReward = String(row[colIdx['奖励内容']]||'').trim();
+        const rawCount  = String(row[colIdx['道具数量']]||'').trim();
+        // 合并道具名称 + 数量：若 count 有值且不是 1，则显示 "奖品名*数量"
+        const rewardDisplay = (rawReward && rawCount && rawCount !== '' && rawCount !== '1')
+            ? `${rawReward}*${rawCount}`
+            : rawReward;
         moduleGroups[currentModule].push({
             rule: String(row[colIdx['活动规则']]||'').trim(),
             condition: String(row[colIdx['领取条件']]||'').trim(),
-            reward: String(row[colIdx['奖励内容']]||'').trim(),
-            count: String(row[colIdx['道具数量']]||'').trim(),
+            reward: rewardDisplay,
+            count: rawCount,
         });
     }
 
@@ -13547,11 +13564,31 @@ function parsePlannerTable(wb) {
         }
         else if(modLower.includes('签到')) {
             result.modules.signin = true;
-            const days = items.filter(it => it.condition && it.condition.includes('登录'));
+            // 尝试识别"第N天"/"D{N}"/"累计签到N天"等各种条件写法，若无匹配则按行顺序当作每天
+            const extractDayIndex = (cond) => {
+                const m1 = cond.match(/第\s*(\d+)\s*[天日]/);
+                if(m1) return parseInt(m1[1]);
+                const m2 = cond.match(/[Dd](\d+)/);
+                if(m2) return parseInt(m2[1]);
+                const m3 = cond.match(/累计.*?(\d+)\s*[天日]/);
+                if(m3) return parseInt(m3[1]);
+                const m4 = cond.match(/登录\s*(\d+)/);
+                if(m4) return parseInt(m4[1]);
+                return null;
+            };
+            // 先尝试按 condition 排序，否则按行顺序
+            let dayItems = items.filter(it => it.reward);
+            if(dayItems.length === 0) dayItems = items;
+            const sorted = dayItems.map((it, i) => {
+                const idx = extractDayIndex(it.condition);
+                return { idx: idx !== null ? idx : (i+1), reward: it.reward };
+            });
+            sorted.sort((a,b) => a.idx - b.idx);
+            const days = sorted.slice(0,7).map(it => it.reward);
             result.moduleData.signin = {
                 title: '7天签到领好礼',
                 subtitle: items[0]?.rule || '',
-                days: days.map(d => d.reward.split('（')[0].split('(')[0].trim()),
+                days: days.length ? days : undefined,
             };
         }
         else if(modLower.includes('口令码')) {
@@ -13678,11 +13715,26 @@ function applySmartImport() {
     // 签到数据
     if(result.moduleData.signin) {
         const d = result.moduleData.signin;
-        if(d.title) signinData.title = d.title;
-        if(d.subtitle) signinData.subtitle = d.subtitle;
-        if(d.days && d.days.length) {
-            signinData.dayPrize = d.days[0];
-            signinData.day7Prize = d.days[6] || d.days[d.days.length-1] || '';
+        const signinM = modules.find(mm => mm.id === 'signin');
+        if(signinM) {
+            const sd = getSigninData(signinM.instanceId);
+            if(sd) {
+                if(d.title) sd.title = d.title;
+                if(d.subtitle) sd.subtitle = d.subtitle;
+                // 把每天的奖品文案写入 days 数组（最多 7 天）
+                if(d.days && d.days.length) {
+                    for(let i = 0; i < Math.min(7, d.days.length); i++) {
+                        if(d.days[i] && sd.days) sd.days[i] = d.days[i];
+                    }
+                    // 同时更新卡片下方的奖品文案（dayPrize / dayPrizeUnit）
+                    // 取第 1 天作为代表值
+                    const firstDay = d.days[0] || '';
+                    const numMatch = firstDay.match(/\d+/);
+                    if(numMatch) sd.dayPrize = numMatch[0];
+                }
+                // 签到图标：尝试匹配已导入的道具图包（放在文案应用之后）
+                // （图标匹配由 applyIconImport 单独处理，这里不强制覆盖）
+            }
         }
     }
 
@@ -13886,13 +13938,15 @@ function collectAllItemNames() {
         (d.rightIcons||[]).forEach((ic, i) => { if(ic.name) items.push({ module:'redpacket', instanceId:m.instanceId, side:'right', idx:i, name:ic.name }); });
     });
 
-    // 签到图标
-    if(signinData && signinData.signinIcons) {
-        signinData.signinIcons.forEach((_, i) => {
-            const dayLabel = signinData.days ? signinData.days[i] : `第${i+1}天`;
-            items.push({ module:'signin', idx:i, name:dayLabel });
+    // 签到图标（按实例隔离，用 signinDataMap）
+    modules.filter(m => m.id === 'signin').forEach(m => {
+        const sd = getSigninData(m.instanceId);
+        if(!sd || !sd.signinIcons) return;
+        sd.signinIcons.forEach((_, i) => {
+            const dayLabel = sd.days ? sd.days[i] : `第${i+1}天`;
+            items.push({ module:'signin', instanceId:m.instanceId, idx:i, name:dayLabel });
         });
-    }
+    });
 
     // 抽奖奖品
     modules.filter(m => m.id === 'lottery').forEach(m => {
@@ -13990,8 +14044,9 @@ function applyIconImport() {
             }
         }
         else if(item.module === 'signin') {
-            if(signinData.signinIcons && signinData.signinIcons[item.idx] !== undefined) {
-                signinData.signinIcons[item.idx] = url;
+            const sd = getSigninData(item.instanceId);
+            if(sd && sd.signinIcons && sd.signinIcons[item.idx] !== undefined) {
+                sd.signinIcons[item.idx] = url;
             }
         }
         else if(item.module === 'skin') {
