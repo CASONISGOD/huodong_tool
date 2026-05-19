@@ -3126,6 +3126,12 @@
         }
         .slice-export-btn:hover { opacity:.85; }
         .slice-export-btn:disabled { opacity:.4; cursor:not-allowed; }
+        .slice-export-all-btn {
+            background:linear-gradient(135deg,#7c3aed,#2563eb);
+            margin-bottom:8px;
+        }
+        .slice-export-all-btn:hover { opacity:.9; }
+        .slice-export-all-btn:disabled { opacity:.5; cursor:wait; }
         .slice-footer-hint {
             font-size:11px; color:var(--text-4);
             text-align:center;
@@ -4004,8 +4010,9 @@
                             <button class="slice-scale-btn active" onclick="setSliceScale(2)" data-scale="2">2x</button>
                             <button class="slice-scale-btn" onclick="setSliceScale(3)" data-scale="3">3x</button>
                         </div>
-                        <button class="slice-export-btn" id="sliceExportBtn" onclick="exportAllSlices()" disabled>📦 导出全部切图</button>
-                        <div class="slice-footer-hint">导出的文件格式均为 PNG 透明底图</div>
+                        <button class="slice-export-btn slice-export-all-btn" id="sliceExportAllBtn" onclick="exportAllPageButtons()">⚡ 一键导出所有按钮</button>
+                        <button class="slice-export-btn" id="sliceExportBtn" onclick="exportAllSlices()" disabled>📦 导出列表中切图</button>
+                        <div class="slice-footer-hint">「一键导出」自动扫描页面按钮并打包所有状态；导出格式 PNG 透明底图</div>
                     </div>
                 </div>
             </div>
@@ -4265,7 +4272,9 @@ const MORE_DATA_TEMPLATE = {
     groups: [
         {
             label: '每日抽奖福利',
+            btnLayout: 'single', // 'single' | 'double'  按钮布局：一个全宽按钮 / 一行两个按钮
             btnText: '立即领取',
+            btn2Text: '查看详情',  // 仅 btnLayout='double' 时显示
             items: [
                 { img: 'assets/image/morenjinbi.png', name: '88Q币' },
                 { img: 'assets/image/morenjinbi.png', name: '冰冻结晶头像框*1' },
@@ -4275,7 +4284,9 @@ const MORE_DATA_TEMPLATE = {
         },
         {
             label: '新春回归福利',
+            btnLayout: 'single',
             btnText: '立即领取',
+            btn2Text: '查看详情',
             items: [
                 { img: 'assets/image/morenjinbi.png', name: '亲密玫瑰*1' },
                 { img: 'assets/image/morenjinbi.png', name: 'QQ浏览器表情*1' },
@@ -4286,12 +4297,20 @@ const MORE_DATA_TEMPLATE = {
     ],
 };
 let moreDataMap = {};
+function _normalizeMoreData(d) {
+    if(!d || !Array.isArray(d.groups)) return d;
+    d.groups.forEach(g => {
+        if(!g.btnLayout) g.btnLayout = 'single';
+        if(g.btn2Text == null) g.btn2Text = '查看详情';
+    });
+    return d;
+}
 function getMoreData(instanceId) {
     if(!instanceId) return null;
     if(!moreDataMap[instanceId]) {
         moreDataMap[instanceId] = JSON.parse(JSON.stringify(MORE_DATA_TEMPLATE));
     }
-    return moreDataMap[instanceId];
+    return _normalizeMoreData(moreDataMap[instanceId]);
 }
 function _currentMoreInstanceId() {
     if(_expandedModuleId) {
@@ -10246,11 +10265,25 @@ function renderMore(pc, isBgMode, m) {
                 </div>
             </div>`;
 
-        // 全宽按钮（80 高）— 支持切图
-        const btn = `
+        // 按钮区：单按钮（全宽 80 高）或 双按钮（一行两个，等分宽度，gap 12）
+        let btn;
+        if(g.btnLayout === 'double') {
+            btn = `
+            <div style="display:flex;gap:${12*S}px;margin-top:${16*S}px">
+                <div class="more-benefit-slice-btn" style="flex:1 1 0;min-width:0;height:${80*S}px;${getBtnStyle(pc,80)};border-radius:${16*S}px;display:flex;align-items:center;justify-content:center;cursor:pointer" onmouseenter="onPreviewBtnMouseEnter(event)" onmouseleave="onPreviewBtnMouseLeave(event)">
+                    <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="gbtn${gi}" onblur="onMoreGroupFieldEdit(this,${gi},'btnText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.btnText}</span>
+                </div>
+                <div class="more-benefit-slice-btn" style="flex:1 1 0;min-width:0;height:${80*S}px;${getBtnStyle(pc,80)};border-radius:${16*S}px;display:flex;align-items:center;justify-content:center;cursor:pointer" onmouseenter="onPreviewBtnMouseEnter(event)" onmouseleave="onPreviewBtnMouseLeave(event)">
+                    <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="gbtn2_${gi}" onblur="onMoreGroupFieldEdit(this,${gi},'btn2Text','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.btn2Text || '查看详情'}</span>
+                </div>
+            </div>`;
+        } else {
+            // 全宽按钮（80 高）— 支持切图
+            btn = `
             <div class="more-benefit-slice-btn" style="width:100%;height:${80*S}px;${getBtnStyle(pc,80)};border-radius:${16*S}px;margin-top:${16*S}px;display:flex;align-items:center;justify-content:center;cursor:pointer" onmouseenter="onPreviewBtnMouseEnter(event)" onmouseleave="onPreviewBtnMouseLeave(event)">
                 <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="gbtn${gi}" onblur="onMoreGroupFieldEdit(this,${gi},'btnText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.btnText}</span>
             </div>`;
+        }
 
         return labelRow + card + btn;
     };
@@ -10310,6 +10343,16 @@ function renderMoreGroupList(instanceId) {
             </div>`).join('');
 
         const atMax = g.items.length >= MORE_MAX_ITEMS;
+        const isDouble = g.btnLayout === 'double';
+        const layoutSwitch = `
+            <div style="display:flex;gap:8px;margin-bottom:10px">
+                <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 8px;border-radius:8px;border:1.5px solid ${!isDouble?'var(--primary)':'var(--border)'};cursor:pointer;font-size:11px;color:var(--text-1);background:${!isDouble?'rgba(0,0,0,0.06)':'transparent'}" onclick="updateMoreGroupBtnLayout(${gi},'single','${iid}')">
+                    <input type="radio" name="moreBtnLayout_${iid}_${gi}" value="single" ${!isDouble?'checked':''} style="accent-color:var(--primary)"> 单按钮
+                </label>
+                <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 8px;border-radius:8px;border:1.5px solid ${isDouble?'var(--primary)':'var(--border)'};cursor:pointer;font-size:11px;color:var(--text-1);background:${isDouble?'rgba(0,0,0,0.06)':'transparent'}" onclick="updateMoreGroupBtnLayout(${gi},'double','${iid}')">
+                    <input type="radio" name="moreBtnLayout_${iid}_${gi}" value="double" ${isDouble?'checked':''} style="accent-color:var(--primary)"> 一行两个按钮
+                </label>
+            </div>`;
         return `
         <div style="padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elev-1);margin-bottom:10px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -10320,10 +10363,12 @@ function renderMoreGroupList(instanceId) {
             <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px">
                 ${itemsHtml}
             </div>
-            <div style="display:flex;gap:8px">
+            <div style="display:flex;gap:8px;margin-bottom:10px">
                 ${atMax ? '' : `<button class="btn btn-outline btn-sm" style="flex:1;justify-content:center" onclick="addMoreItem(${gi},'${iid}')">＋ 添加道具</button>`}
                 ${g.items.length > 1 ? `<button class="btn btn-outline btn-sm" style="flex:1;justify-content:center;color:var(--danger);border-color:rgba(248,113,113,0.35)" onclick="removeLastMoreItem(${gi},'${iid}')">－ 删除末尾</button>` : ''}
             </div>
+            <div style="font-size:10px;color:var(--text-4);margin-bottom:6px">按钮布局</div>
+            ${layoutSwitch}
         </div>`;
     }).join('');
 }
@@ -10336,7 +10381,9 @@ function addMoreGroup(instanceId) {
     }
     d.groups.push({
         label: '新福利',
+        btnLayout: 'single',
         btnText: '去参与',
+        btn2Text: '查看详情',
         items: [
             { img: 'assets/image/morenjinbi.png', name: '道具1' },
             { img: 'assets/image/morenjinbi.png', name: '道具2' },
@@ -10405,6 +10452,19 @@ function uploadMoreItemImg(gi, ii, instanceId) {
         reader.readAsDataURL(f);
     };
     input.click();
+}
+
+/** 切换某栏的按钮布局：'single' 单按钮 / 'double' 一行两个按钮 */
+function updateMoreGroupBtnLayout(gi, layout, instanceId) {
+    const d = getMoreData(instanceId);
+    if(!d || !d.groups[gi]) return;
+    if(layout !== 'single' && layout !== 'double') return;
+    if(d.groups[gi].btnLayout === layout) return;
+    d.groups[gi].btnLayout = layout;
+    if(layout === 'double' && !d.groups[gi].btn2Text) d.groups[gi].btn2Text = '查看详情';
+    renderMoreGroupList(instanceId);
+    renderPreview();
+    pushSnapshot();
 }
 
 // ---- Module: 抽奖（lottery）按 Figma 654_11340 复刻 ----
@@ -10774,7 +10834,9 @@ function uploadLotteryGridPrizeImg(idx, instanceId) {
 // ---- Module: 内容组件（content）按 Figma 858_1250 复刻 ----
 // 卡片宽 702（@2x），内宽 654，预览 S=0.5
 // 结构：通用模板（顶部装饰 + 主标题，无副标） + N 个区块
-// 每个区块：可选小标题（带左右 32px 横线） + 大图 654×368
+// 每个区块：可选小标题（带左右 32px 横线） + 大图
+//   - 已上传图：宽度铺满 654@2x（即 100%），高度按图片真实比例自适应
+//   - 未上传图：固定 654×368 @2x 灰底占位
 function renderContent(pc, isBgMode, m) {
     const iid = (m && m.instanceId) || _currentContentInstanceId();
     const d = getContentData(iid);
@@ -10791,10 +10853,12 @@ function renderContent(pc, isBgMode, m) {
                 <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
             </div>` : (i > 0 ? `<div style="height:${36*S}px"></div>` : '');
 
-        // 图片区：宽度 654（@2x）/ 100%，高度 368（@2x）= 184px @1x；未上传时显示灰底占位
+        // 图片区：宽度铺满 654@2x（即 100%）；
+        //   - 已上传图：高度按图片真实比例自适应（width:100% + height:auto）
+        //   - 未上传图：保留固定高度 368@2x 的灰底占位，方便交互提示
         const imgBox = it.img ? `
-            <div style="width:100%;height:${368*S}px;background:#B4B4B4;border-radius:${16*S}px;overflow:hidden">
-                <img src="${it.img}" style="width:100%;height:100%;object-fit:cover;display:block">
+            <div style="width:100%;border-radius:${16*S}px;overflow:hidden">
+                <img src="${it.img}" style="display:block;width:100%;height:auto">
             </div>` : `
             <div style="width:100%;height:${368*S}px;background:#B4B4B4;border-radius:${16*S}px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:${22*S}px;color:rgba(255,255,255,0.85)">
                 ${isBgMode ? '' : '点击右侧操作区上传图片'}
@@ -12972,6 +13036,166 @@ async function exportAllSlices() {
     link.href = url;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ===== 一键导出所有按钮（含所有状态） =====
+// 自动扫描预览区中所有可切图按钮，按类型生成"所有状态"切图，
+// 直接打包 ZIP 下载。不污染当前 sliceItems 列表。
+const _BUTTON_TYPE_RULES = [
+    { className: 'm-role-enter-btn',          states: ENTER_BUTTON_SLICE_STATES,         label: '进入游戏按钮' },
+    { className: 'redpacket-copy-btn',        states: REDPACKET_COPY_BUTTON_SLICE_STATES, label: '口令码复制按钮' },
+    { className: 'redpacket-use-btn',         states: REDPACKET_USE_BUTTON_SLICE_STATES,  label: '口令码使用按钮' },
+    { className: 'lottery-task-slice-btn',    states: LOTTERY_TASK_BUTTON_SLICE_STATES,   label: '抽奖任务按钮' },
+    { className: 'more-benefit-slice-btn',    states: MORE_BENEFIT_BUTTON_SLICE_STATES,   label: '更多福利按钮' },
+];
+
+function _matchButtonRule(el) {
+    for(const r of _BUTTON_TYPE_RULES) {
+        if(el.classList.contains(r.className)) return r;
+    }
+    return null;
+}
+
+/** 扫描预览区中所有"可切图"按钮（去重） */
+function _collectAllPageButtons() {
+    const container = document.getElementById('previewContainer');
+    if(!container) return [];
+
+    // 复用已有的 hover-绑定选择器，再补上一些纯样式按钮
+    const selectors = [
+        '.m-btn-primary',
+        '.m-btn-sm',
+        '.m-role-enter-btn',
+        '.redpacket-copy-btn',
+        '.redpacket-use-btn',
+        '.lottery-task-slice-btn',
+        '.more-benefit-slice-btn',
+        '.benefit-btn',
+        '.g-btn',
+        '.g-send-btn',
+    ];
+    const nodes = container.querySelectorAll(selectors.join(','));
+    const seen = new Set();
+    const out = [];
+    nodes.forEach(el => {
+        const style = window.getComputedStyle(el);
+        if(style.visibility === 'hidden' || style.display === 'none') return;
+        if(el.offsetWidth < 8 || el.offsetHeight < 8) return;
+        // 跳过嵌套：如果当前元素被另一个按钮容器包裹，避免重复
+        const sliceSelectors = '.m-role-enter-btn,.redpacket-copy-btn,.redpacket-use-btn,.lottery-task-slice-btn,.more-benefit-slice-btn,.benefit-btn,.g-btn,.g-send-btn,.m-btn-primary,.m-btn-sm';
+        const closestParentBtn = el.parentElement && el.parentElement.closest(sliceSelectors);
+        if(closestParentBtn && closestParentBtn !== el) return;
+
+        const rule = _matchButtonRule(el);
+        const text = (el.querySelector('.editable-text') || el).textContent.trim() || '按钮';
+        // 去重 key：
+        //  - 固定状态按钮（5 类）：所有状态文字均固定，输出与按钮位置无关 → 每种 className 只导一组
+        //  - 普通按钮：按 className + 文字 去重，避免同样的「立即领取」被多次导出
+        const key = rule ? `T:${rule.className}` : `G:${el.className}:${text}`;
+        if(seen.has(key)) return;
+        seen.add(key);
+        out.push({ el, rule, text });
+    });
+    return out;
+}
+
+async function exportAllPageButtons() {
+    if(typeof JSZip === 'undefined') {
+        alert('压缩包组件加载失败，请检查网络后重试');
+        return;
+    }
+    const targets = _collectAllPageButtons();
+    if(targets.length === 0) {
+        alert('当前预览区没有检测到可导出的按钮');
+        return;
+    }
+
+    const allBtn = document.getElementById('sliceExportAllBtn');
+    const originalText = allBtn ? allBtn.textContent : '';
+    if(allBtn) { allBtn.disabled = true; allBtn.textContent = '正在生成… 0%'; }
+
+    /** 收集到的所有切图：{ name, dataUrl, isCompleted } —— 仅本次任务使用，不写入 sliceItems */
+    const tasks = [];
+
+    try {
+        let processed = 0;
+        const total = targets.reduce((s, t) => s + (t.rule ? t.rule.states.length : 2), 0);
+
+        for(const t of targets) {
+            if(t.rule) {
+                // 已知类型：枚举所有状态用 Canvas 绘制
+                for(const state of t.rule.states) {
+                    const dataUrl = drawEnterButtonState(t.el, state);
+                    tasks.push({
+                        name: `${t.rule.label}_${state}`,
+                        dataUrl,
+                        isCompleted: false,
+                    });
+                    processed++;
+                    if(allBtn) allBtn.textContent = `正在生成… ${Math.round(processed/total*100)}%`;
+                    await new Promise(r => requestAnimationFrame(r));
+                }
+            } else {
+                // 通用按钮：默认态（截图）+ 完成态（Canvas 绘制）
+                try {
+                    const defaultDataUrl = await captureSliceTarget(t.el);
+                    tasks.push({
+                        name: `${t.text}_默认态`,
+                        dataUrl: defaultDataUrl,
+                        isCompleted: false,
+                    });
+                } catch(err) {
+                    console.warn('[一键导出] 截取按钮默认态失败：', t.text, err);
+                }
+                processed++;
+                if(allBtn) allBtn.textContent = `正在生成… ${Math.round(processed/total*100)}%`;
+
+                const completedText = getCompletedText(t.text);
+                const completedDataUrl = drawCompletedButton(t.el, completedText);
+                tasks.push({
+                    name: `${t.text}_${completedText}`,
+                    dataUrl: completedDataUrl,
+                    isCompleted: true,
+                });
+                processed++;
+                if(allBtn) allBtn.textContent = `正在生成… ${Math.round(processed/total*100)}%`;
+                await new Promise(r => requestAnimationFrame(r));
+            }
+        }
+
+        if(tasks.length === 0) {
+            alert('没有生成任何切图');
+            return;
+        }
+
+        if(allBtn) allBtn.textContent = '打包中…';
+
+        // 打包 ZIP
+        const zip = new JSZip();
+        for(let i = 0; i < tasks.length; i++) {
+            const item = tasks[i];
+            const blob = await getSlicePngBlob(item);
+            const order = String(i + 1).padStart(2, '0');
+            const suffix = item.isCompleted ? '_完成态' : '';
+            zip.file(`${order}_${sanitizeFileName(item.name)}${suffix}_${sliceScale}x.png`, blob);
+        }
+        const zipBlob = await zip.generateAsync({ type:'blob' });
+        const url = URL.createObjectURL(zipBlob);
+        const link = document.createElement('a');
+        link.download = `按钮全量切图_${sliceScale}x_${new Date().toISOString().slice(0,10)}.zip`;
+        link.href = url;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+        if(typeof showExportImportToast === 'function') {
+            showExportImportToast(`✅ 已导出 ${tasks.length} 张按钮切图`);
+        }
+    } catch(err) {
+        console.error('一键导出按钮失败:', err);
+        alert('一键导出失败：' + (err.message || '未知错误'));
+    } finally {
+        if(allBtn) { allBtn.disabled = false; allBtn.textContent = originalText || '⚡ 一键导出所有按钮'; }
+    }
 }
 
 // --- 绑定预览区按钮 hover 事件 ---
