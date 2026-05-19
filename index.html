@@ -10634,7 +10634,10 @@ function renderLottery(pc, isBgMode, m) {
             </div>`;
 
         const luckyDisplay = isBgMode ? d.luckyPointsLabel.replace(/\d+/g, '') : d.luckyPointsLabel;
-        const multiInfo = `
+        // 底图模式：剩余次数 / 我的奖品 整行隐藏文字，仅保留同高占位以确保模块高度对齐
+        const multiInfo = isBgMode ? `
+            <div style="margin-top:${36*S}px;height:${30*S}px"></div>
+        ` : `
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:${36*S}px;font-size:${22*S}px;color:#242424;font-family:PingFang SC">
                 <span style="display:flex;align-items:center;line-height:${30*S}px">
                     ${walletSvg}
@@ -10667,7 +10670,11 @@ function renderLottery(pc, isBgMode, m) {
 
         const titleHtml = `<span class="editable-text" ${editable} data-field="title" onblur="onLotteryFieldEdit(this,'title','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.title}</span>`;
         const subtitleHtml = `<span class="editable-text" ${editable} data-field="subtitle" onblur="onLotteryFieldEdit(this,'subtitle','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.subtitle}</span>`;
-        return renderModuleTemplate({ moduleId: iid, title: titleHtml, subtitle: subtitleHtml, primaryColor: pc, scale: S }, multiGrid + multiBtn + multiInfo + multiTasks);
+        // 底图模式：保留标题（+ 左右装饰图）作为静态视觉，仅副标题隐藏（保留高度）
+        const tplOpts = isBgMode
+            ? { moduleId: iid, title: titleHtml, subtitle: `<span style="visibility:hidden">${d.subtitle}</span>`, primaryColor: pc, scale: S }
+            : { moduleId: iid, title: titleHtml, subtitle: subtitleHtml, primaryColor: pc, scale: S };
+        return renderModuleTemplate(tplOpts, multiGrid + multiBtn + multiInfo + multiTasks);
     }
 
     // 保底提示条：80px 高，浅主题色背景 + 1px 描边，居中"图标 + 文字"
@@ -10717,12 +10724,15 @@ function renderLottery(pc, isBgMode, m) {
         </div>`;
 
     // 底部信息行：左"剩余抽奖次数：10"，右"我的奖品 >"
-    const remainDisplay = isBgMode ? d.remainLabel.replace(/\d+/g, '') : d.remainLabel;
-    const infoRow = `
+    // 底图模式：整行隐藏文字，仅保留同高占位，确保模块高度对齐
+    const remainDisplay = d.remainLabel.replace(/\d+/g, '');
+    const infoRow = isBgMode ? `
+        <div style="margin-top:${36*S}px;height:${30*S}px"></div>
+    ` : `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:${36*S}px;font-size:${22*S}px;color:#242424;font-family:PingFang SC">
             <span style="display:flex;align-items:center;line-height:${30*S}px">
                 ${walletSvg}
-                <span class="editable-text" ${editable} data-field="remainLabel" onblur="onLotteryFieldEdit(this,'remainLabel','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="line-height:${30*S}px">${remainDisplay}</span>
+                <span class="editable-text" ${editable} data-field="remainLabel" onblur="onLotteryFieldEdit(this,'remainLabel','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="line-height:${30*S}px">${d.remainLabel}</span>
             </span>
             <span style="display:flex;align-items:center;gap:${4*S}px">
                 <span class="editable-text" ${editable} data-field="myPrizeLabel" onblur="onLotteryFieldEdit(this,'myPrizeLabel','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.myPrizeLabel}</span>
@@ -10755,12 +10765,19 @@ function renderLottery(pc, isBgMode, m) {
 
     const innerHtml = prizesGrid + btnRow + infoRow + grid9Tasks;
 
-    return renderModuleTemplate({
+    // 底图模式：保留标题（+ 左右装饰图）作为静态视觉，仅副标题隐藏（保留高度）
+    return renderModuleTemplate(isBgMode ? {
+        moduleId: iid,
+        title: titleHtml,
+        subtitle: `<span style="visibility:hidden">${d.subtitle}</span>`,
+        primaryColor: pc,
+        scale: S,
+    } : {
         moduleId: iid,
         title: titleHtml,
         subtitle: subtitleHtml,
         primaryColor: pc,
-        scale: S
+        scale: S,
     }, innerHtml);
 }
 
