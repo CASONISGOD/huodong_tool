@@ -10608,8 +10608,13 @@ function renderLottery(pc, isBgMode, m) {
         const multiGrid = rows.map((row, ri) => {
             const cols = row.length;
             const cellStyle = `width:calc((100% - ${(cols-1)*gap}px) / ${cols});height:${180*S}px;background:#F6F7FA;border-radius:${16*S}px;position:relative;overflow:hidden;flex-shrink:0`;
+            const cellPlaceholderStyle = `width:calc((100% - ${(cols-1)*gap}px) / ${cols});height:${180*S}px;flex-shrink:0`;
             const cells = row.map((p, ii) => {
                 const i = ri * rowSize + ii; // 全局索引
+                // 页面底图：奖品由运营动态填充，仅保留同尺寸的透明占位（不渲染灰底/图片/名称）。
+                if(isBgMode) {
+                    return `<div style="${cellPlaceholderStyle}"></div>`;
+                }
                 return `
                 <div style="${cellStyle}">
                     <div style="position:absolute;top:${16*S}px;left:50%;transform:translateX(-50%);width:${72*S}px;height:${72*S}px;background:#fff;border-radius:${16*S}px;overflow:hidden">
@@ -10677,8 +10682,14 @@ function renderLottery(pc, isBgMode, m) {
 
     // 九宫格奖品：3 列，每卡 213×213（@2x），gap 8。
     // 关键：用 calc((100% - 2*gap)/3) 避免百分比 + gap 四舍五入导致只能排 2 列。
+    // 页面底图：奖品由运营动态填充，仅保留同尺寸的透明占位（不渲染灰底/图片/名称），保证模块高度对齐。
     const cellStyle = `width:calc((100% - ${16*S}px) / 3);height:${213*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative;flex-shrink:0`;
-    const prizesHtml = (d.prizes || []).map((p, i) => `
+    const cellPlaceholderStyle = `width:calc((100% - ${16*S}px) / 3);height:${213*S}px;flex-shrink:0`;
+    const prizesHtml = (d.prizes || []).map((p, i) => {
+        if(isBgMode) {
+            return `<div style="${cellPlaceholderStyle}"></div>`;
+        }
+        return `
         <div style="${cellStyle}">
             <div style="position:absolute;top:${32.5*S}px;left:50%;transform:translateX(-50%);width:${72*S}px;height:${72*S}px;border-radius:${16*S}px;overflow:hidden">
                 <img src="${p.img}" style="width:100%;height:100%;object-fit:cover">
@@ -10686,7 +10697,8 @@ function renderLottery(pc, isBgMode, m) {
             <div style="position:absolute;top:${120.5*S}px;left:${24*S}px;right:${24*S}px;text-align:center;font-size:${24*S}px;color:#242424;line-height:1.25;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
                 <span class="editable-text" ${editable} data-field="pname${i}" onblur="onLotteryPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
             </div>
-        </div>`).join('');
+        </div>`;
+    }).join('');
 
     const prizesGrid = `
         <div style="display:flex;flex-wrap:wrap;gap:${8*S}px">
