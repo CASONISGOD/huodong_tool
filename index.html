@@ -11846,7 +11846,7 @@ function renderGuestPreview() {
     let html1 = headerHtml;
     html1 += `<div class="modules-wrap" style="margin-top:${_overlap}px;position:relative;z-index:1;display:flex;flex-direction:column;gap:12px">`;
     enabled.forEach(m => { html1 += renderGuestModule(m, pc, false); });
-    html1 += renderFooterWithBottomBg(pc, false);
+    html1 += renderFooterWithBottomBg(pc, false, true);
     html1 += `</div>`;
     html1 += titleOverlayHtml;
     c1.innerHTML = html1;
@@ -11859,7 +11859,7 @@ function renderGuestPreview() {
     let html2 = headerHtml;
     html2 += `<div class="modules-wrap" style="margin-top:${_overlap}px;position:relative;z-index:1;display:flex;flex-direction:column;gap:12px">`;
     enabled.forEach(m => { html2 += renderGuestModule(m, pc, true); });
-    html2 += renderFooterWithBottomBg(pc, true);
+    html2 += renderFooterWithBottomBg(pc, true, true);
     html2 += `</div>`;
     c2.innerHTML = html2;
 
@@ -11870,13 +11870,13 @@ function renderGuestPreview() {
 
 // ---- 底部导航（固定模块，每个页面自带） ----
 // 包装：footer + 底部留白（尾图配置已移除）
-function renderFooterWithBottomBg(pc, isBgMode) {
+function renderFooterWithBottomBg(pc, isBgMode, isGuestView = false) {
     // 底部留白 175px @1x（=350 @2x）
     const tailH = 175;
     return `
     <div class="footer-with-bottom-bg" style="position:relative">
         <div style="position:relative;z-index:1">
-            ${renderFooter(pc, isBgMode)}
+            ${isGuestView ? renderGuestFooter(pc, isBgMode) : renderFooter(pc, isBgMode)}
             <div style="height:${tailH}px"></div>
         </div>
     </div>`;
