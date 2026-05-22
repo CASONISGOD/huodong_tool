@@ -3548,8 +3548,9 @@
         }
         .pm-item-actions {
             display:flex; gap:6px; flex-shrink:0;
+            flex-wrap:wrap; justify-content:flex-end;
         }
-        .pm-item-actions .btn { padding:6px 14px; font-size:12px; }
+        .pm-item-actions .btn { padding:6px 12px; font-size:12px; }
         .pm-item-current {
             border-color:var(--primary);
             background:var(--primary-soft);
@@ -6138,6 +6139,7 @@ function renderHistoryList() {
                         </div>
                         <div class="pm-item-actions">
                             <button class="btn btn-primary btn-sm" onclick="openHistoryProject('${p.id}')">打开</button>
+                            <button class="btn btn-outline btn-sm" onclick="copyProject('${p.id}')">拷贝</button>
                             <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:rgba(248,113,113,0.35)" onclick="deleteHistoryProject('${p.id}')">删除</button>
                         </div>
                     </div>
@@ -6693,6 +6695,7 @@ function renderPMList() {
                         </div>
                         <div class="pm-item-actions">
                             ${isCurrent ? '' : `<button class="btn btn-primary btn-sm" onclick="pmOpenProject('${p.id}')">打开</button>`}
+                            <button class="btn btn-outline btn-sm" onclick="copyProject('${p.id}')">拷贝</button>
                             <button class="btn btn-outline btn-sm" onclick="pmEditProject('${p.id}')">编辑</button>
                             <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:rgba(248,113,113,0.35)" onclick="pmDeleteProject('${p.id}')">删除</button>
                         </div>
@@ -6709,6 +6712,65 @@ function pmGoPage(page) {
     // 翻页后滚动到顶部
     const body = document.getElementById('pmBody');
     if(body) body.scrollTop = 0;
+}
+
+function getProjectCopyName(name) {
+    const baseName = (name || '未命名项目').trim() || '未命名项目';
+    const usedNames = new Set(getProjectsMeta().map(p => p.name));
+    let copyName = `${baseName}（副本）`;
+    let idx = 2;
+    while(usedNames.has(copyName)) {
+        copyName = `${baseName}（副本${idx}）`;
+        idx++;
+    }
+    return copyName;
+}
+
+async function copyProject(id) {
+    try {
+        const meta = getProjectsMeta().find(p => p.id === id);
+        if(!meta) { alert('项目不存在'); return; }
+
+        // 拷贝当前项目时，先保存最新编辑内容，确保副本与当前画布一致
+        if(id === currentProjectId) {
+            await saveCurrentProjectData();
+        }
+
+        const snapshot = await loadProjectFromDB(id);
+        if(!snapshot) { alert('项目数据为空，无法拷贝'); return; }
+
+        const copyId = genProjectId();
+        const now = Date.now();
+        const copyMeta = {
+            id: copyId,
+            name: getProjectCopyName(meta.name),
+            game: meta.game || '',
+            time: meta.time || '',
+            createdAt: now,
+            updatedAt: now
+        };
+
+        await saveProjectToDB(copyId, snapshot);
+        addProjectMeta(copyMeta);
+        checkWelcomeScreen();
+
+        const pmOverlay = document.getElementById('pmOverlay');
+        if(pmOverlay && !pmOverlay.classList.contains('hidden')) {
+            pmCurrentPage = 1;
+            renderPMList();
+        }
+
+        const historyOverlay = document.getElementById('historyOverlay');
+        if(historyOverlay && !historyOverlay.classList.contains('hidden')) {
+            _historyPage = 1;
+            renderHistoryList();
+        }
+
+        showExportImportToast('✅ 项目已拷贝');
+    } catch(err) {
+        console.error('拷贝项目失败:', err);
+        alert('拷贝失败：' + (err.message || '未知错误'));
+    }
 }
 
 async function pmOpenProject(id) {
