@@ -2510,21 +2510,74 @@
         .editable-text {
             cursor:text;
             outline:none;
-            border:1px solid transparent;
-            border-radius:4px;
-            padding:1px 3px;
-            margin:-1px -3px;
-            transition: border-color .2s, background .2s;
-            min-width:20px;
+            border:0;
+            border-radius:3px;
+            padding:0;
+            margin:0;
+            min-width:1em;
+            max-width:100%;
             display:inline-block;
+            vertical-align:baseline;
+            line-height:inherit;
+            box-sizing:border-box;
+            white-space:normal;
+            overflow-wrap:anywhere;
+            word-break:break-word;
+            box-shadow:inset 0 0 0 0 transparent;
+            transition:box-shadow .15s, background .15s;
         }
         .editable-text:hover {
-            border-color:rgba(0,0,0,.3);
+            box-shadow:0 0 0 1px rgba(0,0,0,.28);
             background:rgba(0,0,0,.05);
         }
         .editable-text:focus {
-            border-color:var(--primary);
-            background:rgba(0,0,0,.08);
+            position:relative;
+            z-index:50;
+            box-shadow:0 0 0 1.5px var(--primary);
+            background:rgba(79,124,255,.12);
+        }
+        .editable-text[contenteditable="true"]:empty::before {
+            content:'点击编辑';
+            opacity:.45;
+        }
+        .m-tpl-title .editable-text,
+        .m-tpl-subtitle .editable-text,
+        .adaptive-label-text .editable-text {
+            min-width:0;
+            max-width:100%;
+            white-space:normal !important;
+            overflow-wrap:anywhere;
+            word-break:break-word;
+        }
+        .adaptive-label-text {
+            flex:0 1 auto !important;
+            width:auto !important;
+            max-width:calc(100% - 48px) !important;
+        }
+        .m-tpl-title .editable-text {
+            flex:0 1 auto;
+        }
+        .preview-container span:has(.editable-text) {
+            min-width:0;
+            max-width:100%;
+            overflow:visible;
+        }
+        .preview-container [style*="justify-content:space-between"]:has(.editable-text) {
+            align-items:flex-start !important;
+            flex-wrap:wrap;
+            gap:6px;
+        }
+        .preview-container [style*="justify-content:space-between"]:has(.editable-text) > span {
+            min-width:0;
+            max-width:100%;
+        }
+        .preview-container [style*="overflow:hidden"]:has(.editable-text:focus),
+        .preview-container [style*="overflow: hidden"]:has(.editable-text:focus),
+        .preview-container .m-card:has(.editable-text:focus),
+        .preview-container .m-card-dark:has(.editable-text:focus),
+        .preview-container .m-card-draw:has(.editable-text:focus),
+        .preview-container .preview-module-wrap:has(.editable-text:focus) {
+            overflow:visible !important;
         }
 
         /* ===== 集卡模块 - 奖励组管理 ===== */
@@ -4978,7 +5031,7 @@ function renderModuleTemplate(opts, innerHtml) {
 
     const hideHeader = !!opts.hideHeader;
     const subtitleHtml = (!hideHeader && opts.subtitle) ? `
-        <div style="text-align:center;margin-top:${12*S}px;font-size:${20*S}px;line-height:1.4;color:rgba(0,0,0,0.60);font-family:PingFang SC,sans-serif">
+        <div class="m-tpl-subtitle" style="text-align:center;margin:${12*S}px auto 0;max-width:100%;box-sizing:border-box;font-size:${20*S}px;line-height:${28*S}px;color:rgba(0,0,0,0.60);font-family:PingFang SC,sans-serif;white-space:normal;overflow-wrap:anywhere;word-break:break-word">
             ${opts.subtitle}
         </div>` : '';
 
@@ -4992,6 +5045,7 @@ function renderModuleTemplate(opts, innerHtml) {
     const tintTop    = `rgba(${rgb.r},${rgb.g},${rgb.b},0.20)`;
     const tintBottom = `rgba(${rgb.r},${rgb.g},${rgb.b},0)`;
     const titleDecoWrapStyle = 'display:inline-flex;width:max-content;height:max-content;align-items:center;justify-content:center;flex-shrink:0;line-height:0;';
+    const titleTextMaxWidth = titleDeco ? `calc(100% - ${96*S}px)` : '100%';
 
     return `
     <div class="m-tpl-card" style="${card}">
@@ -5015,9 +5069,9 @@ function renderModuleTemplate(opts, innerHtml) {
         <!-- 内容区 -->
         <div class="m-tpl-body" style="position:relative;${bodyPad}">
             ${hideHeader ? '' : `
-            <div class="m-tpl-title" style="display:flex;align-items:center;justify-content:center;gap:${8*S}px">
+            <div class="m-tpl-title" style="display:flex;align-items:center;justify-content:center;gap:${8*S}px;max-width:100%;min-width:0">
                 ${titleDeco ? `<span style="${titleDecoWrapStyle}"><img src="${titleDeco}" style="max-width:${titleDeco === DEFAULT_MODULE_DECO.titleDeco ? '35px' : '70px'};max-height:${titleDeco === DEFAULT_MODULE_DECO.titleDeco ? '12px' : '24px'};width:auto;height:auto;object-fit:contain;display:block" onerror="this.style.display='none'"></span>` : ''}
-                <div style="font-size:${28*S}px;font-weight:600;line-height:1;color:#242424;font-family:PingFang SC,sans-serif;text-align:center">
+                <div style="font-size:${28*S}px;font-weight:600;line-height:1.25;color:#242424;font-family:PingFang SC,sans-serif;text-align:center;flex:0 1 auto;min-width:0;max-width:${titleTextMaxWidth};white-space:normal;overflow-wrap:anywhere;word-break:break-word">
                     ${opts.title || ''}
                 </div>
                 ${titleDeco ? `<span style="${titleDecoWrapStyle}"><img src="${titleDeco}" style="max-width:${titleDeco === DEFAULT_MODULE_DECO.titleDeco ? '35px' : '70px'};max-height:${titleDeco === DEFAULT_MODULE_DECO.titleDeco ? '12px' : '24px'};width:auto;height:auto;object-fit:contain;display:block;transform:scaleX(-1)" onerror="this.style.display='none'"></span>` : ''}
@@ -10236,12 +10290,12 @@ function renderSignin(pc, isBgMode, m) {
     if(false) {
         // "每天签到，每天抽奖" 带左右横线（距签到按钮 36@2x）
         const labelHtml = `
-            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;margin-top:${36*S}px">
-                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
-                <span style="font-size:${22*S}px;color:#242424;font-family:PingFang SC">
+            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;margin-top:${36*S}px;min-height:${30*S}px">
+                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44);flex-shrink:0"></span>
+                <span class="adaptive-label-text" style="flex:1;min-width:0;text-align:center;font-size:${22*S}px;line-height:${30*S}px;color:#242424;font-family:PingFang SC;white-space:normal;overflow-wrap:anywhere;word-break:break-word">
                     <span class="editable-text" ${editable} data-field="lotteryLabel" onblur="onSigninFieldEdit(this,'lotteryLabel','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.lotteryLabel}</span>
                 </span>
-                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
+                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44);flex-shrink:0"></span>
             </div>`;
 
         // 奖品区：多宫格风格——每行最多 4 个，每行按本行实际数量自适应铺满 654@2x。
@@ -10384,12 +10438,12 @@ function renderMore(pc, isBgMode, m) {
 
         // 小标题行（两侧 32 横线 + 中间文字）
         const labelRow = `
-            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;margin-top:${gi === 0 ? 0 : 36*S}px;height:${30*S}px">
-                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
-                <span style="font-size:${22*S}px;color:#242424;font-family:PingFang SC">
+            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;margin-top:${gi === 0 ? 0 : 36*S}px;min-height:${30*S}px">
+                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44);flex-shrink:0"></span>
+                <span class="adaptive-label-text" style="flex:0 1 auto;max-width:calc(100% - ${96*S}px);min-width:0;text-align:center;font-size:${22*S}px;line-height:${30*S}px;color:#242424;font-family:PingFang SC;white-space:normal;overflow-wrap:anywhere;word-break:break-word">
                     <span class="editable-text" ${editable} data-field="glabel${gi}" onblur="onMoreGroupFieldEdit(this,${gi},'label','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.label}</span>
                 </span>
-                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
+                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44);flex-shrink:0"></span>
             </div>`;
 
         const card = rows.map((row, ri) => {
@@ -11046,12 +11100,12 @@ function renderContent(pc, isBgMode, m) {
 
     const itemsHtml = (d.items || []).map((it, i) => {
         const labelRow = it.labelEnabled ? `
-            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;margin-top:${i === 0 ? 0 : 36*S}px;margin-bottom:${16*S}px">
-                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
-                <span style="font-size:${22*S}px;color:#242424;font-family:PingFang SC">
+            <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;width:fit-content;max-width:100%;margin-left:auto;margin-right:auto;margin-top:${i === 0 ? 0 : 36*S}px;margin-bottom:${16*S}px;min-height:${30*S}px">
+                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44);flex-shrink:0"></span>
+                <span class="adaptive-label-text" style="flex:0 1 auto;max-width:calc(100% - ${96*S}px);min-width:0;text-align:center;font-size:${22*S}px;line-height:${30*S}px;color:#242424;font-family:PingFang SC;white-space:normal;overflow-wrap:anywhere;word-break:break-word">
                     <span class="editable-text" ${editable} data-field="clabel${i}" onblur="onContentItemEdit(this,${i},'label','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${it.label || '小标题'}</span>
                 </span>
-                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44)"></span>
+                <span style="width:${32*S}px;height:1px;background:rgba(0,0,0,0.44);flex-shrink:0"></span>
             </div>` : (i > 0 ? `<div style="height:${36*S}px"></div>` : '');
 
         // 图片区：宽度铺满 654@2x（即 100%）；
@@ -14869,14 +14923,37 @@ window.addEventListener('resize', scheduleRootScrollReset);
 window.addEventListener('focus', scheduleRootScrollReset, true);
 
 // ===== Keyboard shortcuts =====
+function selectEditableText(el) {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
+function getEditingShortcutTarget(target) {
+    if(!(target instanceof Element)) return null;
+    return target.closest('input, textarea, [contenteditable="true"]');
+}
+
 document.addEventListener('keydown', e => {
+    const editingTarget = getEditingShortcutTarget(e.target);
+    if(editingTarget) {
+        if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='a' && editingTarget.isContentEditable) {
+            e.preventDefault();
+            selectEditableText(editingTarget);
+        }
+        return;
+    }
+
     if(e.ctrlKey||e.metaKey) {
-        if(e.key==='z' && !e.shiftKey){e.preventDefault();undo();}
-        if((e.key==='z' && e.shiftKey) || e.key==='y'){e.preventDefault();redo();}
-        if(e.key==='e'){e.preventDefault();exportBgImage();}
-        if(e.key==='r'){e.preventDefault();resetAll();}
-        if(e.key==='a'){e.preventDefault();selectAll();}
-        if(e.key==='s'){e.preventDefault();saveCurrentProject();}
+        const key = e.key.toLowerCase();
+        if(key==='z' && !e.shiftKey){e.preventDefault();undo();}
+        if((key==='z' && e.shiftKey) || key==='y'){e.preventDefault();redo();}
+        if(key==='e'){e.preventDefault();exportBgImage();}
+        if(key==='r'){e.preventDefault();resetAll();}
+        if(key==='a'){e.preventDefault();selectAll();}
+        if(key==='s'){e.preventDefault();saveCurrentProject();}
     }
 });
 
