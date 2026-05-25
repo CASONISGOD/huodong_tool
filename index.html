@@ -14425,21 +14425,34 @@ function parsePlannerTable(wb) {
     // 按模块玩法分组
     const moduleGroups = {};
     let currentModule = '';
+    // 合并单元格场景：策划表里"模块玩法 / 领取条件 / 活动规则"等列经常是合并的，
+    // sheet_to_json 解析后只有合并区第一行有值，后续行为空。这里用"沿用上一非空值"的方式还原。
+    let currentRule = '';
+    let currentCondition = '';
     for(let r=1; r<rows.length; r++) {
         const row = rows[r] || [];
         const mod = String(row[colIdx['模块玩法']]||'').trim();
         if(mod) currentModule = mod;
         if(!currentModule) continue;
         if(!moduleGroups[currentModule]) moduleGroups[currentModule] = [];
+
+        const rule = String(row[colIdx['活动规则']]||'').trim();
+        if(rule) currentRule = rule;
+        const cond = String(row[colIdx['领取条件']]||'').trim();
+        if(cond) currentCondition = cond;
+
         const rawReward = String(row[colIdx['奖励内容']]||'').trim();
         const rawCount  = String(row[colIdx['道具数量']]||'').trim();
-        // 合并道具名称 + 数量：若 count 有值且不是 1，则显示 "奖品名*数量"
-        const rewardDisplay = (rawReward && rawCount && rawCount !== '' && rawCount !== '1')
+        // 跳过纯空行（无奖励内容时无意义；避免把空白行也算进 items）
+        if(!rawReward) continue;
+        // 合并道具名称 + 数量：只要数量列非空就拼接，包括 "1"
+        // —— 数量是奖品规格的一部分，按策划表原值完整保留
+        const rewardDisplay = (rawReward && rawCount)
             ? `${rawReward}*${rawCount}`
             : rawReward;
         moduleGroups[currentModule].push({
-            rule: String(row[colIdx['活动规则']]||'').trim(),
-            condition: String(row[colIdx['领取条件']]||'').trim(),
+            rule: currentRule,
+            condition: currentCondition,
             reward: rewardDisplay,
             count: rawCount,
         });
@@ -14450,7 +14463,8 @@ function parsePlannerTable(wb) {
         const modLower = mod.toLowerCase();
         if(modLower.includes('抽奖')) {
             result.modules.lottery = true;
-            const prizes = items.filter(it => it.reward && it.condition).map(it => it.reward.split('（')[0].split('(')[0].trim());
+            // 道具名称完整保留（含括号备注），如 "深渊：调律之痕（账号绑定）*40"
+            const prizes = items.filter(it => it.reward && it.condition).map(it => it.reward.trim());
             result.moduleData.lottery = {
                 title: '做任务天天抽大奖',
                 subtitle: items[0]?.rule || '',
@@ -14496,7 +14510,8 @@ function parsePlannerTable(wb) {
         }
         else if(modLower.includes('口令码')) {
             result.modules.redpacket = true;
-            const prizes = items.filter(it => it.reward).map(it => it.reward.split('（')[0].split('(')[0].trim());
+            // 道具名称完整保留（含括号备注）
+            const prizes = items.filter(it => it.reward).map(it => it.reward.trim());
             // 分成两个奖池（简单对半分）
             const half = Math.ceil(prizes.length / 2);
             result.moduleData.redpacket = {
@@ -14513,7 +14528,8 @@ function parsePlannerTable(wb) {
             items.forEach(it => {
                 const key = it.condition || '福利';
                 if(!groups[key]) groups[key] = [];
-                groups[key].push(it.reward.split('（')[0].split('(')[0].trim());
+                // 道具名称完整保留（含括号备注）
+                groups[key].push((it.reward || '').trim());
             });
             result.moduleData.more = {
                 title: '更多福利内容',
@@ -14808,17 +14824,37 @@ function matchIconsToData(imageFiles) {
     // 收集所有当前数据中的道具名称及其引用位置
     const allItems = collectAllItemNames();
 
+    // 名称归一化：去掉尾部数量后缀 + 中英文括号内的备注（如"（账号绑定）"、"（角色绑定）"）
+    // —— 用于在文件名按"核心道具名"匹配时使用
+    const stripDecorations = (s) => {
+        return String(s || '')
+            .replace(/[*×xX]\s*\d+\s*$/g, '')           // 去尾部 *N / ×N
+            .replace(/[（(][^）)]*[)）]/g, '')           // 去任意中英文括号备注（账号绑定/角色绑定/限时...）
+            .replace(/\s+/g, '')                        // 去空白
+            .trim();
+    };
+
     allItems.forEach(item => {
         const name = item.name;
         if(!name) return;
-        // 精确匹配
+        // ① 精确匹配
         let matchKey = fileNames.find(fn => fn === name);
-        // 模糊匹配：文件名包含道具名 或 道具名包含文件名
+        // ② 模糊匹配：文件名包含道具名 或 道具名包含文件名
         if(!matchKey) matchKey = fileNames.find(fn => fn.includes(name) || name.includes(fn));
-        // 去掉数量后缀再匹配：如 "88Q币" 匹配 "88Q币*1"
+        // ③ 道具名归一化（去 *N、去括号备注）后再匹配；同时也对文件名做归一化
         if(!matchKey) {
-            const cleanName = name.replace(/[*×xX]\d+$/,'').trim();
-            matchKey = fileNames.find(fn => fn === cleanName || fn.includes(cleanName) || cleanName.includes(fn));
+            const cleanName = stripDecorations(name);
+            if(cleanName) {
+                matchKey = fileNames.find(fn => {
+                    const cleanFn = stripDecorations(fn);
+                    return fn === cleanName
+                        || cleanFn === cleanName
+                        || fn.includes(cleanName)
+                        || cleanName.includes(fn)
+                        || cleanFn.includes(cleanName)
+                        || cleanName.includes(cleanFn);
+                });
+            }
         }
         if(matchKey) {
             matched.push({ ...item, matchedFile: matchKey });
