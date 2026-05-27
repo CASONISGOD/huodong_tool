@@ -1513,6 +1513,20 @@
             content:'点击编辑';
             opacity:.45;
         }
+        .two-line-limit {
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            overflow:hidden;
+        }
+        .two-line-limit:focus {
+            -webkit-line-clamp:2;
+            overflow:hidden;
+        }
+        .preview-container [style*="overflow:hidden"]:has(.two-line-limit:focus),
+        .preview-container [style*="overflow: hidden"]:has(.two-line-limit:focus) {
+            overflow:hidden !important;
+        }
         .m-tpl-title .editable-text,
         .m-tpl-subtitle .editable-text,
         .adaptive-label-text .editable-text {
@@ -1551,6 +1565,10 @@
         .preview-container .m-card-draw:has(.editable-text:focus),
         .preview-container .preview-module-wrap:has(.editable-text:focus) {
             overflow:visible !important;
+        }
+        .preview-container [style*="overflow:hidden"]:has(.two-line-limit:focus),
+        .preview-container [style*="overflow: hidden"]:has(.two-line-limit:focus) {
+            overflow:hidden !important;
         }
 
         /* ===== 集卡模块 - 奖励组管理 ===== */
@@ -7669,24 +7687,24 @@ function renderRedpacket(pc, isBgMode, m) {
         <div style="display:flex;gap:${16*S}px">
             <div style="flex:1;height:${208*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60);white-space:nowrap">
-                    <span class="editable-text" ${editable} data-field="leftTag" onblur="onRedpacketTextEdit(this,'leftTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftTag" onblur="onRedpacketTextEdit(this,'leftTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span>
                 </div>
                 <div style="position:absolute;top:${62*S}px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:${24*S}px">
                     ${leftIconsHtml}
                 </div>
                 <div style="position:absolute;top:${154*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;color:#242424;font-family:PingFang SC">
-                    <span class="editable-text" ${editable} data-field="leftPrizeText" onblur="onRedpacketTextEdit(this,'leftPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftPrizeText" onblur="onRedpacketTextEdit(this,'leftPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftPrizeText}</span>
                 </div>
             </div>
             <div style="flex:1;height:${208*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60);white-space:nowrap">
-                    <span class="editable-text" ${editable} data-field="rightTag" onblur="onRedpacketTextEdit(this,'rightTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightTag" onblur="onRedpacketTextEdit(this,'rightTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span>
                 </div>
                 <div style="position:absolute;top:${62*S}px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:${24*S}px">
                     ${rightIconsHtml}
                 </div>
                 <div style="position:absolute;top:${154*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;color:#242424;font-family:PingFang SC">
-                    <span class="editable-text" ${editable} data-field="rightPrizeText" onblur="onRedpacketTextEdit(this,'rightPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightPrizeText" onblur="onRedpacketTextEdit(this,'rightPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightPrizeText}</span>
                 </div>
             </div>
         </div>
@@ -8601,6 +8619,75 @@ function renderSkin(pc, isBgMode) {
     </div>`;
 }
 
+
+// ===== 两行文案输入限制 =====
+const TWO_LINE_EDIT_ATTRS = 'onfocus="rememberTwoLineText(this)" oninput="getTwoLineCheckedText(this)"';
+function rememberTwoLineText(el) {
+    if(!el) return;
+    el.dataset.twoLineLastText = el.textContent || '';
+    el.dataset.twoLineLastHtml = el.innerHTML || '';
+}
+function countEditableVisualLines(el) {
+    if(!el || !el.textContent) return 1;
+    const rect = el.getBoundingClientRect();
+    const cs = window.getComputedStyle(el);
+    const clone = el.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.removeAttribute('contenteditable');
+    clone.classList.remove('two-line-limit');
+    clone.style.cssText = `position:absolute;left:-99999px;top:-99999px;visibility:hidden;pointer-events:none;z-index:-1;display:block;width:${Math.max(1, rect.width)}px;max-width:${Math.max(1, rect.width)}px;height:auto;max-height:none;overflow:visible;white-space:normal;overflow-wrap:anywhere;word-break:break-word;font:${cs.font};font-size:${cs.fontSize};font-family:${cs.fontFamily};font-weight:${cs.fontWeight};letter-spacing:${cs.letterSpacing};line-height:${cs.lineHeight};padding:0;margin:0;border:0;box-sizing:border-box;-webkit-line-clamp:unset;-webkit-box-orient:initial;`;
+    document.body.appendChild(clone);
+    const lineHeight = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3 || 16;
+    const lines = Math.ceil((clone.scrollHeight || clone.getBoundingClientRect().height) / lineHeight - 0.05);
+    clone.remove();
+    return Math.max(1, lines);
+}
+function setEditableCaretToEnd(el) {
+    if(!el) return;
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+function enforceTwoLineText(el) {
+    if(!el) return true;
+    if(!el.dataset.twoLineLastText) rememberTwoLineText(el);
+    if(countEditableVisualLines(el) <= 2) {
+        el.dataset.twoLineLastText = el.textContent || '';
+        el.dataset.twoLineLastHtml = el.innerHTML || '';
+        return true;
+    }
+    el.innerHTML = el.dataset.twoLineLastHtml || el.dataset.twoLineLastText || '';
+    setEditableCaretToEnd(el);
+    alert('最多两行文字');
+    return false;
+}
+function getTwoLineCheckedText(el) {
+    if(!el) return '';
+    let text = (el.textContent || '').trim();
+    if(!text) return '';
+    rememberTwoLineText(el);
+    el.textContent = text;
+    if(countEditableVisualLines(el) <= 2) return text;
+    let lo = 0, hi = text.length, best = '';
+    while(lo <= hi) {
+        const mid = Math.floor((lo + hi) / 2);
+        el.textContent = text.slice(0, mid);
+        if(countEditableVisualLines(el) <= 2) {
+            best = text.slice(0, mid);
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    el.textContent = best;
+    setEditableCaretToEnd(el);
+    alert('最多两行文字');
+    return best.trim();
+}
+
 // ---- Module: 7天签到（默认 / 抽奖两种模式）----
 // Figma 坐标系：卡片宽 702 @2x，内容左右 padding 24（总内容宽 654）
 // @2x 基准；预览为 S=0.5
@@ -8621,7 +8708,7 @@ function renderSignin(pc, isBgMode, m) {
         <div style="width:${wPct}%;height:${210*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative;flex-shrink:0">
             <!-- 顶部 tag：带 ↙↘ 圆角 -->
             <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60);white-space:nowrap">
-                <span class="editable-text" ${editable} data-field="day${dayIdx}" onblur="onSigninDayEdit(this,${dayIdx},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.days[dayIdx]}</span>
+                <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="day${dayIdx}" onblur="onSigninDayEdit(this,${dayIdx},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.days[dayIdx]}</span>
             </div>
             <!-- 图 72×72，top 46+12=58 ⇒ 图左上到卡顶 46 -->
             <div style="position:absolute;top:${46*S}px;left:50%;transform:translateX(-50%);width:${72*S}px;height:${72*S}px;border-radius:${16*S}px;overflow:hidden">
@@ -8688,7 +8775,7 @@ function renderSignin(pc, isBgMode, m) {
                                     <img src="${item.img}" style="width:100%;height:100%;object-fit:cover">
                                 </div>
                                 <div style="position:absolute;top:${104*S}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC">
-                                    <span class="editable-text" ${editable} data-field="lname${idx}" onblur="onSigninLotteryEdit(this,${idx},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${item.name}</span>
+                                    <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="lname${idx}" onblur="onSigninLotteryEdit(this,${idx},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${item.name}</span>
                                 </div>
                             </div>`;
                         }).join('')
@@ -8762,12 +8849,12 @@ function onSigninFieldEdit(el, field, instanceId) {
     if(v && v !== d[field]) { d[field] = v; renderPreview(); pushSnapshot(); }
 }
 function onSigninDayEdit(el, idx, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getSigninData(instanceId); if(!d) return;
     if(v && v !== d.days[idx]) { d.days[idx] = v; renderPreview(); pushSnapshot(); }
 }
 function onSigninLotteryEdit(el, idx, field, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getSigninData(instanceId); if(!d) return;
     if(v && d.lottery[idx] && v !== d.lottery[idx][field]) { d.lottery[idx][field] = v; renderPreview(); pushSnapshot(); }
 }
@@ -8821,7 +8908,7 @@ function renderMore(pc, isBgMode, m) {
                         <img src="${it.img}" style="width:100%;height:100%;object-fit:cover">
                     </div>
                     <div style="position:absolute;top:${104*S}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
-                        <span class="editable-text" ${editable} data-field="mname${gi}_${itemIndex}" onblur="onMoreItemNameEdit(this,${gi},${itemIndex},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${it.name}</span>
+                        <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="mname${gi}_${itemIndex}" onblur="onMoreItemNameEdit(this,${gi},${itemIndex},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${it.name}</span>
                     </div>
                 </div>`;
             }).join('');
@@ -8862,7 +8949,7 @@ function onMoreGroupFieldEdit(el, gi, field, instanceId) {
     if(v && d.groups[gi] && v !== d.groups[gi][field]) { d.groups[gi][field] = v; renderPreview(); pushSnapshot(); }
 }
 function onMoreItemNameEdit(el, gi, ii, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getMoreData(instanceId); if(!d) return;
     if(v && d.groups[gi] && d.groups[gi].items[ii] && v !== d.groups[gi].items[ii].name) {
         d.groups[gi].items[ii].name = v;
@@ -9041,7 +9128,7 @@ function renderLottery(pc, isBgMode, m) {
                         <img src="${p.img}" style="width:100%;height:100%;object-fit:cover">
                     </div>
                     <div style="position:absolute;top:${104*S}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
-                        <span class="editable-text" ${editable} data-field="mpname${i}" onblur="onLotteryMultiPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
+                        <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="mpname${i}" onblur="onLotteryMultiPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
                     </div>
                 </div>`;
             }).join('');
@@ -9108,7 +9195,7 @@ function renderLottery(pc, isBgMode, m) {
                 <img src="${p.img}" style="width:100%;height:100%;object-fit:cover">
             </div>
             <div style="position:absolute;top:${120.5*S}px;left:${24*S}px;right:${24*S}px;text-align:center;font-size:${24*S}px;color:#242424;line-height:1.25;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
-                <span class="editable-text" ${editable} data-field="pname${i}" onblur="onLotteryPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
+                <span class="editable-text two-line-limit" style="max-height:${24*S*1.25*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="pname${i}" onblur="onLotteryPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
             </div>
         </div>`).join('');
 
@@ -9183,7 +9270,7 @@ function onLotteryFieldEdit(el, field, instanceId) {
     if(v && v !== d[field]) { d[field] = v; renderPreview(); pushSnapshot(); }
 }
 function onLotteryPrizeEdit(el, idx, field, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getLotteryData(instanceId); if(!d) return;
     if(v && d.prizes[idx] && v !== d.prizes[idx][field]) {
         d.prizes[idx][field] = v;
@@ -9259,7 +9346,7 @@ function updateLotteryTaskEnabled(instanceId, enabled) {
 }
 
 function onLotteryMultiPrizeEdit(el, idx, field, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getLotteryData(instanceId); if(!d) return;
     if(v && d.multiPrizes[idx] && v !== d.multiPrizes[idx][field]) {
         d.multiPrizes[idx][field] = v;
@@ -9784,14 +9871,14 @@ function renderBenefits(pc, isBgMode) {
         </div>
         <div class="benefit-row">
             <div class="benefit-card">
-                <div class="b-tag"><span class="editable-text" ${editable} data-field="leftTag" onblur="onModuleTextEdit(this,benefitsData,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span></div>
+                <div class="b-tag"><span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftTag" onblur="onModuleTextEdit(this,benefitsData,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span></div>
                 <div class="b-icons">
                     ${d.leftIcons.map(src => `<img src="${src}">`).join('')}
                 </div>
                 <div class="b-btn" style="${getBtnStyle(pc, 76)}"><span class="editable-text" ${editable} data-field="leftBtn" onblur="onModuleTextEdit(this,benefitsData,'leftBtn')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:#fff">${d.leftBtn}</span></div>
             </div>
             <div class="benefit-card">
-                <div class="b-tag"><span class="editable-text" ${editable} data-field="rightTag" onblur="onModuleTextEdit(this,benefitsData,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span></div>
+                <div class="b-tag"><span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightTag" onblur="onModuleTextEdit(this,benefitsData,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span></div>
                 <div class="b-icons">
                     ${d.rightIcons.map(src => `<img src="${src}">`).join('')}
                 </div>
@@ -9908,24 +9995,24 @@ function renderGuestSend(pc, isBgMode) {
         <div style="display:flex;gap:${16*S}px;margin-top:${16*S}px">
             <div style="flex:1;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative;padding:${34*S}px ${6*S}px ${12*S}px;text-align:center">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60)">
-                    <span class="editable-text" ${editable} data-field="leftTag" onblur="onGuestModuleTextEdit(this,gSendData,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftTag" onblur="onGuestModuleTextEdit(this,gSendData,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin:${16*S}px 0 ${10*S}px;min-height:36px">
                     ${leftIconsHtml}
                 </div>
                 <div style="font-size:${22*S}px;color:#242424;font-family:PingFang SC">
-                    <span class="editable-text" ${editable} data-field="leftPrizeText" onblur="onGuestModuleTextEdit(this,gSendData,'leftPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftPrizeText" onblur="onGuestModuleTextEdit(this,gSendData,'leftPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftPrizeText}</span>
                 </div>
             </div>
             <div style="flex:1;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative;padding:${34*S}px ${6*S}px ${12*S}px;text-align:center">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60)">
-                    <span class="editable-text" ${editable} data-field="rightTag" onblur="onGuestModuleTextEdit(this,gSendData,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightTag" onblur="onGuestModuleTextEdit(this,gSendData,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin:${16*S}px 0 ${10*S}px;min-height:36px">
                     ${rightIconsHtml}
                 </div>
                 <div style="font-size:${22*S}px;color:#242424;font-family:PingFang SC">
-                    <span class="editable-text" ${editable} data-field="rightPrizeText" onblur="onGuestModuleTextEdit(this,gSendData,'rightPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightPrizeText" onblur="onGuestModuleTextEdit(this,gSendData,'rightPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightPrizeText}</span>
                 </div>
             </div>
         </div>
