@@ -2540,6 +2540,20 @@
             content:'点击编辑';
             opacity:.45;
         }
+        .two-line-limit {
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            overflow:hidden;
+        }
+        .two-line-limit:focus {
+            -webkit-line-clamp:2;
+            overflow:hidden;
+        }
+        .preview-container [style*="overflow:hidden"]:has(.two-line-limit:focus),
+        .preview-container [style*="overflow: hidden"]:has(.two-line-limit:focus) {
+            overflow:hidden !important;
+        }
         .m-tpl-title .editable-text,
         .m-tpl-subtitle .editable-text,
         .adaptive-label-text .editable-text {
@@ -2578,6 +2592,10 @@
         .preview-container .m-card-draw:has(.editable-text:focus),
         .preview-container .preview-module-wrap:has(.editable-text:focus) {
             overflow:visible !important;
+        }
+        .preview-container [style*="overflow:hidden"]:has(.two-line-limit:focus),
+        .preview-container [style*="overflow: hidden"]:has(.two-line-limit:focus) {
+            overflow:hidden !important;
         }
 
         /* ===== 集卡模块 - 奖励组管理 ===== */
@@ -6327,7 +6345,7 @@ async function exportProject() {
 
         for(let i = 0; i < assetResult.files.length; i++) {
             const fileInfo = assetResult.files[i];
-            setProgress(45 + Math.round((i / Math.max(1, assetResult.files.length)) * 35), `正在打包素材 ${i + 1}/${assetResult.files.length}...`);
+            setProgress(45 + Math.round((i / Math.max(1, assetResult.files.length)) * 25), `正在打包素材 ${i + 1}/${assetResult.files.length}...`);
             try {
                 const blob = await fetchAssetBlobForExport(fileInfo.source);
                 assetsFolder.file(fileInfo.fileName, blob);
@@ -6351,7 +6369,56 @@ async function exportProject() {
             }
         });
 
-        setProgress(85, '正在写入 JSON 配置...');
+        setProgress(72, '正在生成按钮状态切图...');
+        const buttonFolder = root.folder('button-states') || root;
+        const buttonSliceManifest = [];
+        let buttonSliceCount = 0;
+        let buttonTargetCount = 0;
+        let buttonSliceError = '';
+        try {
+            const buttonResult = await generateAllPageButtonSliceTasksForExport(({ processed, total }) => {
+                setProgress(72 + Math.round((processed / Math.max(1, total)) * 10), `正在生成按钮状态 ${processed}/${total}...`);
+            });
+            buttonTargetCount = buttonResult.targets.length;
+            for(let i = 0; i < buttonResult.tasks.length; i++) {
+                const item = buttonResult.tasks[i];
+                setProgress(82 + Math.round((i / Math.max(1, buttonResult.tasks.length)) * 5), `正在打包按钮状态 ${i + 1}/${buttonResult.tasks.length}...`);
+                const blob = await getSlicePngBlob(item);
+                const order = String(i + 1).padStart(2, '0');
+                const suffix = item.isCompleted ? '_完成态' : '';
+                const fileName = `${order}_${sanitizeFileName(item.name)}${suffix}_${sliceScale}x.png`;
+                buttonFolder.file(fileName, blob);
+                buttonSliceManifest.push({ fileName, name: item.name, isCompleted: !!item.isCompleted, scale: sliceScale });
+                buttonSliceCount++;
+            }
+        } catch(err) {
+            console.error('导出按钮状态失败:', err);
+            buttonSliceError = err.message || '按钮状态生成失败';
+        }
+        exportData.buttonStates = {
+            folder: 'button-states/',
+            scale: sliceScale,
+            targetCount: buttonTargetCount,
+            fileCount: buttonSliceCount,
+            files: buttonSliceManifest,
+            error: buttonSliceError
+        };
+
+        exportData.assetManifest = exportData.assets.map(item => ({
+            name: item.name,
+            fileName: item.fileName,
+            path: item.path,
+            kind: item.kind,
+            moduleId: item.moduleId,
+            instanceId: item.instanceId,
+            position: item.position,
+            design2x: item.design2x,
+            selector: item.selector,
+            packaged: item.packaged,
+            error: item.error || ''
+        }));
+
+        setProgress(88, '正在写入 JSON 配置...');
         root.file(`${safeProjectName}.json`, JSON.stringify(exportData, null, 2));
 
         setProgress(92, '正在生成压缩包...');
@@ -6398,10 +6465,13 @@ function collectPageAssetsForExport(container) {
         if(!source) return null;
         if(sourceToFile.has(source)) return sourceToFile.get(source);
         const ext = inferAssetExtForExport(source);
-        const base = sanitizeFileName(hint || inferAssetBaseNameForExport(source) || 'asset');
+        const rawName = hint || inferAssetBaseNameForExport(source) || 'asset';
+        const name = normalizeAssetNameForExport(rawName);
+        const base = sanitizeFileName(name);
         const fileName = uniqueAssetFileNameForExport(files, `${String(files.length + 1).padStart(2, '0')}_${base}.${ext}`);
         const info = {
             id: `asset_${String(files.length + 1).padStart(2, '0')}`,
+            name,
             fileName,
             path: `assets/${fileName}`,
             source,
@@ -6421,8 +6491,10 @@ function collectPageAssetsForExport(container) {
         const y = round2(rect.top - rootRect.top);
         const width = round2(rect.width || 0);
         const height = round2(rect.height || 0);
+        const name = buildAssetDisplayNameForExport(file.name, el, kind, assets.length + 1);
         assets.push({
             fileId: file.id,
+            name,
             fileName: file.fileName,
             path: file.path,
             source: file.source,
@@ -6469,6 +6541,19 @@ function inferAssetBaseNameForExport(source) {
     } catch(_) {
         return 'asset';
     }
+}
+
+function normalizeAssetNameForExport(name) {
+    return String(name || '素材').trim().replace(/\s+/g, ' ') || '素材';
+}
+
+function buildAssetDisplayNameForExport(baseName, el, kind, index) {
+    const cleanBase = normalizeAssetNameForExport(baseName || `素材${index}`);
+    const wrap = el && el.closest ? el.closest('.preview-module-wrap') : null;
+    const moduleTitle = wrap ? ((wrap.querySelector('.module-title, .editable-title, h2, h3') || {}).textContent || '').trim() : '';
+    const kindLabel = kind === 'background-image' ? '背景图' : '图片';
+    if(moduleTitle) return `${moduleTitle} - ${cleanBase}（${kindLabel}）`;
+    return `${cleanBase}（${kindLabel}）`;
 }
 
 function uniqueAssetFileNameForExport(files, fileName) {
@@ -9417,24 +9502,24 @@ function renderRedpacket(pc, isBgMode, m) {
         <div style="display:flex;gap:${16*S}px">
             <div style="flex:1;height:${208*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60);white-space:nowrap">
-                    <span class="editable-text" ${editable} data-field="leftTag" onblur="onRedpacketTextEdit(this,'leftTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftTag" onblur="onRedpacketTextEdit(this,'leftTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span>
                 </div>
                 <div style="position:absolute;top:${62*S}px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:${24*S}px">
                     ${leftIconsHtml}
                 </div>
                 <div style="position:absolute;top:${154*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;color:#242424;font-family:PingFang SC">
-                    <span class="editable-text" ${editable} data-field="leftPrizeText" onblur="onRedpacketTextEdit(this,'leftPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftPrizeText" onblur="onRedpacketTextEdit(this,'leftPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftPrizeText}</span>
                 </div>
             </div>
             <div style="flex:1;height:${208*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;color:rgba(0,0,0,0.60);white-space:nowrap">
-                    <span class="editable-text" ${editable} data-field="rightTag" onblur="onRedpacketTextEdit(this,'rightTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightTag" onblur="onRedpacketTextEdit(this,'rightTag','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span>
                 </div>
                 <div style="position:absolute;top:${62*S}px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:${24*S}px">
                     ${rightIconsHtml}
                 </div>
                 <div style="position:absolute;top:${154*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;color:#242424;font-family:PingFang SC">
-                    <span class="editable-text" ${editable} data-field="rightPrizeText" onblur="onRedpacketTextEdit(this,'rightPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightPrizeText" onblur="onRedpacketTextEdit(this,'rightPrizeText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightPrizeText}</span>
                 </div>
             </div>
         </div>
@@ -10298,6 +10383,75 @@ function renderSkin(pc, isBgMode) {
     </div>`;
 }
 
+
+// ===== 两行文案输入限制 =====
+const TWO_LINE_EDIT_ATTRS = 'onfocus="rememberTwoLineText(this)" oninput="getTwoLineCheckedText(this)"';
+function rememberTwoLineText(el) {
+    if(!el) return;
+    el.dataset.twoLineLastText = el.textContent || '';
+    el.dataset.twoLineLastHtml = el.innerHTML || '';
+}
+function countEditableVisualLines(el) {
+    if(!el || !el.textContent) return 1;
+    const rect = el.getBoundingClientRect();
+    const cs = window.getComputedStyle(el);
+    const clone = el.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.removeAttribute('contenteditable');
+    clone.classList.remove('two-line-limit');
+    clone.style.cssText = `position:absolute;left:-99999px;top:-99999px;visibility:hidden;pointer-events:none;z-index:-1;display:block;width:${Math.max(1, rect.width)}px;max-width:${Math.max(1, rect.width)}px;height:auto;max-height:none;overflow:visible;white-space:normal;overflow-wrap:anywhere;word-break:break-word;font:${cs.font};font-size:${cs.fontSize};font-family:${cs.fontFamily};font-weight:${cs.fontWeight};letter-spacing:${cs.letterSpacing};line-height:${cs.lineHeight};padding:0;margin:0;border:0;box-sizing:border-box;-webkit-line-clamp:unset;-webkit-box-orient:initial;`;
+    document.body.appendChild(clone);
+    const lineHeight = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3 || 16;
+    const lines = Math.ceil((clone.scrollHeight || clone.getBoundingClientRect().height) / lineHeight - 0.05);
+    clone.remove();
+    return Math.max(1, lines);
+}
+function setEditableCaretToEnd(el) {
+    if(!el) return;
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+function enforceTwoLineText(el) {
+    if(!el) return true;
+    if(!el.dataset.twoLineLastText) rememberTwoLineText(el);
+    if(countEditableVisualLines(el) <= 2) {
+        el.dataset.twoLineLastText = el.textContent || '';
+        el.dataset.twoLineLastHtml = el.innerHTML || '';
+        return true;
+    }
+    el.innerHTML = el.dataset.twoLineLastHtml || el.dataset.twoLineLastText || '';
+    setEditableCaretToEnd(el);
+    alert('最多两行文字');
+    return false;
+}
+function getTwoLineCheckedText(el) {
+    if(!el) return '';
+    let text = (el.textContent || '').trim();
+    if(!text) return '';
+    rememberTwoLineText(el);
+    el.textContent = text;
+    if(countEditableVisualLines(el) <= 2) return text;
+    let lo = 0, hi = text.length, best = '';
+    while(lo <= hi) {
+        const mid = Math.floor((lo + hi) / 2);
+        el.textContent = text.slice(0, mid);
+        if(countEditableVisualLines(el) <= 2) {
+            best = text.slice(0, mid);
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    el.textContent = best;
+    setEditableCaretToEnd(el);
+    alert('最多两行文字');
+    return best.trim();
+}
+
 // ---- Module: 7天签到（默认 / 抽奖两种模式）----
 // Figma 坐标系：卡片宽 702 @2x，内容左右 padding 24（总内容宽 654）
 // @2x 基准；预览为 S=0.5
@@ -10327,7 +10481,7 @@ function renderSignin(pc, isBgMode, m) {
             </div>
             <!-- 底部文字：每天独立道具名，固定2行高度，超出截断 -->
             <div style="position:absolute;top:${130*S}px;left:${4*S}px;right:${4*S}px;height:${22*1.3*2*S}px;overflow:hidden;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;word-break:break-all">
-                <span class="editable-text" ${editable} data-field="day${dayIdx}" onblur="onSigninDayEdit(this,${dayIdx},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}\">${d.days[dayIdx]}</span>
+                <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="day${dayIdx}" onblur="onSigninDayEdit(this,${dayIdx},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}\">${d.days[dayIdx]}</span>
             </div>
         </div>`;
     };
@@ -10386,7 +10540,7 @@ function renderSignin(pc, isBgMode, m) {
                                     <img src="${item.img}" style="width:100%;height:100%;object-fit:cover">
                                 </div>
                                 <div style="position:absolute;top:${104*S}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC">
-                                    <span class="editable-text" ${editable} data-field="lname${idx}" onblur="onSigninLotteryEdit(this,${idx},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${item.name}</span>
+                                    <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="lname${idx}" onblur="onSigninLotteryEdit(this,${idx},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${item.name}</span>
                                 </div>
                             </div>`;
                         }).join('')
@@ -10460,12 +10614,12 @@ function onSigninFieldEdit(el, field, instanceId) {
     if(v && v !== d[field]) { d[field] = v; renderPreview(); pushSnapshot(); }
 }
 function onSigninDayEdit(el, idx, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getSigninData(instanceId); if(!d) return;
     if(v && v !== d.days[idx]) { d.days[idx] = v; renderPreview(); pushSnapshot(); }
 }
 function onSigninLotteryEdit(el, idx, field, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getSigninData(instanceId); if(!d) return;
     if(v && d.lottery[idx] && v !== d.lottery[idx][field]) { d.lottery[idx][field] = v; renderPreview(); pushSnapshot(); }
 }
@@ -10519,7 +10673,7 @@ function renderMore(pc, isBgMode, m) {
                         <img src="${it.img}" style="width:100%;height:100%;object-fit:cover">
                     </div>
                     <div style="position:absolute;top:${104*S}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
-                        <span class="editable-text" ${editable} data-field="mname${gi}_${itemIndex}" onblur="onMoreItemNameEdit(this,${gi},${itemIndex},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${it.name}</span>
+                        <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="mname${gi}_${itemIndex}" onblur="onMoreItemNameEdit(this,${gi},${itemIndex},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${it.name}</span>
                     </div>
                 </div>`;
             }).join('');
@@ -10590,7 +10744,7 @@ function onMoreGroupFieldEdit(el, gi, field, instanceId) {
     if(v && d.groups[gi] && v !== d.groups[gi][field]) { d.groups[gi][field] = v; renderPreview(); pushSnapshot(); }
 }
 function onMoreItemNameEdit(el, gi, ii, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getMoreData(instanceId); if(!d) return;
     if(v && d.groups[gi] && d.groups[gi].items[ii] && v !== d.groups[gi].items[ii].name) {
         d.groups[gi].items[ii].name = v;
@@ -10805,7 +10959,7 @@ function renderLottery(pc, isBgMode, m) {
                         <img src="${p.img}" style="width:100%;height:100%;object-fit:cover">
                     </div>
                     <div style="position:absolute;top:${104*S}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
-                        <span class="editable-text" ${editable} data-field="mpname${i}" onblur="onLotteryMultiPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
+                        <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="mpname${i}" onblur="onLotteryMultiPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
                     </div>
                 </div>`;
             }).join('');
@@ -10879,7 +11033,7 @@ function renderLottery(pc, isBgMode, m) {
                 <img src="${p.img}" style="width:100%;height:100%;object-fit:cover">
             </div>
             <div style="position:absolute;top:${120.5*S}px;left:${24*S}px;right:${24*S}px;text-align:center;font-size:${24*S}px;color:#242424;line-height:1.25;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
-                <span class="editable-text" ${editable} data-field="pname${i}" onblur="onLotteryPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
+                <span class="editable-text two-line-limit" style="max-height:${24*S*1.25*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="pname${i}" onblur="onLotteryPrizeEdit(this,${i},'name','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${p.name}</span>
             </div>
         </div>`;
     }).join('');
@@ -10965,7 +11119,7 @@ function onLotteryFieldEdit(el, field, instanceId) {
     if(v && v !== d[field]) { d[field] = v; renderPreview(); pushSnapshot(); }
 }
 function onLotteryPrizeEdit(el, idx, field, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getLotteryData(instanceId); if(!d) return;
     if(v && d.prizes[idx] && v !== d.prizes[idx][field]) {
         d.prizes[idx][field] = v;
@@ -11041,7 +11195,7 @@ function updateLotteryTaskEnabled(instanceId, enabled) {
 }
 
 function onLotteryMultiPrizeEdit(el, idx, field, instanceId) {
-    const v = el.textContent.trim();
+    const v = getTwoLineCheckedText(el);
     const d = getLotteryData(instanceId); if(!d) return;
     if(v && d.multiPrizes[idx] && v !== d.multiPrizes[idx][field]) {
         d.multiPrizes[idx][field] = v;
@@ -11678,14 +11832,14 @@ function renderBenefits(pc, isBgMode) {
         </div>
         <div class="benefit-row">
             <div class="benefit-card">
-                <div class="b-tag"><span class="editable-text" ${editable} data-field="leftTag" onblur="onModuleTextEdit(this,benefitsData,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span></div>
+                <div class="b-tag"><span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftTag" onblur="onModuleTextEdit(this,benefitsData,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.leftTag}</span></div>
                 <div class="b-icons">
                     ${d.leftIcons.map(src => `<img src="${src}">`).join('')}
                 </div>
                 <div class="b-btn" style="${getBtnStyle(pc, 76)}"><span class="editable-text" ${editable} data-field="leftBtn" onblur="onModuleTextEdit(this,benefitsData,'leftBtn')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:#fff">${d.leftBtn}</span></div>
             </div>
             <div class="benefit-card">
-                <div class="b-tag"><span class="editable-text" ${editable} data-field="rightTag" onblur="onModuleTextEdit(this,benefitsData,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span></div>
+                <div class="b-tag"><span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightTag" onblur="onModuleTextEdit(this,benefitsData,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.rightTag}</span></div>
                 <div class="b-icons">
                     ${d.rightIcons.map(src => `<img src="${src}">`).join('')}
                 </div>
@@ -11831,24 +11985,24 @@ function renderGuestSend(pc, isBgMode) {
         <div style="display:flex;gap:${16*S}px">
             <div style="flex:1;height:${208*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);height:${34*S}px;background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:0 ${12*S}px;box-sizing:border-box;font-size:${22*S}px;line-height:1;color:rgba(0,0,0,0.60);white-space:nowrap;display:flex;align-items:center;justify-content:center">
-                    <span class="editable-text" ${editable} data-field="leftTag" onblur="onGuestSendPoolTextEdit(this,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${leftTagText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftTag" onblur="onGuestSendPoolTextEdit(this,'leftTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${leftTagText}</span>
                 </div>
                 <div style="position:absolute;top:${62*S}px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:${24*S}px">
                     ${leftIconsHtml}
                 </div>
                 <div style="position:absolute;top:${154*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;line-height:${30*S}px;color:#242424;font-family:PingFang SC;white-space:nowrap">
-                    <span class="editable-text" ${editable} data-field="leftPrizeText" onblur="onGuestSendPoolTextEdit(this,'leftPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${leftPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="leftPrizeText" onblur="onGuestSendPoolTextEdit(this,'leftPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${leftPrizeText}</span>
                 </div>
             </div>
             <div style="flex:1;height:${208*S}px;background:#F6F7FA;border-radius:${16*S}px;overflow:hidden;position:relative">
                 <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);height:${34*S}px;background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:0 ${12*S}px;box-sizing:border-box;font-size:${22*S}px;line-height:1;color:rgba(0,0,0,0.60);white-space:nowrap;display:flex;align-items:center;justify-content:center">
-                    <span class="editable-text" ${editable} data-field="rightTag" onblur="onGuestSendPoolTextEdit(this,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${rightTagText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightTag" onblur="onGuestSendPoolTextEdit(this,'rightTag')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${rightTagText}</span>
                 </div>
                 <div style="position:absolute;top:${62*S}px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:${24*S}px">
                     ${rightIconsHtml}
                 </div>
                 <div style="position:absolute;top:${154*S}px;left:0;right:0;text-align:center;font-size:${22*S}px;line-height:${30*S}px;color:#242424;font-family:PingFang SC;white-space:nowrap">
-                    <span class="editable-text" ${editable} data-field="rightPrizeText" onblur="onGuestSendPoolTextEdit(this,'rightPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${rightPrizeText}</span>
+                    <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="rightPrizeText" onblur="onGuestSendPoolTextEdit(this,'rightPrizeText')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${rightPrizeText}</span>
                 </div>
             </div>
         </div>
@@ -13556,6 +13710,72 @@ function _collectAllPageButtons() {
         });
     });
     return out;
+}
+
+async function generateAllPageButtonSliceTasksForExport(onProgress) {
+    const targets = _collectAllPageButtons();
+    const tasks = [];
+    const typeCounter = {};
+    const nextTypeIdx = (typeLabel) => {
+        typeCounter[typeLabel] = (typeCounter[typeLabel] || 0) + 1;
+        return typeCounter[typeLabel];
+    };
+
+    const total = targets.reduce((s, t) => s + (t.fixedRule ? t.fixedRule.states.length : 2), 0);
+    let processed = 0;
+    const tick = () => {
+        processed++;
+        if(typeof onProgress === 'function') onProgress({ processed, total });
+    };
+
+    for(const t of targets) {
+        const idx = nextTypeIdx(t.typeLabel);
+        const idxSuffix = idx > 1 ? `_${idx}` : '';
+        const sizeTag = `${Math.round(t.width*2)}x${Math.round(t.height*2)}`;
+
+        if(t.fixedRule) {
+            for(const state of t.fixedRule.states) {
+                const dataUrl = drawEnterButtonState(t.el, state);
+                tasks.push({
+                    name: `${t.typeLabel}${idxSuffix}_${sizeTag}_${state}`,
+                    dataUrl,
+                    isCompleted: false,
+                });
+                tick();
+                await new Promise(r => requestAnimationFrame(r));
+            }
+        } else {
+            try {
+                const defaultDataUrl = await captureSliceTarget(t.el);
+                tasks.push({
+                    name: `${t.typeLabel}${idxSuffix}_${sizeTag}_${t.text}`,
+                    dataUrl: defaultDataUrl,
+                    isCompleted: false,
+                });
+            } catch(err) {
+                console.warn('[按钮状态导出] 截取按钮默认态失败：', t.text, err);
+            }
+            tick();
+
+            const completedText = getCompletedText(t.text);
+            try {
+                const completedDataUrl = usesThemedButtonCompletedStyle(t.el)
+                    ? drawEnterButtonState(t.el, completedText)
+                    : drawCompletedButton(t.el, completedText);
+                tasks.push({
+                    name: `${t.typeLabel}${idxSuffix}_${sizeTag}_${completedText}`,
+                    dataUrl: completedDataUrl,
+                    isCompleted: true,
+                });
+            } catch(err) {
+                console.warn('[按钮状态导出] 生成按钮完成态失败：', t.text, err);
+            }
+            tick();
+            await new Promise(r => requestAnimationFrame(r));
+        }
+    }
+
+    return { targets, tasks };
 }
 
 async function exportAllPageButtons() {
