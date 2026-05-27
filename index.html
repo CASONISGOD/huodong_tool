@@ -144,6 +144,16 @@
         .light-mode .preview-column-label .label-sub {
             color:var(--text-3) !important;
         }
+        .light-mode .preview-export-btn {
+            background:#FFFFFF !important;
+            border-color:#BFC3CC !important;
+            color:var(--text-1) !important;
+            box-shadow:0 1px 2px rgba(0,0,0,0.04) !important;
+        }
+        .light-mode .preview-export-btn:hover {
+            background:#F7F8FA !important;
+            border-color:#9EA4B0 !important;
+        }
         .light-mode .tool-rail-shortcuts button {
             color:var(--text-3) !important;
         }
@@ -1168,6 +1178,37 @@
         .panel-left .redpacket-icon-section .icon-upload-grid {
             margin-bottom:0 !important;
         }
+        .panel-left .redpacket-pool-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+            gap:20px;
+            align-items:start;
+            width:100%;
+        }
+        .panel-left .redpacket-pool-grid > div {
+            min-width:0;
+        }
+        .panel-left .redpacket-count-row {
+            display:flex;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:8px;
+            margin-bottom:8px;
+            max-width:100%;
+        }
+        .panel-left .redpacket-count-row .btn {
+            width:28px !important;
+            min-width:28px;
+            height:28px !important;
+            min-height:28px !important;
+            padding:0 !important;
+            justify-content:center;
+            flex:0 0 28px;
+        }
+        .panel-left .redpacket-count-row > span {
+            min-width:0;
+            overflow-wrap:anywhere;
+        }
         .panel-left .redpacket-count-input {
             width:56px !important;
             height:34px !important;
@@ -1192,6 +1233,18 @@
         .panel-left .redpacket-count-input::-webkit-inner-spin-button {
             -webkit-appearance:none;
             margin:0;
+        }
+
+        @media (max-width: 1180px) {
+            .panel-left .redpacket-pool-grid {
+                grid-template-columns:1fr;
+                gap:16px;
+            }
+        }
+
+        .panel-left.tool-single-mode .tool-active-section .redpacket-pool-grid {
+            grid-template-columns:1fr;
+            gap:18px;
         }
 
         /* Active tool content: larger, balanced, no nested outer frame */
@@ -1502,6 +1555,32 @@
             -webkit-appearance:none !important;
             margin:0 !important;
         }
+
+        /* Light mode: keep slider number inputs readable inside the operation panel.
+           These controls have dark-mode colors declared later than the global
+           light-mode input styles, so they need an equally specific override. */
+        .light-mode .panel-left.tool-single-mode .tool-active-section div:has(> input[type="range"]) input[type="number"],
+        .light-mode .panel-left.tool-single-mode .tool-active-section div:has(> input[type="range"]) .prop-input,
+        .light-mode .panel-left.tool-single-mode .tool-active-section input.redpacket-count-input[type="number"] {
+            background:#FFFFFF !important;
+            border-color:rgba(0, 0, 0, 0.45) !important;
+            color:var(--text-1) !important;
+        }
+        .light-mode .panel-left.tool-single-mode .tool-active-section div:has(> input[type="range"]) input[type="number"]:focus,
+        .light-mode .panel-left.tool-single-mode .tool-active-section div:has(> input[type="range"]) .prop-input:focus,
+        .light-mode .panel-left.tool-single-mode .tool-active-section input.redpacket-count-input[type="number"]:focus {
+            border-color:rgba(79,124,255,0.8) !important;
+            box-shadow:0 0 0 3px rgba(79,124,255,0.16) !important;
+        }
+        .light-mode .panel-left.tool-single-mode .tool-active-section input[type="range"]::-webkit-slider-runnable-track {
+            background:#D7D9E0 !important;
+        }
+        .light-mode .panel-left.tool-single-mode .tool-active-section input[type="range"]::-moz-range-track {
+            background:#D7D9E0 !important;
+        }
+        .light-mode .panel-left.tool-single-mode .tool-active-section input[type="range"]::-moz-range-progress {
+            background:var(--primary) !important;
+        }
         .panel-center {
             padding:0 0 120px;
             background:#141316;
@@ -1510,11 +1589,12 @@
             overflow-y:auto;
             overscroll-behavior:contain;
         }
-        .preview-dual { gap:80px; }
+        .preview-dual { gap:24px; }
         .preview-divider { display:none; }
         .preview-column-label {
-            height:52px;
-            padding:0 24px;
+            min-height:52px;
+            height:auto;
+            padding:16px;
             margin-bottom:24px;
             background:#1B1A1D;
             border:1px solid #363538;
@@ -1527,6 +1607,27 @@
             font-weight:400;
         }
         .preview-column-label .label-sub { font-size:14px; color:rgba(255,255,255,0.60); margin-left:4px; }
+        .preview-export-btn {
+            margin-left:12px;
+            height:28px;
+            padding:0 14px;
+            border-radius:8px;
+            border:1px solid rgba(255,255,255,0.16);
+            background:rgba(255,255,255,0.06);
+            color:var(--text-1);
+            font-size:13px;
+            font-weight:500;
+            cursor:pointer;
+            white-space:nowrap;
+        }
+        .preview-export-btn:hover {
+            border-color:rgba(255,255,255,0.28);
+            background:rgba(255,255,255,0.10);
+        }
+        .preview-export-btn:disabled {
+            opacity:.55;
+            cursor:not-allowed;
+        }
         .preview-column-label .label-icon { font-size:14px; }
         .preview-container { box-shadow:none; }
         .panel-right {
@@ -1656,11 +1757,12 @@
             position:relative;
             z-index:1;
         }
-        .main .preview-dual { gap:80px; }
+        .main .preview-dual { gap:24px !important; }
         .main .preview-divider { display:none; }
         .main .preview-column-label {
-            height:52px;
-            padding:0 24px;
+            min-height:52px;
+            height:auto;
+            padding:16px;
             margin-bottom:24px;
             background:#1B1A1D;
             border:1px solid #363538;
@@ -3769,7 +3871,7 @@
             width:var(--panel-left-width, clamp(340px, 30vw, 485px)) !important;
             min-width:var(--panel-left-width, clamp(340px, 30vw, 485px)) !important;
         }
-        .main .preview-dual { gap:clamp(24px, 5vw, 80px); }
+        .main .preview-dual { gap:24px !important; }
 
         @media (max-width: 1380px) {
             .panel-left {
@@ -3959,8 +4061,6 @@
         <button class="btn btn-outline" onclick="importProject()" title="导入项目文件">导入JSON</button>
         <button class="btn btn-outline" onclick="exportProject()" title="导出项目文件">导出JSON</button>
         <button class="btn btn-outline" onclick="showSmartImportPanel()" title="上传文档和道具图包，智能识别并填充">智能导入</button>
-        <button class="btn btn-outline" id="exportActualBtn" onclick="exportActualImage()">导出预览PNG</button>
-        <button class="btn btn-primary" id="exportBgBtn" onclick="exportBgImage()">导出底图PNG</button>
     </div>
 </header>
 
@@ -4197,12 +4297,13 @@
     <!-- Center Preview -->
     <main class="panel-center">
         <!-- 拖拽放置区提示已移除（不再支持从左侧操作区拖拽到预览添加模块） -->
-        <div class="preview-dual">
+        <div class="preview-dual" style="gap:24px!important;column-gap:24px!important;">
             <!-- 左：页面实际样式 -->
             <div class="preview-column">
                 <div class="preview-column-label">
                     <span class="label-icon">📱</span> 页面实际样式
                     <span class="label-sub">最终上线效果</span>
+                    <button class="preview-export-btn" id="exportActualBtn" onclick="exportActualImage()">导出图片</button>
                 </div>
                 <div class="preview-container" id="previewContainer"></div>
             </div>
@@ -4215,8 +4316,19 @@
                 <div class="preview-column-label">
                     <span class="label-icon">🖼️</span> 页面底图
                     <span class="label-sub">需配置的整张JPG</span>
+                    <button class="preview-export-btn" id="exportBgBtn" onclick="exportBgImage()">导出图片</button>
                 </div>
                 <div class="preview-container" id="previewContainerBg"></div>
+            </div>
+
+            <!-- 空页面图：仅保留头部 KV 与页面底色 -->
+            <div class="preview-column">
+                <div class="preview-column-label">
+                    <span class="label-icon">🧪</span> 空页面图
+                    <span class="label-sub">开发测试阶段使用</span>
+                    <button class="preview-export-btn" id="exportEmptyBtn" onclick="exportEmptyImage()">导出图片</button>
+                </div>
+                <div class="preview-container" id="previewContainerEmpty"></div>
             </div>
         </div>
     </main>
@@ -4423,6 +4535,8 @@ const MORE_DATA_TEMPLATE = {
     groups: [
         {
             label: '每日抽奖福利',
+            tagEnabled: false,
+            tagText: '好友可抽',
             btnLayout: 'single', // 'single' | 'double' | 'triple'  按钮布局：单按钮 / 一行两个 / 一行三个（左大 + 右两个等宽紧贴）
             btnText: '立即领取',
             btn2Text: '查看详情',  // 仅 'double' / 'triple' 时显示
@@ -4436,6 +4550,8 @@ const MORE_DATA_TEMPLATE = {
         },
         {
             label: '新春回归福利',
+            tagEnabled: false,
+            tagText: '好友可抽',
             btnLayout: 'single',
             btnText: '立即领取',
             btn2Text: '查看详情',
@@ -4450,10 +4566,17 @@ const MORE_DATA_TEMPLATE = {
     ],
 };
 let moreDataMap = {};
+
+function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>'"]/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' }[ch]));
+}
+
 function _normalizeMoreData(d) {
     if(!d || !Array.isArray(d.groups)) return d;
     d.groups.forEach(g => {
         if(!g.btnLayout) g.btnLayout = 'single';
+        if(g.tagEnabled == null) g.tagEnabled = false;
+        if(g.tagText == null) g.tagText = '好友可抽';
         if(g.btn2Text == null) g.btn2Text = '查看详情';
         if(g.btn3Text == null) g.btn3Text = '立即领取';
     });
@@ -5703,7 +5826,7 @@ function renderGSendIconConfig() {
             <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:8px" onclick="goToHostRedpacketEdit()">↗ 去主态口令码模块编辑</button>
             ${noHostHint}
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+        <div class="redpacket-pool-grid">
             <div>
                 <div class="icon-group-label">奖池1 · ${leftTag}（${leftIcons.length} 个）</div>
                 ${previewGrid(leftIcons, '主态口令码无 leftIcons 数据')}
@@ -6300,6 +6423,7 @@ async function exportProject() {
 
     try {
         setProgress(10, '正在保存项目数据...');
+        syncPageColorConfigFromInputs();
         // 先保存当前最新状态
         await saveCurrentProjectData();
 
@@ -6316,6 +6440,7 @@ async function exportProject() {
         const projectName = currentProjectMeta.name || '活动页项目';
         const safeProjectName = sanitizeFileName(projectName);
         const assetResult = collectPageAssetsForExport(document.getElementById('previewContainer'));
+        const colorInfo = buildProjectColorInfoForExport(snapshotObj);
 
         const exportData = {
             _format: 'GameActivityProject',
@@ -6326,6 +6451,7 @@ async function exportProject() {
                 time: currentProjectMeta.time || '',
                 exportedAt: Date.now()
             },
+            colors: colorInfo,
             snapshot: snapshotObj,
             assets: assetResult.assets,
             assetFiles: assetResult.files,
@@ -6443,6 +6569,143 @@ async function exportProject() {
             if(bar) bar.style.width = '0%';
         }, 500);
     }
+}
+
+function buildProjectColorInfoForExport(snapshotObj = {}) {
+    const safeClone = val => JSON.parse(JSON.stringify(val || {}));
+    const pageColorConfig = {
+        pageBackground: getInputColorValueForExport('colorBgHex', 'colorBg', snapshotObj.colors?.background || colors.background || ''),
+        themeAccentColor: getInputColorValueForExport('colorPrimaryHex', 'colorPrimary', snapshotObj.colors?.primary || colors.primary || '')
+    };
+    const buttonColorConfig = buildButtonColorConfigForExport(pageColorConfig.themeAccentColor);
+    const previewContainer = document.getElementById('previewContainer');
+    return {
+        pageColorConfig,
+        buttonColorConfig,
+        buttons: collectButtonColorInfoForExport(previewContainer),
+        componentTopGradients: collectComponentTopGradientInfoForExport(previewContainer, pageColorConfig.themeAccentColor),
+        host: {
+            background: pageColorConfig.pageBackground,
+            primary: pageColorConfig.themeAccentColor
+        },
+        guest: {
+            background: snapshotObj.guestColors?.background || guestColors.background || '',
+            primary: snapshotObj.guestColors?.primary || guestColors.primary || ''
+        },
+        modules: {
+            assistBgColor: snapshotObj.assistBgColor || assistBgColor || '',
+            drawBgColor: snapshotObj.drawBgColor || drawBgColor || '',
+            rechargeBgColor: snapshotObj.rechargeData?.bgColor || rechargeData?.bgColor || ''
+        },
+        raw: {
+            colors: safeClone(snapshotObj.colors || colors),
+            guestColors: safeClone(snapshotObj.guestColors || guestColors)
+        }
+    };
+}
+
+function buildButtonColorConfigForExport(primaryColor) {
+    const rgb = hexOrColorToRgb(primaryColor);
+    let bottomColor = primaryColor || '';
+    if(rgb) {
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+        bottomColor = hslToHex(hsl.h, hsl.s, hsl.l - 0.05);
+    }
+    return {
+        source: '页面色调配置.主题强调色',
+        startColor: primaryColor || '',
+        endColor: bottomColor || '',
+        gradient: `linear-gradient(180deg, ${primaryColor || ''} 0%, ${bottomColor || primaryColor || ''} 100%)`,
+        shadow: '0 -1px 0.5px rgba(0,0,0,0.2) inset, 0 1px 0.5px rgba(255,255,255,0.2) inset'
+    };
+}
+
+function collectButtonColorInfoForExport(container) {
+    if(!container) return [];
+    const selector = [
+        '[style*="inset"]',
+        '.m-role-enter-btn',
+        '.redpacket-copy-btn',
+        '.redpacket-use-btn',
+        '.lottery-task-slice-btn',
+        '.more-benefit-slice-btn',
+        '.signin-slice-btn',
+        '.benefit-btn',
+        '.b-btn',
+        '.draw-btn',
+        '.draw-task-btn',
+        '.m-btn-primary',
+        '.m-btn-sm',
+        '.g-btn',
+        '.g-send-btn'
+    ].join(',');
+    const seen = new Set();
+    const result = [];
+    container.querySelectorAll(selector).forEach((el, idx) => {
+        if(seen.has(el)) return;
+        const inlineStyle = el.getAttribute('style') || '';
+        const cs = getComputedStyle(el);
+        const bgImage = cs.backgroundImage && cs.backgroundImage !== 'none' ? cs.backgroundImage : '';
+        const bgColor = cs.backgroundColor || '';
+        if(!/inset/i.test(inlineStyle) && !bgImage && (!bgColor || bgColor === 'rgba(0, 0, 0, 0)')) return;
+        seen.add(el);
+        const wrap = el.closest ? el.closest('.preview-module-wrap') : null;
+        result.push({
+            index: result.length + 1,
+            moduleId: wrap ? (wrap.getAttribute('data-module-id') || '') : '',
+            instanceId: wrap ? (wrap.getAttribute('data-instance-id') || '') : '',
+            text: ((el.querySelector('.editable-text') || el).textContent || '').trim(),
+            selector: getAssetSelectorForExport(el),
+            background: bgImage || bgColor,
+            backgroundImage: bgImage,
+            backgroundColor: bgColor,
+            inlineBackground: (inlineStyle.match(/background\s*:\s*([^;]+)/i) || [])[1] || '',
+            boxShadow: cs.boxShadow || '',
+            inlineStyle
+        });
+    });
+    return result;
+}
+
+function collectComponentTopGradientInfoForExport(container, primaryColor) {
+    if(!container) return [];
+    const rgb = hexOrColorToRgb(primaryColor) || { r: 99, g: 165, b: 69 };
+    const defaultStart = `rgba(${rgb.r},${rgb.g},${rgb.b},0.20)`;
+    const defaultEnd = `rgba(${rgb.r},${rgb.g},${rgb.b},0)`;
+    return Array.from(container.querySelectorAll('.preview-module-wrap[data-module-id]')).map((wrap, idx) => {
+        const moduleId = wrap.getAttribute('data-module-id') || '';
+        const instanceId = wrap.getAttribute('data-instance-id') || '';
+        const bgLayer = wrap.querySelector('.m-tpl-bg > div');
+        const tplBg = wrap.querySelector('.m-tpl-bg');
+        const computedGradient = bgLayer ? getComputedStyle(bgLayer).backgroundImage : '';
+        const inlineGradient = bgLayer ? ((bgLayer.getAttribute('style') || '').match(/background\s*:\s*([^;]+)/i) || [])[1] || '' : '';
+        const moduleMeta = (modules || []).find(m => (instanceId && m.instanceId === instanceId) || (!instanceId && m.id === moduleId));
+        return {
+            index: idx + 1,
+            moduleId,
+            instanceId,
+            name: moduleMeta ? moduleMeta.name : '',
+            source: bgLayer ? '组件框顶部渐变层 .m-tpl-bg' : '',
+            height: tplBg ? (getComputedStyle(tplBg).height || '') : '',
+            startColor: bgLayer ? defaultStart : '',
+            endColor: bgLayer ? defaultEnd : '',
+            gradient: inlineGradient || computedGradient || '',
+            backgroundImage: computedGradient || ''
+        };
+    });
+}
+
+function getInputColorValueForExport(hexInputId, colorInputId, fallback = '') {
+    const hexEl = document.getElementById(hexInputId);
+    const colorEl = document.getElementById(colorInputId);
+    return String((hexEl && hexEl.value) || (colorEl && colorEl.value) || fallback || '').trim();
+}
+
+function syncPageColorConfigFromInputs() {
+    const pageBackground = getInputColorValueForExport('colorBgHex', 'colorBg', colors.background);
+    const themeAccentColor = getInputColorValueForExport('colorPrimaryHex', 'colorPrimary', colors.primary);
+    if(pageBackground) colors.background = pageBackground;
+    if(themeAccentColor) colors.primary = themeAccentColor;
 }
 
 function collectPageAssetsForExport(container) {
@@ -8558,10 +8821,10 @@ function getModuleDetailHtml(key) {
             <div class="detail-sub-section redpacket-icon-section">
                 <div class="detail-sub-title">图标管理</div>
                 <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">先调整每个奖池的图标数量，再点击图标上传替换；所有模块文字均可直接在画布中编辑</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+                <div class="redpacket-pool-grid">
                     <div>
                         <div class="icon-group-label">奖池1 · 图标数量</div>
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                        <div class="redpacket-count-row">
                             <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketIconCount('${key}','left', getRedpacketData('${key}').leftIcons.length - 1)">－</button>
                             <input type="number" class="prop-input redpacket-count-input" min="1" max="${REDPACKET_MAX_ICONS}" value="${Math.min(_lc, REDPACKET_MAX_ICONS)}" onchange="setRedpacketIconCount('${key}','left', +this.value)">
                             <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketIconCount('${key}','left', getRedpacketData('${key}').leftIcons.length + 1)">＋</button>
@@ -8571,7 +8834,7 @@ function getModuleDetailHtml(key) {
                     </div>
                     <div>
                         <div class="icon-group-label">奖池2 · 图标数量</div>
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                        <div class="redpacket-count-row">
                             <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketIconCount('${key}','right', getRedpacketData('${key}').rightIcons.length - 1)">－</button>
                             <input type="number" class="prop-input redpacket-count-input" min="1" max="${REDPACKET_MAX_ICONS}" value="${Math.min(_rc, REDPACKET_MAX_ICONS)}" onchange="setRedpacketIconCount('${key}','right', +this.value)">
                             <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketIconCount('${key}','right', getRedpacketData('${key}').rightIcons.length + 1)">＋</button>
@@ -9300,6 +9563,9 @@ function renderPreview() {
     // 右侧"页面底图"预览：去除所有按钮（保留布局占位），所见即所得 = 导出底图 PNG 的视觉
     _hideAllPageButtons(c2);
 
+    // 渲染“空页面图”（只保留头部 KV + 页面底色）
+    renderEmptyPagePreview();
+
     // 渲染 IP 浮层（覆盖在所有模块之上，可拖动）
     renderIpOverlay(c1, false);
     renderIpOverlay(c2, true);
@@ -9314,6 +9580,26 @@ function renderPreview() {
     // 绑定预览区模块拖拽排序事件
     setTimeout(bindPreviewModuleDragEvents, 60);
     // 头图标题切图 / Logo 的位置与大小在左侧配置面板调整，画布上不再绑定拖拽和缩放
+}
+
+// 渲染“空页面图”：只保留头部 KV 和页面底色，不渲染角色入口、活动模块、底部模块与 IP 浮层。
+function renderEmptyPagePreview() {
+    const c3 = document.getElementById('previewContainerEmpty');
+    if(!c3) return;
+    const source = document.getElementById('previewContainerBg') || document.getElementById('previewContainer');
+    const header = source && source.firstElementChild ? source.firstElementChild.outerHTML : '';
+
+    c3.style.background = colors.background;
+    c3.style.position = 'relative';
+    c3.innerHTML = header;
+
+    // 导出空页面图时保持“长图”尺寸：高度跟随当前完整页面，模块区域全部显示为页面底色。
+    requestAnimationFrame(() => {
+        const c1 = document.getElementById('previewContainer');
+        const c2 = document.getElementById('previewContainerBg');
+        const h = Math.max(262, c1 ? c1.scrollHeight : 0, c2 ? c2.scrollHeight : 0);
+        c3.style.minHeight = h + 'px';
+    });
 }
 
 // 同步左右预览区所有模块高度，确保右侧每个模块与左侧一模一样高
@@ -10664,15 +10950,23 @@ function renderMore(pc, isBgMode, m) {
 
         const card = rows.map((row, ri) => {
             const cols = row.length || 1;
-            const cellStyle = `width:calc((100% - ${(cols-1)*gap}px) / ${cols});height:${180*S}px;background:#F6F7FA;border-radius:${16*S}px;position:relative;overflow:hidden;flex-shrink:0`;
+            const tagExtraH = g.tagEnabled ? 34 : 0; // 对齐口令码标签高度：开启标签时，小卡片整体额外增高
+            const cellStyle = `width:calc((100% - ${(cols-1)*gap}px) / ${cols});height:${(180 + tagExtraH)*S}px;background:#F6F7FA;border-radius:${16*S}px;position:relative;overflow:hidden;flex-shrink:0`;
             const cells = row.map((it, ii) => {
                 const itemIndex = ri * rowSize + ii;
+                const tagHtml = g.tagEnabled ? `
+                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;line-height:${30*S}px;color:rgba(0,0,0,0.60);white-space:nowrap;z-index:2;font-family:PingFang SC">
+                        <span style="white-space:nowrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="mtag${gi}_${itemIndex}" onblur="onMoreGroupFieldEdit(this,${gi},'tagText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.tagText || '好友可抽'}</span>
+                    </div>` : '';
+                const iconTop = (16 + tagExtraH) * S;
+                const nameTop = (104 + tagExtraH) * S;
                 return `
                 <div style="${cellStyle}">
-                    <div style="position:absolute;top:${16*S}px;left:50%;transform:translateX(-50%);width:${72*S}px;height:${72*S}px;background:#fff;border-radius:${16*S}px;overflow:hidden">
+                    ${tagHtml}
+                    <div style="position:absolute;top:${iconTop}px;left:50%;transform:translateX(-50%);width:${72*S}px;height:${72*S}px;background:#fff;border-radius:${16*S}px;overflow:hidden">
                         <img src="${it.img}" style="width:100%;height:100%;object-fit:cover">
                     </div>
-                    <div style="position:absolute;top:${104*S}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
+                    <div style="position:absolute;top:${nameTop}px;left:${16*S}px;right:${16*S}px;text-align:center;font-size:${22*S}px;color:#242424;line-height:1.3;font-family:PingFang SC;height:${60*S}px;display:flex;align-items:center;justify-content:center">
                         <span class="editable-text two-line-limit" style="max-height:${22*S*1.3*2}px" ${editable} ${TWO_LINE_EDIT_ATTRS} data-field="mname${gi}_${itemIndex}" onblur="onMoreItemNameEdit(this,${gi},${itemIndex},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${it.name}</span>
                     </div>
                 </div>`;
@@ -10795,6 +11089,13 @@ function renderMoreGroupList(instanceId) {
                 ${d.groups.length > 1 ? `<button class="module-action-btn danger" onclick="removeMoreGroup(${gi},'${iid}')" title="删除此栏">🗑</button>` : ''}
             </div>
             <div style="font-size:10px;color:var(--text-4);margin-bottom:8px">奖品数量可配置，一排最多4个；点击图标可上传替换；名称/标题/按钮可在预览区直接编辑</div>
+            <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px;color:var(--text-2);cursor:pointer">
+                <input type="checkbox" ${g.tagEnabled?'checked':''} style="accent-color:var(--primary)" onchange="toggleMoreGroupTag(${gi}, this.checked, '${iid}')"> 显示标签框（整栏生效）
+            </label>
+            ${g.tagEnabled ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <span style="font-size:12px;color:var(--text-2);white-space:nowrap">标签文案</span>
+                <input class="prop-input" value="${escapeHtml(g.tagText || '好友可抽')}" placeholder="好友可抽" oninput="updateMoreGroupTagText(${gi}, this.value, '${iid}')" onchange="pushSnapshot()">
+            </div>` : ''}
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
                 <span style="font-size:12px;color:var(--text-2)">奖品数量</span>
                 <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setMoreItemCount(${gi}, getMoreData('${iid}').groups[${gi}].items.length - 1, '${iid}')">－</button>
@@ -10819,6 +11120,8 @@ function addMoreGroup(instanceId) {
     }
     d.groups.push({
         label: '新福利',
+        tagEnabled: false,
+        tagText: '好友可抽',
         btnLayout: 'single',
         btnText: '去参与',
         btn2Text: '查看详情',
@@ -10905,6 +11208,23 @@ function uploadMoreItemImg(gi, ii, instanceId) {
         reader.readAsDataURL(f);
     };
     input.click();
+}
+
+function toggleMoreGroupTag(gi, enabled, instanceId) {
+    const d = getMoreData(instanceId);
+    if(!d || !d.groups[gi]) return;
+    d.groups[gi].tagEnabled = !!enabled;
+    if(!d.groups[gi].tagText) d.groups[gi].tagText = '好友可抽';
+    renderMoreGroupList(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function updateMoreGroupTagText(gi, value, instanceId) {
+    const d = getMoreData(instanceId);
+    if(!d || !d.groups[gi]) return;
+    d.groups[gi].tagText = value || '好友可抽';
+    renderPreview();
 }
 
 /** 切换某栏的按钮布局：'single' 单按钮 / 'double' 一行两个 / 'triple' 一行三个（左 1 + 右 2 紧贴） */
@@ -12133,6 +12453,8 @@ function renderGuestPreview() {
     html2 += `</div>`;
     c2.innerHTML = html2;
 
+    renderEmptyPagePreview();
+
     setTimeout(syncModuleHeights, 50);
     setTimeout(bindSliceHoverEvents, 60);
     setTimeout(bindPreviewModuleClickEvents, 60);
@@ -12985,6 +13307,53 @@ async function exportBgImage() {
         btn.disabled=false;
         isExporting=false;
         // 重新渲染预览恢复原始图片路径
+        if(currentView === 'host') renderPreview(); else renderGuestPreview();
+    }
+}
+
+async function exportEmptyImage() {
+    if(!checkExportProtocol()) return;
+    if(isExporting) return;
+    isExporting = true;
+    const overlay = document.getElementById('exportOverlay');
+    const bar = document.getElementById('progressBar');
+    const txt = document.getElementById('progressText');
+    const btn = document.getElementById('exportEmptyBtn');
+    overlay.classList.remove('hidden');
+    btn.disabled = true;
+
+    try {
+        bar.style.width='10%'; txt.textContent='正在渲染空页面图...';
+        await new Promise(r=>setTimeout(r,200));
+        const c3 = document.getElementById('previewContainerEmpty');
+        if(!c3) throw new Error('未找到空页面图预览区');
+        renderEmptyPagePreview();
+        await new Promise(r=>requestAnimationFrame(r));
+
+        bar.style.width='30%'; txt.textContent='正在预处理图片资源...';
+        await convertImagesToBase64(c3);
+        bar.style.width='50%'; txt.textContent='正在生成空页面图...';
+        const dataUrl = await htmlToImage.toPng(c3, {
+            pixelRatio: 2,
+            width: c3.offsetWidth,
+            height: c3.offsetHeight,
+            cacheBust: true,
+            backgroundColor: colors.background,
+            style: { transform: 'none', borderRadius: '0', overflow: 'visible' },
+        });
+        const link = document.createElement('a');
+        link.download = `活动页_空页面图_${Date.now()}.png`;
+        link.href = dataUrl;
+        link.click();
+        bar.style.width='100%'; txt.textContent='导出完成！';
+        await new Promise(r=>setTimeout(r,600));
+    } catch(e) {
+        alert('导出失败：'+e.message);
+    } finally {
+        overlay.classList.add('hidden');
+        bar.style.width='0%';
+        btn.disabled=false;
+        isExporting=false;
         if(currentView === 'host') renderPreview(); else renderGuestPreview();
     }
 }
@@ -14606,7 +14975,7 @@ function parseStandardTemplate(wb) {
         const d = { title: map['模块标题']||'更多福利内容', groups:[] };
         const groupCount = parseInt(map['栏目数量'])||2;
         for(let g=1;g<=groupCount;g++) {
-            const group = { label: map[`第${g}栏标题`]||'', btnText: map[`第${g}栏按钮`]||'立即领取', items:[] };
+            const group = { label: map[`第${g}栏标题`]||'', tagEnabled: String(map[`第${g}栏标签开关`]||'').includes('是'), tagText: map[`第${g}栏标签文案`]||'好友可抽', btnText: map[`第${g}栏按钮`]||'立即领取', items:[] };
             const ic = parseInt(map[`第${g}栏道具数量`])||3;
             for(let i=1;i<=ic;i++) group.items.push(map[`第${g}栏道具${i}`]||`道具${i}`);
             d.groups.push(group);
@@ -14910,6 +15279,8 @@ function applySmartImport() {
                 if(d.groups) {
                     md.groups = d.groups.map(g => ({
                         label: g.label || '',
+                        tagEnabled: !!g.tagEnabled,
+                        tagText: g.tagText || '好友可抽',
                         btnText: g.btnText || '立即领取',
                         items: (g.items||[]).map(name => ({ img:'assets/image/morenjinbi.png', name }))
                     }));

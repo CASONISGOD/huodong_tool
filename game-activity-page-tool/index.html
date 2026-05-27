@@ -5026,6 +5026,7 @@ async function exportProject() {
     }
 
     // 先保存当前最新状态
+    syncPageColorConfigFromInputs();
     await saveCurrentProjectData();
 
     const snapshot = await loadProjectFromDB(currentProjectId);
@@ -5034,6 +5035,7 @@ async function exportProject() {
         return;
     }
 
+    const snapshotObj = JSON.parse(snapshot);
     const exportData = {
         _format: 'GameActivityProject',
         _version: 1,
@@ -5043,7 +5045,8 @@ async function exportProject() {
             time: currentProjectMeta.time || '',
             exportedAt: Date.now()
         },
-        snapshot: JSON.parse(snapshot)
+        colors: buildProjectColorInfoForExport(snapshotObj),
+        snapshot: snapshotObj
     };
 
     const jsonStr = JSON.stringify(exportData);
@@ -5059,6 +5062,164 @@ async function exportProject() {
     URL.revokeObjectURL(url);
 
     showExportImportToast('✅ 项目已导出');
+}
+
+function buildProjectColorInfoForExport(snapshotObj = {}) {
+    const safeClone = val => JSON.parse(JSON.stringify(val || {}));
+    const pageColorConfig = {
+        pageBackground: getInputColorValueForExport('colorBgHex', 'colorBg', snapshotObj.colors?.background || colors.background || ''),
+        themeAccentColor: getInputColorValueForExport('colorPrimaryHex', 'colorPrimary', snapshotObj.colors?.primary || colors.primary || '')
+    };
+    const buttonColorConfig = buildButtonColorConfigForExport(pageColorConfig.themeAccentColor);
+    const previewContainer = document.getElementById('previewContainer');
+    return {
+        pageColorConfig,
+        buttonColorConfig,
+        buttons: collectButtonColorInfoForExport(previewContainer),
+        componentTopGradients: collectComponentTopGradientInfoForExport(previewContainer, pageColorConfig.themeAccentColor),
+        host: {
+            background: pageColorConfig.pageBackground,
+            primary: pageColorConfig.themeAccentColor
+        },
+        guest: {
+            background: snapshotObj.guestColors?.background || guestColors.background || '',
+            primary: snapshotObj.guestColors?.primary || guestColors.primary || ''
+        },
+        modules: {
+            assistBgColor: snapshotObj.assistBgColor || assistBgColor || '',
+            drawBgColor: snapshotObj.drawBgColor || drawBgColor || '',
+            rechargeBgColor: snapshotObj.rechargeData?.bgColor || rechargeData?.bgColor || ''
+        },
+        raw: {
+            colors: safeClone(snapshotObj.colors || colors),
+            guestColors: safeClone(snapshotObj.guestColors || guestColors)
+        }
+    };
+}
+
+function buildButtonColorConfigForExport(primaryColor) {
+    const rgb = hexOrColorToRgb(primaryColor);
+    let bottomColor = primaryColor || '';
+    if(rgb) {
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+        bottomColor = hslToHex(hsl.h, hsl.s, hsl.l - 0.05);
+    }
+    return {
+        source: '页面色调配置.主题强调色',
+        startColor: primaryColor || '',
+        endColor: bottomColor || '',
+        gradient: `linear-gradient(180deg, ${primaryColor || ''} 0%, ${bottomColor || primaryColor || ''} 100%)`,
+        shadow: '0 -1px 0.5px rgba(0,0,0,0.2) inset, 0 1px 0.5px rgba(255,255,255,0.2) inset'
+    };
+}
+
+function collectButtonColorInfoForExport(container) {
+    if(!container) return [];
+    const selector = [
+        '[style*="inset"]',
+        '.m-role-enter-btn',
+        '.redpacket-copy-btn',
+        '.redpacket-use-btn',
+        '.lottery-task-slice-btn',
+        '.more-benefit-slice-btn',
+        '.signin-slice-btn',
+        '.benefit-btn',
+        '.b-btn',
+        '.draw-btn',
+        '.draw-task-btn',
+        '.m-btn-primary',
+        '.m-btn-sm',
+        '.g-btn',
+        '.g-send-btn'
+    ].join(',');
+    const seen = new Set();
+    const result = [];
+    container.querySelectorAll(selector).forEach(el => {
+        if(seen.has(el)) return;
+        const inlineStyle = el.getAttribute('style') || '';
+        const cs = getComputedStyle(el);
+        const bgImage = cs.backgroundImage && cs.backgroundImage !== 'none' ? cs.backgroundImage : '';
+        const bgColor = cs.backgroundColor || '';
+        if(!/inset/i.test(inlineStyle) && !bgImage && (!bgColor || bgColor === 'rgba(0, 0, 0, 0)')) return;
+        seen.add(el);
+        const wrap = el.closest ? el.closest('.preview-module-wrap') : null;
+        result.push({
+            index: result.length + 1,
+            moduleId: wrap ? (wrap.getAttribute('data-module-id') || '') : '',
+            instanceId: wrap ? (wrap.getAttribute('data-instance-id') || '') : '',
+            text: ((el.querySelector('.editable-text') || el).textContent || '').trim(),
+            selector: getElementSelectorForColorExport(el),
+            background: bgImage || bgColor,
+            backgroundImage: bgImage,
+            backgroundColor: bgColor,
+            inlineBackground: (inlineStyle.match(/background\s*:\s*([^;]+)/i) || [])[1] || '',
+            boxShadow: cs.boxShadow || '',
+            inlineStyle
+        });
+    });
+    return result;
+}
+
+function collectComponentTopGradientInfoForExport(container, primaryColor) {
+    if(!container) return [];
+    const rgb = hexOrColorToRgb(primaryColor) || { r: 99, g: 165, b: 69 };
+    const defaultStart = `rgba(${rgb.r},${rgb.g},${rgb.b},0.20)`;
+    const defaultEnd = `rgba(${rgb.r},${rgb.g},${rgb.b},0)`;
+    return Array.from(container.querySelectorAll('.preview-module-wrap[data-module-id]')).map((wrap, idx) => {
+        const moduleId = wrap.getAttribute('data-module-id') || '';
+        const instanceId = wrap.getAttribute('data-instance-id') || '';
+        const bgLayer = wrap.querySelector('.m-tpl-bg > div');
+        const tplBg = wrap.querySelector('.m-tpl-bg');
+        const computedGradient = bgLayer ? getComputedStyle(bgLayer).backgroundImage : '';
+        const inlineGradient = bgLayer ? ((bgLayer.getAttribute('style') || '').match(/background\s*:\s*([^;]+)/i) || [])[1] || '' : '';
+        const moduleMeta = (modules || []).find(m => (instanceId && m.instanceId === instanceId) || (!instanceId && m.id === moduleId));
+        return {
+            index: idx + 1,
+            moduleId,
+            instanceId,
+            name: moduleMeta ? moduleMeta.name : '',
+            source: bgLayer ? '组件框顶部渐变层 .m-tpl-bg' : '',
+            height: tplBg ? (getComputedStyle(tplBg).height || '') : '',
+            startColor: bgLayer ? defaultStart : '',
+            endColor: bgLayer ? defaultEnd : '',
+            gradient: inlineGradient || computedGradient || '',
+            backgroundImage: computedGradient || ''
+        };
+    });
+}
+
+function getElementSelectorForColorExport(el) {
+    if(!el) return '';
+    const parts = [];
+    let node = el;
+    while(node && node.nodeType === 1 && parts.length < 4) {
+        let part = node.tagName.toLowerCase();
+        if(node.id) {
+            part += `#${node.id}`;
+            parts.unshift(part);
+            break;
+        }
+        if(node.className && typeof node.className === 'string') {
+            const cls = node.className.trim().split(/\s+/).filter(Boolean).slice(0, 2).join('.');
+            if(cls) part += `.${cls}`;
+        }
+        parts.unshift(part);
+        node = node.parentElement;
+    }
+    return parts.join(' > ');
+}
+
+function getInputColorValueForExport(hexInputId, colorInputId, fallback = '') {
+    const hexEl = document.getElementById(hexInputId);
+    const colorEl = document.getElementById(colorInputId);
+    return String((hexEl && hexEl.value) || (colorEl && colorEl.value) || fallback || '').trim();
+}
+
+function syncPageColorConfigFromInputs() {
+    const pageBackground = getInputColorValueForExport('colorBgHex', 'colorBg', colors.background);
+    const themeAccentColor = getInputColorValueForExport('colorPrimaryHex', 'colorPrimary', colors.primary);
+    if(pageBackground) colors.background = pageBackground;
+    if(themeAccentColor) colors.primary = themeAccentColor;
 }
 
 function importProject() {
