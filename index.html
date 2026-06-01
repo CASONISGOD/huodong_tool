@@ -4327,7 +4327,7 @@
                 <div class="preview-column-label">
                     <span class="label-icon">🧪</span> 空页面图
                     <span class="label-sub">开发测试阶段使用</span>
-                    <button class="preview-export-btn" id="exportEmptyBtn" onclick="exportEmptyImage()">导出图片</button>
+                    <button class="preview-export-btn" id="exportEmptyBtn" onclick="exportEmptyImage()">导出底图和模块图</button>
                 </div>
                 <div class="preview-container" id="previewContainerEmpty"></div>
             </div>
@@ -13328,9 +13328,85 @@ async function exportBgImage() {
     }
 }
 
+async function dataUrlToBlob(dataUrl) {
+    const res = await fetch(dataUrl);
+    return res.blob();
+}
+
+function getModuleExportName(wrap, index) {
+    const moduleId = wrap.getAttribute('data-module-id') || '';
+    const instanceId = wrap.getAttribute('data-instance-id') || '';
+    let name = moduleId || '模块';
+    if(currentView === 'guest') {
+        const m = guestModules.find(mm => mm.id === moduleId);
+        if(m && m.name) name = m.name;
+    } else {
+        const m = modules.find(mm => mm.instanceId === instanceId) || modules.find(mm => mm.id === moduleId);
+        if(m && m.name) name = m.name;
+    }
+    return `${String(index + 1).padStart(2, '0')}_${sanitizeFileName(name)}_模块图.png`;
+}
+
+async function buildModuleImageFiles() {
+    const source = document.getElementById('previewContainer');
+    if(!source) return [];
+    const wraps = Array.from(source.querySelectorAll('.preview-module-wrap[data-module-id]'))
+        .filter(wrap => wrap.querySelector('.m-tpl-card'));
+    if(!wraps.length) return [];
+
+    const stage = document.createElement('div');
+    stage.style.cssText = 'position:fixed;left:-10000px;top:0;z-index:-1;pointer-events:none;background:transparent';
+    document.body.appendChild(stage);
+
+    const files = [];
+    try {
+        for(let i = 0; i < wraps.length; i++) {
+            const sourceCard = wraps[i].querySelector('.m-tpl-card');
+            if(!sourceCard) continue;
+            const rect = sourceCard.getBoundingClientRect();
+            const clone = sourceCard.cloneNode(true);
+            clone.style.margin = '0';
+            clone.style.width = Math.ceil(rect.width) + 'px';
+            clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+            clone.querySelectorAll('.editable-text').forEach(el => {
+                el.style.boxShadow = 'none';
+                el.style.background = 'transparent';
+            });
+            const content = clone.querySelector('.m-tpl-content');
+            if(content) content.style.visibility = 'hidden';
+
+            stage.innerHTML = '';
+            stage.style.width = Math.ceil(rect.width) + 'px';
+            stage.appendChild(clone);
+            await new Promise(r => requestAnimationFrame(r));
+            await convertImagesToBase64(clone);
+            await new Promise(r => requestAnimationFrame(r));
+
+            const width = Math.ceil(clone.offsetWidth || rect.width);
+            const height = Math.ceil(clone.offsetHeight || rect.height);
+            const dataUrl = await htmlToImage.toPng(clone, {
+                pixelRatio: 2,
+                width,
+                height,
+                cacheBust: true,
+                backgroundColor: null,
+                style: { transform: 'none', margin: '0', overflow: 'visible' },
+            });
+            files.push({ name: getModuleExportName(wraps[i], i), blob: await dataUrlToBlob(dataUrl) });
+        }
+    } finally {
+        stage.remove();
+    }
+    return files;
+}
+
 async function exportEmptyImage() {
     if(!checkExportProtocol()) return;
     if(isExporting) return;
+    if(typeof JSZip === 'undefined') {
+        alert('压缩包组件加载失败，请检查网络后重试');
+        return;
+    }
     isExporting = true;
     const overlay = document.getElementById('exportOverlay');
     const bar = document.getElementById('progressBar');
@@ -13340,17 +13416,18 @@ async function exportEmptyImage() {
     btn.disabled = true;
 
     try {
-        bar.style.width='10%'; txt.textContent='正在渲染空页面图...';
-        await new Promise(r=>setTimeout(r,200));
+        bar.style.width='8%'; txt.textContent='正在渲染底图和模块...';
+        if(currentView === 'host') renderPreview(); else renderGuestPreview();
+        await new Promise(r=>setTimeout(r,220));
         const c3 = document.getElementById('previewContainerEmpty');
         if(!c3) throw new Error('未找到空页面图预览区');
         renderEmptyPagePreview();
         await new Promise(r=>requestAnimationFrame(r));
 
-        bar.style.width='30%'; txt.textContent='正在预处理图片资源...';
+        bar.style.width='25%'; txt.textContent='正在预处理底图资源...';
         await convertImagesToBase64(c3);
-        bar.style.width='50%'; txt.textContent='正在生成空页面图...';
-        const dataUrl = await htmlToImage.toPng(c3, {
+        bar.style.width='45%'; txt.textContent='正在生成底图...';
+        const bgDataUrl = await htmlToImage.toPng(c3, {
             pixelRatio: 2,
             width: c3.offsetWidth,
             height: c3.offsetHeight,
@@ -13358,11 +13435,23 @@ async function exportEmptyImage() {
             backgroundColor: colors.background,
             style: { transform: 'none', borderRadius: '0', overflow: 'visible' },
         });
+
+        bar.style.width='62%'; txt.textContent='正在生成模块图...';
+        const moduleFiles = await buildModuleImageFiles();
+        const zip = new JSZip();
+        zip.file('00_页面底图_空页面图.png', await dataUrlToBlob(bgDataUrl));
+        const moduleFolder = zip.folder('模块图') || zip;
+        moduleFiles.forEach(file => moduleFolder.file(file.name, file.blob));
+
+        bar.style.width='88%'; txt.textContent='正在打包导出文件...';
+        const zipBlob = await zip.generateAsync({ type:'blob' });
+        const url = URL.createObjectURL(zipBlob);
         const link = document.createElement('a');
-        link.download = `活动页_空页面图_${Date.now()}.png`;
-        link.href = dataUrl;
+        link.download = `活动页_底图和模块图_${Date.now()}.zip`;
+        link.href = url;
         link.click();
-        bar.style.width='100%'; txt.textContent='导出完成！';
+        URL.revokeObjectURL(url);
+        bar.style.width='100%'; txt.textContent=`导出完成，共 ${moduleFiles.length} 张模块图`;
         await new Promise(r=>setTimeout(r,600));
     } catch(e) {
         alert('导出失败：'+e.message);
