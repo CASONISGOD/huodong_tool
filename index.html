@@ -11439,14 +11439,8 @@ function renderLottery(pc, isBgMode, m) {
 
     const innerHtml = prizesGrid + btnRow + infoRow + grid9Tasks;
 
-    // 底图模式：保留标题（+ 左右装饰图）作为静态视觉，仅副标题隐藏（保留高度）
-    return renderModuleTemplate(isBgMode ? {
-        moduleId: iid,
-        title: titleHtml,
-        subtitle: `<span style="visibility:hidden">${d.subtitle}</span>`,
-        primaryColor: pc,
-        scale: S,
-    } : {
+    // 底图模式同样展示副标题，保持与实际页面一致。
+    return renderModuleTemplate({
         moduleId: iid,
         title: titleHtml,
         subtitle: subtitleHtml,
