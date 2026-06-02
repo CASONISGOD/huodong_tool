@@ -4580,6 +4580,11 @@ function _normalizeMoreData(d) {
         if(g.tagText == null) g.tagText = '好友可抽';
         if(g.btn2Text == null) g.btn2Text = '查看详情';
         if(g.btn3Text == null) g.btn3Text = '立即领取';
+        if(!Array.isArray(g.items)) g.items = [];
+        const fallbackTagText = g.tagText || '好友可抽';
+        g.items.forEach(it => {
+            if(it && it.tagText == null) it.tagText = fallbackTagText;
+        });
     });
     return d;
 }
@@ -10977,9 +10982,10 @@ function renderMore(pc, isBgMode, m) {
             const cellStyle = `width:calc((100% - ${(cols-1)*gap}px) / ${cols});height:${(180 + tagExtraH)*S}px;background:#F6F7FA;border-radius:${16*S}px;position:relative;overflow:hidden;flex-shrink:0`;
             const cells = row.map((it, ii) => {
                 const itemIndex = ri * rowSize + ii;
+                const itemTagText = it.tagText || g.tagText || '好友可抽';
                 const tagHtml = g.tagEnabled ? `
                     <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);background:#F6F7FA;border-left:1px solid rgba(0,0,0,0.08);border-right:1px solid rgba(0,0,0,0.08);border-bottom:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:${12*S}px;border-bottom-right-radius:${12*S}px;padding:${2*S}px ${12*S}px;font-size:${22*S}px;line-height:${30*S}px;color:rgba(0,0,0,0.60);white-space:nowrap;z-index:2;font-family:PingFang SC">
-                        <span style="white-space:pre-wrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="mtag${gi}_${itemIndex}" onblur="onMoreGroupFieldEdit(this,${gi},'tagText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${g.tagText || '好友可抽'}</span>
+                        <span style="white-space:pre-wrap;word-break:keep-all;overflow-wrap:normal;max-width:none" class="editable-text" ${editable} data-field="mtag${gi}_${itemIndex}" onblur="onMoreItemTagEdit(this,${gi},${itemIndex},'${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${itemTagText}</span>
                     </div>` : '';
                 const iconTop = (16 + tagExtraH) * S;
                 const nameTop = (104 + tagExtraH) * S;
@@ -11069,6 +11075,16 @@ function onMoreItemNameEdit(el, gi, ii, instanceId) {
         pushSnapshot();
     }
 }
+function onMoreItemTagEdit(el, gi, ii, instanceId) {
+    const v = el.textContent.trim() || '好友可抽';
+    const d = getMoreData(instanceId); if(!d) return;
+    if(d.groups[gi] && d.groups[gi].items[ii] && v !== d.groups[gi].items[ii].tagText) {
+        d.groups[gi].items[ii].tagText = v;
+        renderMoreGroupList(instanceId);
+        renderPreview();
+        pushSnapshot();
+    }
+}
 
 // ===== 更多福利·左侧面板操作 =====
 /** 渲染"更多福利"详情面板的栏列表 */
@@ -11115,10 +11131,6 @@ function renderMoreGroupList(instanceId) {
             <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px;color:var(--text-2);cursor:pointer">
                 <input type="checkbox" ${g.tagEnabled?'checked':''} style="accent-color:var(--primary)" onchange="toggleMoreGroupTag(${gi}, this.checked, '${iid}')"> 显示标签框（整栏生效）
             </label>
-            ${g.tagEnabled ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-                <span style="font-size:12px;color:var(--text-2);white-space:nowrap">标签文案</span>
-                <input class="prop-input" value="${escapeHtml(g.tagText || '好友可抽')}" placeholder="好友可抽" oninput="updateMoreGroupTagText(${gi}, this.value, '${iid}')" onchange="pushSnapshot()">
-            </div>` : ''}
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
                 <span style="font-size:12px;color:var(--text-2)">奖品数量</span>
                 <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setMoreItemCount(${gi}, getMoreData('${iid}').groups[${gi}].items.length - 1, '${iid}')">－</button>
@@ -11236,18 +11248,15 @@ function uploadMoreItemImg(gi, ii, instanceId) {
 function toggleMoreGroupTag(gi, enabled, instanceId) {
     const d = getMoreData(instanceId);
     if(!d || !d.groups[gi]) return;
-    d.groups[gi].tagEnabled = !!enabled;
-    if(!d.groups[gi].tagText) d.groups[gi].tagText = '好友可抽';
+    const g = d.groups[gi];
+    g.tagEnabled = !!enabled;
+    if(!g.tagText) g.tagText = '好友可抽';
+    (g.items || []).forEach(it => {
+        if(it && !it.tagText) it.tagText = g.tagText;
+    });
     renderMoreGroupList(instanceId);
     renderPreview();
     pushSnapshot();
-}
-
-function updateMoreGroupTagText(gi, value, instanceId) {
-    const d = getMoreData(instanceId);
-    if(!d || !d.groups[gi]) return;
-    d.groups[gi].tagText = value || '好友可抽';
-    renderPreview();
 }
 
 /** 切换某栏的按钮布局：'single' 单按钮 / 'double' 一行两个 / 'triple' 一行三个（左 1 + 右 2 紧贴） */
