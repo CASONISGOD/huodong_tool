@@ -13,6 +13,42 @@
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
+        @font-face {
+            font-family: "PingFang SC";
+            src: url("assets/fonts/PingFangSC-Regular.woff") format("woff");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: "PingFang SC";
+            src: url("assets/fonts/PingFangSC-Medium.woff") format("woff");
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: "PingFang SC";
+            src: url("assets/fonts/PingFangSC-Semibold.woff") format("woff");
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: "PingFang SC";
+            src: url("assets/fonts/PingFangSC-Semibold.woff") format("woff");
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: "MFYuanHei";
+            src: url("assets/fonts/PingFangSC-Regular.woff") format("woff");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
         :root {
             /* === SaaS Dark Admin (同 shenhe tool) === */
             --primary: #4F7CFF;
@@ -3481,7 +3517,7 @@
             font-size:12px; color:var(--text-3); display:block;
         }
 
-        /* 字体提示（仅 Windows 未安装 PingFang 时显示） */
+        /* 字体提示（仅内置 WOFF 加载失败时显示） */
         .font-notice {
             margin-top:24px;
             display:flex;
@@ -3936,12 +3972,12 @@
                 <span class="welcome-btn-desc">继续之前的工作</span>
             </div>
         </div>
-        <!-- 字体提示（仅 Windows 未安装 PingFang 时显示） -->
+        <!-- 字体提示（仅内置 WOFF 加载失败时显示） -->
         <div class="font-notice" id="fontNotice" style="display:none">
             <div class="font-notice-icon">ℹ️</div>
             <div class="font-notice-content">
-                <div class="font-notice-title">建议安装 PingFang SC 字体</div>
-                <div class="font-notice-desc">检测到你使用的是 Windows 系统且未安装 PingFang SC 字体。为获得与设计稿一致的最佳视觉效果，建议联系 <span class="font-notice-highlight">@casonchen</span> 获取字体文件并安装。当前已使用系统默认字体 fallback 显示，不影响功能使用。</div>
+                <div class="font-notice-title">字体文件加载失败</div>
+                <div class="font-notice-desc">内置 WOFF 字体未能加载，当前已使用系统默认字体 fallback 显示。请检查 <span class="font-notice-highlight">assets/fonts/PingFangSC-Regular.woff</span> 是否随页面一起发布。</div>
             </div>
             <button class="font-notice-close" onclick="document.getElementById('fontNotice').style.display='none'" title="关闭">✕</button>
         </div>
@@ -7746,48 +7782,28 @@ function autoCreateUntitledProject() {
     saveCurrentProjectData();
 }
 
-// 检测 Windows 用户是否未安装 PingFang SC 字体
-function checkPingFangFont() {
+// 检测内置 WOFF 字体是否加载成功
+async function checkPingFangFont() {
+    const el = document.getElementById('fontNotice');
+    if(!el) return;
+
     try {
-        // 调试用：?previewFontNotice=1 强制显示提示（方便 Mac 预览 Windows 效果）
+        // 调试用：?previewFontNotice=1 强制显示提示
         const forcePreview = /[?&]previewFontNotice=1\b/.test(location.search);
         if(forcePreview) {
-            const el = document.getElementById('fontNotice');
-            if(el) el.style.display = 'flex';
+            el.style.display = 'flex';
             return;
         }
 
-        // 仅检测 Windows 平台
-        const ua = navigator.userAgent;
-        const isWindows = /Windows|Win64|Win32|WOW64/i.test(ua);
-        if(!isWindows) return;
+        if(!document.fonts || !document.fonts.load) return;
 
-        // 使用 Canvas 文字宽度对比法检测字体是否存在
-        // 对比渲染同一段文字在 "PingFang SC" 和 "serif"（一定存在）下的宽度
-        const testStr = '测试字符ABC123';
-        const size = '72px';
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        // baseline: 用 serif 测量
-        ctx.font = `${size} serif`;
-        const baselineWidth = ctx.measureText(testStr).width;
-
-        // 用 PingFang SC，如果字体不存在会 fallback 到 serif，宽度会相同
-        ctx.font = `${size} "PingFang SC", serif`;
-        const testWidth = ctx.measureText(testStr).width;
-
-        // 再用一个肯定 fallback 到 serif 的不存在字体作为对照
-        ctx.font = `${size} "NonExistentFontXXX123", serif`;
-        const fallbackWidth = ctx.measureText(testStr).width;
-
-        // 如果 PingFang 测出来的宽度和 fallback 一致，说明 PingFang 字体不存在
-        if(Math.abs(testWidth - fallbackWidth) < 0.5) {
-            const el = document.getElementById('fontNotice');
-            if(el) el.style.display = 'flex';
+        const testStr = '活动页字体测试ABC123';
+        await document.fonts.load('13px "PingFang SC"', testStr);
+        if(!document.fonts.check('13px "PingFang SC"', testStr)) {
+            el.style.display = 'flex';
         }
     } catch(e) {
-        // 检测失败不影响使用
+        el.style.display = 'flex';
     }
 }
 

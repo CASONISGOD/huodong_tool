@@ -1,8 +1,44 @@
 /* =========================================================
    游戏活动页模板工具 - 全局样式
    ========================================================= */
+@font-face {
+  font-family: "PingFang SC";
+  src: url("assets/fonts/PingFangSC-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PingFang SC";
+  src: url("assets/fonts/PingFangSC-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PingFang SC";
+  src: url("assets/fonts/PingFangSC-Semibold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PingFang SC";
+  src: url("assets/fonts/PingFangSC-Semibold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MFYuanHei";
+  src: url("assets/fonts/PingFangSC-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f1117; color: #e6e8ee; overflow: hidden; }
+html, body { height: 100%; font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif; background: #0f1117; color: #e6e8ee; overflow: hidden; }
 
 /* ============== 顶部 ============== */
 .topbar {
