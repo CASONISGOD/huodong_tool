@@ -7,6 +7,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <!-- guest-top-buttons-no-link-v2 -->
     <title>游戏活动页生成工具</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
@@ -633,6 +634,30 @@
             background:var(--bg-elev-2); color:var(--text-1);
             border-color:var(--border-strong);
         }
+        .segmented-control {
+            display:flex;
+            gap:8px;
+        }
+        .segmented-control .seg-btn {
+            flex:1;
+            height:32px;
+            border:1px solid var(--border);
+            border-radius:8px;
+            background:transparent;
+            color:var(--text-2);
+            font-size:12px;
+            cursor:pointer;
+            transition:all .15s;
+        }
+        .segmented-control .seg-btn:hover {
+            background:var(--bg-elev-2);
+            color:var(--text-1);
+        }
+        .segmented-control .seg-btn.active {
+            background:var(--primary);
+            border-color:var(--primary);
+            color:#fff;
+        }
         .color-row label { font-size:13px; color:var(--text-2); width:80px; flex-shrink:0; }
         .color-swatch {
             position:relative; width:32px; height:32px;
@@ -1012,7 +1037,7 @@
             width:64px;
             display:flex;
             flex-direction:column;
-            gap:8px;
+            gap:16px;
             align-items:center;
             z-index:99;
         }
@@ -1166,6 +1191,13 @@
         .panel-left.tool-single-mode #guestPanel .module-actions {
             gap:10px;
             margin-bottom:14px;
+        }
+        .panel-left.tool-single-mode #guestPanel .section + .section {
+            margin-top:22px;
+        }
+        .panel-left.tool-single-mode #guestPanel .prop-input {
+            width:100%;
+            box-sizing:border-box;
         }
         .panel-left.tool-single-mode #guestPanel .btn-sm {
             min-height:30px;
@@ -2996,6 +3028,33 @@
             font-family: inherit;
         }
 
+        /* ===== 红包拉新模块·配置选项按钮 ===== */
+        .rpn-opt-row {
+            display:flex;
+            gap:6px;
+            flex-wrap:wrap;
+        }
+        .rpn-opt-btn {
+            flex:1;
+            min-width:48px;
+            padding:6px 8px;
+            font-size:12px;
+            color:var(--text-1);
+            background:var(--bg-elev-2);
+            border:1.5px solid var(--border);
+            border-radius:8px;
+            cursor:pointer;
+            font-family:inherit;
+            transition:all .2s;
+            white-space:nowrap;
+        }
+        .rpn-opt-btn:hover { border-color:var(--primary); }
+        .rpn-opt-btn.active {
+            color:#fff;
+            background:var(--primary);
+            border-color:var(--primary);
+        }
+
         /* ===== 口令码模块图标上传区域 ===== */
         .icon-upload-grid {
             display:flex;
@@ -3090,6 +3149,17 @@
             font-size:14px;
             font-weight:600;
             text-align:center;
+        }
+        .g-top-button-row {
+            width:100%; max-width:351px;
+            margin:0 auto;
+            display:flex;
+            gap:8px; /* 展示 8px，对应 @2x 切图 16px */
+        }
+        .g-top-button-row .m-role-enter-btn {
+            flex:1;
+            min-width:0;
+            margin:0;
         }
 
 
@@ -3441,18 +3511,6 @@
         .progress-text { font-size:13px; color:var(--text-2); margin-top:12px; }
 
         .hidden { display:none !important; }
-
-        /* IP 浮层闪烁动画（上传后提示用户图片位置） */
-        @keyframes ip-flash {
-            0%   { opacity: 1; }
-            20%  { opacity: 0; }
-            40%  { opacity: 1; }
-            60%  { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        .ip-overlay-item.ip-flash {
-            animation: ip-flash 0.7s ease-in-out;
-        }
 
         /* ===== Welcome Screen ===== */
         .welcome-overlay {
@@ -3896,7 +3954,7 @@
             height:auto !important;
             display:flex !important;
             flex-direction:column !important;
-            gap:8px !important;
+            gap:16px !important;
             align-items:center !important;
             z-index:9999 !important;
             background:transparent !important;
@@ -3934,7 +3992,7 @@
             .tool-rail { gap:6px; padding-top:6px; padding-bottom:6px; }
             .tool-rail-item { min-height:50px; padding:5px 0 4px; }
             .tool-rail-guest { min-height:58px; }
-            .tool-rail-shortcuts { gap:8px; }
+            .tool-rail-shortcuts { gap:16px; }
             .tool-rail-shortcuts small { display:none; }
         }
 
@@ -4109,9 +4167,8 @@
         <button class="tool-rail-item" data-tool="header" onclick="activateToolNav('header')"><img src="assets/CodeBuddyAssets/1019_16019/3.svg" alt=""><span>头图</span></button>
         <button class="tool-rail-item" data-tool="deco" onclick="activateToolNav('deco')"><img src="assets/CodeBuddyAssets/1019_16019/5.svg" alt=""><span>模块</span></button>
         <button class="tool-rail-item" data-tool="modules" onclick="activateToolNav('modules')"><img src="assets/CodeBuddyAssets/1019_16019/6.svg" alt=""><span>玩法</span></button>
-        <button class="tool-rail-item" data-tool="ip" onclick="activateToolNav('ip')"><img src="assets/CodeBuddyAssets/1019_16019/7.svg" alt=""><span>IP</span></button>
         <button class="tool-rail-item" data-tool="slice" onclick="activateToolNav('slice')"><img src="assets/CodeBuddyAssets/1019_16019/8.svg" alt=""><span>切图</span></button>
-        <button class="tool-rail-item tool-rail-guest" data-tool="guest" onclick="activateToolNav('guest')"><img src="assets/CodeBuddyAssets/1019_16019/9.svg" alt=""><span id="guestToggleLabel">切换<br>客态</span></button>
+        <button type="button" class="tool-rail-item tool-rail-guest" data-tool="guest" onclick="toggleGuestView(event)"><img src="assets/CodeBuddyAssets/1019_16019/9.svg" alt=""><span id="guestToggleLabel">切换<br>客态</span></button>
     </nav>
     <div class="tool-rail-shortcuts">
         <button onclick="undo()" title="撤回 command+z">撤回<br><small>command+z</small></button>
@@ -4263,19 +4320,6 @@
                 </div>
             </div>
 
-            <!-- IP 配置 -->
-            <div class="section collapsed" id="sectionIp">
-                <div class="section-title" onclick="toggleSection('sectionIp')">
-                    IP 配置
-                    <span class="section-collapse-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-                </div>
-                <div class="section-body">
-                    <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">上传任意张 IP 图片，覆盖在所有模块之上。预览区可<b>拖动改变位置</b>。每张图片独立缩放，默认 150×150px。</div>
-                    <div id="ipList"></div>
-                    <button class="reset-color-btn reset-color-wide" style="margin-top:14px" onclick="addIpImage()">＋ 添加 IP 图片</button>
-                </div>
-            </div>
-
             <!-- 切图配置 -->
             <div class="section collapsed" id="sectionSlice">
                 <div class="section-title" onclick="toggleSection('sectionSlice')">
@@ -4307,14 +4351,37 @@
         </div>
         <!-- 客态配置面板 -->
         <div class="panel-left-body" id="guestPanel" style="display:none">
-            <div style="margin:14px 0 14px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg-elev-1);color:var(--text-3);font-size:12px;line-height:1.5">
-                页面基础配置直接复用主态，无需重复配置
+            <!-- 客态顶部按钮配置 -->
+            <div class="section" id="gSectionTopButton">
+                <div class="section-title" onclick="toggleSection('gSectionTopButton')">
+                    顶部按钮
+                    <span class="section-collapse-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+                <div class="section-body">
+                    <div class="module-section" style="padding:12px 14px">
+                        <div class="module-section-header" style="cursor:default">
+                            <input type="checkbox" id="gTopButtonEnabled" checked onchange="updateGuestTopButtonEnabled(this.checked)">
+                            <div class="module-info">
+                                <div class="module-name">显示顶部按钮</div>
+                                <div class="module-desc">样式复用主态顶部进入游戏按钮</div>
+                            </div>
+                        </div>
+                        <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+                            <label style="font-size:12px;color:var(--text-2)">按钮数量</label>
+                            <div class="segmented-control g-top-button-count" role="group" aria-label="客态顶部按钮数量">
+                                <button type="button" class="seg-btn active" id="gTopButtonCount1" onclick="updateGuestTopButtonCount(1)">1 个按钮</button>
+                                <button type="button" class="seg-btn" id="gTopButtonCount2" onclick="updateGuestTopButtonCount(2)">2 个按钮</button>
+                            </div>
+                            <div style="font-size:11px;color:var(--text-3);line-height:1.5">按钮文案可在右侧预览页面上直接编辑；这里不配置文案和跳转链接。</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- 客态模块配置 -->
             <div class="section" id="gSectionModules">
                 <div class="section-title" onclick="toggleSection('gSectionModules')">
                     活动模块
-                    <span class="module-count" id="gModuleCount">3/3</span>
+                    <span class="module-count" id="gModuleCount">4/4</span>
                     <span class="section-collapse-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                 </div>
                 <div class="section-body">
@@ -4798,6 +4865,176 @@ function _currentPassInstanceId() {
     return m0 ? m0.instanceId : null;
 }
 
+// ===== 红包拉新（redpacketNew）数据：按 instanceId 隔离 =====
+// 模块内可放 1~6 个红包，红包大小由数量自动决定（与设计稿一致）；
+// 先配置整体颜色方案和红包数量；每个红包可单独选择 Q币 / 道具。
+// 红色 / 棕色方案都默认只有最后一个红包走 Q币 / 道具特殊底，其余红包使用默认素材。
+// 文案、领取条件、剩余库存仍可在画布中直接编辑。
+const REDPACKET_NEW_MAX = 6;
+// 素材命名映射：assets/redpot/{color}_{type}_{size}_{state}.png
+// 使用英文文件名，避免发布环境 / CDN 对中文路径编码不一致导致图片加载失败。
+const RPN_COLOR_CN = { red: '红色', brown: '棕色' };
+const RPN_TYPE_CN  = { default: '默认', qb: 'Q币', item: '道具' };
+const RPN_SIZE_CN  = { large: '大', medium: '中', small: '小' };
+const RPN_COLOR_FILE = { red: 'red', brown: 'brown' };
+const RPN_TYPE_FILE  = { default: 'default', qb: 'qb', item: 'item' };
+const RPN_SIZE_FILE  = { large: 'large', medium: 'medium', small: 'small' };
+const RPN_ASSET_VERSION = '20260612_redpot_v2';
+const RPN_REWARD_CN = { qb: 'Q币', item: '道具' };
+const RPN_DEFAULT_QB_AMOUNTS = {
+    1: ['3'],
+    2: ['3','12'],
+    3: ['3','8','18'],
+    4: ['3','5','8','88'],
+    5: ['3','5','8','12','22'],
+    6: ['3','4','5','12','18','22'],
+};
+const RPN_DEFAULT_ITEM_ICONS = [
+    { url:'assets/CodeBuddyAssets/259_892/6.png', name:'道具1' },
+    { url:'assets/CodeBuddyAssets/259_892/8.png', name:'道具2' },
+    { url:'assets/CodeBuddyAssets/259_892/5.png', name:'道具3' },
+    { url:'assets/CodeBuddyAssets/259_892/9.png', name:'道具4' },
+    { url:'assets/CodeBuddyAssets/259_892/7.png', name:'道具5' },
+];
+/** 根据红包数量返回每个红包的大小布局（与截图 1~6 一致） */
+function rpnSizeLayout(count) {
+    switch(count) {
+        case 1: return ['large'];
+        case 2: return ['medium','medium'];
+        case 3: return ['small','small','small'];
+        case 4: return ['small','small','small','large'];
+        case 5: return ['small','small','small','medium','medium'];
+        case 6: return ['small','small','small','small','small','small'];
+        default: return Array(Math.max(1, Math.min(count||1, REDPACKET_NEW_MAX))).fill('small');
+    }
+}
+/** 拼接红包素材路径 */
+function rpnImgPath(color, type, size, claimed) {
+    const c = RPN_COLOR_FILE[color] || 'red';
+    const t = RPN_TYPE_FILE[type] || 'qb';
+    const s = RPN_SIZE_FILE[size] || 'large';
+    return `assets/redpot/${c}_${t}_${s}_${claimed ? 'claimed' : 'unclaimed'}.png?v=${RPN_ASSET_VERSION}`;
+}
+function rpnCloneItemIcons(count = 5) {
+    return RPN_DEFAULT_ITEM_ICONS.slice(0, count).map(ic => ({...ic}));
+}
+function rpnItemRewardType(it, fallback = 'qb') {
+    const t = (it && (it.rewardType || it.type)) || fallback;
+    return t === 'item' ? 'item' : 'qb';
+}
+function rpnMaxItemIcons(size) {
+    return size === 'large' ? 5 : 2;
+}
+function rpnVisualType(d, idx, count) {
+    const rewardType = rpnItemRewardType(d && d.items && d.items[idx], d && d.rewardType);
+    // 前面的红包统一用默认底，最后一个才用 Q币/道具特殊底。
+    return idx === count - 1 ? rewardType : 'default';
+}
+function rpnIsSpecialCard(d, idx, count) {
+    return idx === count - 1;
+}
+function rpnDefaultAmount(idx, count) {
+    const arr = RPN_DEFAULT_QB_AMOUNTS[count] || RPN_DEFAULT_QB_AMOUNTS[1];
+    return arr[idx] || arr[arr.length - 1] || '3';
+}
+function _rpnDefaultItem(idx = 0, count = 1) {
+    return { rewardType: 'qb', amount: rpnDefaultAmount(idx, count), unit: 'Q币', condition: '英雄等级达到2级', btnText: '领', stock: '2026', stockText: '剩余库存： 2026', stockEnabled: true, itemIcons: rpnCloneItemIcons(5) };
+}
+const REDPACKET_NEW_DATA_TEMPLATE = {
+    title: '注册打卡领Q币红包',
+    subtitle: '仅限QQ浏览器渠道用户参与，Q币数量有限，先到先得',
+    color: 'brown',
+    rewardType: 'qb',
+    stockVisible: true,
+    itemIconCounts: { smallMedium: 2, large: 5 },
+    itemIcons: RPN_DEFAULT_ITEM_ICONS.map(ic => ({...ic})),
+    items: [ _rpnDefaultItem(0, 2), { ..._rpnDefaultItem(1, 2), condition: '英雄等级达到20级', stock: '8' } ],
+};
+let redpacketNewDataMap = {};
+function normalizeRedpacketNewData(d) {
+    if(!d) return d;
+    if(d.title == null) d.title = REDPACKET_NEW_DATA_TEMPLATE.title;
+    if(d.subtitle == null) d.subtitle = REDPACKET_NEW_DATA_TEMPLATE.subtitle;
+    if(!d.color) {
+        const lastColor = Array.isArray(d.items) && [...d.items].reverse().find(it => it && it.color)?.color;
+        d.color = lastColor === 'red' ? 'red' : 'brown';
+    }
+    if(d.color !== 'red' && d.color !== 'brown') d.color = 'brown';
+    if(d.stockVisible == null) d.stockVisible = true;
+    d.stockVisible = d.stockVisible !== false;
+    if(!d.rewardType) {
+        const firstType = Array.isArray(d.items) && d.items.find(it => it && it.type && it.type !== 'default')?.type;
+        d.rewardType = firstType === 'item' ? 'item' : 'qb';
+    }
+    if(d.rewardType !== 'qb' && d.rewardType !== 'item') d.rewardType = 'qb';
+    if(!d.itemIconCounts || typeof d.itemIconCounts !== 'object') d.itemIconCounts = { smallMedium: 2, large: 5 };
+    d.itemIconCounts.smallMedium = Math.max(1, Math.min(2, Number(d.itemIconCounts.smallMedium) || 2));
+    d.itemIconCounts.large = Math.max(1, Math.min(5, Number(d.itemIconCounts.large) || 5));
+    if(!Array.isArray(d.itemIcons)) d.itemIcons = rpnCloneItemIcons(5);
+    while(d.itemIcons.length < 5) {
+        const def = RPN_DEFAULT_ITEM_ICONS[d.itemIcons.length] || RPN_DEFAULT_ITEM_ICONS[0];
+        d.itemIcons.push({...def});
+    }
+    if(d.itemIcons.length > 5) d.itemIcons = d.itemIcons.slice(0, 5);
+    d.itemIcons.forEach((ic, i) => {
+        if(!ic.url) ic.url = RPN_DEFAULT_ITEM_ICONS[i]?.url || RPN_DEFAULT_ITEM_ICONS[0].url;
+        if(!ic.name) ic.name = `道具${i+1}`;
+    });
+    if(!Array.isArray(d.items) || d.items.length === 0) d.items = [_rpnDefaultItem(0, 1)];
+    if(d.items.length > REDPACKET_NEW_MAX) d.items = d.items.slice(0, REDPACKET_NEW_MAX);
+    const sizes = rpnSizeLayout(d.items.length);
+    d.items.forEach((it, i) => {
+        if(!it || typeof it !== 'object') it = d.items[i] = _rpnDefaultItem(i, d.items.length);
+        if(it.rewardType == null) it.rewardType = rpnItemRewardType(it, d.rewardType);
+        if(it.rewardType !== 'qb' && it.rewardType !== 'item') it.rewardType = 'qb';
+        if(it.amount == null) it.amount = '3';
+        if(it.unit == null) it.unit = 'Q币';
+        if(it.condition == null) it.condition = '英雄等级达到2级';
+        if(!it.btnText) it.btnText = '领';
+        if(it.stock == null) it.stock = '2026';
+        if(it.stockText == null) it.stockText = `剩余库存： ${it.stock}`;
+        if(it.stockEnabled == null) it.stockEnabled = true;
+        if(!Array.isArray(it.itemIcons)) it.itemIcons = d.itemIcons.map(ic => ({...ic}));
+        while(it.itemIcons.length < 5) {
+            const def = RPN_DEFAULT_ITEM_ICONS[it.itemIcons.length] || RPN_DEFAULT_ITEM_ICONS[0];
+            it.itemIcons.push({...def});
+        }
+        if(it.itemIcons.length > 5) it.itemIcons = it.itemIcons.slice(0, 5);
+        it.itemIcons.forEach((ic, iconIdx) => {
+            if(!ic.url) ic.url = RPN_DEFAULT_ITEM_ICONS[iconIdx]?.url || RPN_DEFAULT_ITEM_ICONS[0].url;
+            if(!ic.name) ic.name = `道具${iconIdx+1}`;
+        });
+        const size = sizes[i] || 'small';
+        const maxIcons = rpnMaxItemIcons(size);
+        const legacyCount = size === 'large' ? d.itemIconCounts.large : d.itemIconCounts.smallMedium;
+        it.itemIconCount = Math.max(1, Math.min(maxIcons, Number(it.itemIconCount || legacyCount) || maxIcons));
+    });
+    d.items.forEach((it, i) => { if(!it.amount) it.amount = rpnDefaultAmount(i, d.items.length); });
+    return d;
+}
+function getRedpacketNewData(instanceId) {
+    if(!instanceId) return null;
+    if(!redpacketNewDataMap[instanceId]) {
+        redpacketNewDataMap[instanceId] = JSON.parse(JSON.stringify(REDPACKET_NEW_DATA_TEMPLATE));
+    }
+    return normalizeRedpacketNewData(redpacketNewDataMap[instanceId]);
+}
+function getCurrentRedpacketNewModule() {
+    if(_expandedModuleId) {
+        const m = modules.find(mm => mm.instanceId === _expandedModuleId && mm.id === 'redpacketNew');
+        if(m) return m;
+    }
+    return modules.find(mm => mm.id === 'redpacketNew') || null;
+}
+function getCurrentRedpacketNewData() {
+    const m = getCurrentRedpacketNewModule();
+    return m ? getRedpacketNewData(m.instanceId) : null;
+}
+function _currentRedpacketNewInstanceId() {
+    const m = getCurrentRedpacketNewModule();
+    return m ? m.instanceId : null;
+}
+
 
 
 
@@ -4860,229 +5097,6 @@ const DEFAULT_MODULE_DECO = {
 };
 // 按 key 存储装饰覆盖：默认只有全局 key 生效
 let moduleDecorations = {};
-
-// ===== IP 浮层图片 =====
-// 一组浮在所有模块最上层的可拖动图片，每张独立位置/缩放
-// 数据格式：{ url, x, y, scale, w, h }
-//   - x, y：相对预览容器（375 宽）左上角的 px 偏移
-//   - scale：用户调节的缩放（默认 1，对应 150×150 显示尺寸）
-//   - w, h：图片原始尺寸（用来按比例显示）
-const IP_DEFAULT_DISPLAY = 75; // 150px @2x = 75px @1x（预览）
-let ipList = [];
-
-function addIpImage() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.multiple = true; // 支持一次选多张
-    input.onchange = (e) => {
-        const files = Array.from(e.target.files || []).filter(f => f && f.type.startsWith('image/'));
-        if(!files.length) { e.target.value = ''; return; }
-
-        const newIndices = []; // 记录本批新增的下标，用于闪烁
-        let pending = files.length;
-
-        files.forEach((f) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = new Image();
-                img.onload = () => {
-                    ipList.push({
-                        url: ev.target.result,
-                        w: img.naturalWidth,
-                        h: img.naturalHeight,
-                        x: 150,
-                        y: 100,
-                        scale: 1
-                    });
-                    newIndices.push(ipList.length - 1);
-                    pending--;
-                    if(pending === 0) {
-                        renderIpList();
-                        renderPreview();
-                        pushSnapshot();
-                        // 闪烁刚刚新增的所有图，提示用户位置
-                        setTimeout(() => flashIpItems(newIndices), 50);
-                    }
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(f);
-        });
-        e.target.value = '';
-    };
-    input.click();
-}
-
-/** 让指定下标的 IP 节点在两个预览容器里闪烁两下 */
-function flashIpItems(indices) {
-    if(!indices || !indices.length) return;
-    ['previewContainer', 'previewContainerBg'].forEach(cid => {
-        const c = document.getElementById(cid);
-        if(!c) return;
-        indices.forEach(i => {
-            const node = c.querySelector('.ip-overlay .ip-overlay-item[data-idx="' + i + '"]');
-            if(!node) return;
-            node.classList.remove('ip-flash'); // 重置
-            // 强制重排再加回 class
-            void node.offsetWidth;
-            node.classList.add('ip-flash');
-        });
-    });
-}
-
-function removeIpImage(idx) {
-    if(idx < 0 || idx >= ipList.length) return;
-    if(!confirm('确定删除这张 IP 图片？')) return;
-    ipList.splice(idx, 1);
-    renderIpList();
-    renderPreview();
-    pushSnapshot();
-}
-
-function setIpImageScale(idx, scale) {
-    const it = ipList[idx];
-    if(!it) return;
-    const oldScale = it.scale;
-    const newScale = Math.max(0.2, Math.min(4, Number(scale) || 1));
-    if(newScale === oldScale) return;
-    // 中心缩放：保持图像中心点不变 → 调整 x/y
-    const ratio = it.h / Math.max(1, it.w);
-    const oldW = IP_DEFAULT_DISPLAY * oldScale;
-    const oldH = oldW * ratio;
-    const newW = IP_DEFAULT_DISPLAY * newScale;
-    const newH = newW * ratio;
-    const cx = it.x + oldW / 2;
-    const cy = it.y + oldH / 2;
-    it.scale = newScale;
-    it.x = cx - newW / 2;
-    it.y = cy - newH / 2;
-    // 直接更新两个预览容器中对应 IP 节点的位置/尺寸，避免整页重渲卡顿
-    ['previewContainer', 'previewContainerBg'].forEach(cid => {
-        const c = document.getElementById(cid);
-        if(!c) return;
-        const node = c.querySelector('.ip-overlay .ip-overlay-item[data-idx="' + idx + '"]');
-        if(!node) return;
-        node.style.width = newW + 'px';
-        node.style.height = newH + 'px';
-        node.style.left = it.x + 'px';
-        node.style.top = it.y + 'px';
-    });
-    // 防抖 push 快照
-    clearTimeout(setIpImageScale._timer);
-    setIpImageScale._timer = setTimeout(() => pushSnapshot(), 250);
-}
-
-function setIpImagePos(idx, x, y) {
-    if(!ipList[idx]) return;
-    ipList[idx].x = Number(x) || 0;
-    ipList[idx].y = Number(y) || 0;
-    renderPreview();
-    pushSnapshot();
-}
-
-function renderIpList() {
-    const slot = document.getElementById('ipList');
-    if(!slot) return;
-    if(!ipList.length) {
-        slot.innerHTML = '<div style="font-size:11px;color:var(--text-4);text-align:center;padding:12px">暂无 IP 图片，点击下方按钮添加</div>';
-        return;
-    }
-    slot.innerHTML = ipList.map((it, i) => {
-        const z = Math.round(it.scale * 100);
-        return `
-        <div style="padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elev-1);margin-bottom:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-                <div style="font-size:12px;color:var(--text-2);font-weight:500">第 ${i+1} 张</div>
-                <button class="module-action-btn danger" onclick="removeIpImage(${i})" title="删除">🗑</button>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-                <div style="width:48px;height:48px;border-radius:6px;background:var(--bg-elev-2);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">
-                    <img src="${it.url}" style="max-width:100%;max-height:100%;object-fit:contain">
-                </div>
-                <div style="flex:1;font-size:11px;color:var(--text-3)">原始 ${it.w}×${it.h}</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-size:11px;color:var(--text-3);width:30px">缩放</span>
-                <input type="range" min="20" max="400" step="1" value="${z}"
-                       style="flex:1;accent-color:var(--primary)"
-                       oninput="setIpImageScale(${i}, this.value/100); document.getElementById('ipScaleNum_${i}').value=this.value">
-                <input type="number" id="ipScaleNum_${i}" value="${z}" min="20" max="400" step="1" class="prop-input" style="width:56px;text-align:center"
-                       onchange="setIpImageScale(${i}, (+this.value)/100)">
-                <span style="font-size:11px;color:var(--text-4)">%</span>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-/** 在指定预览容器顶部覆盖 IP 浮层；isBgMode=true 时也照常显示 */
-function renderIpOverlay(container, isBgMode) {
-    if(!container) return;
-    if(!ipList || !ipList.length) return;
-    const overlay = document.createElement('div');
-    overlay.className = 'ip-overlay';
-    overlay.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9999';
-    if(getComputedStyle(container).position === 'static') {
-        container.style.position = 'relative';
-    }
-    ipList.forEach((it, i) => {
-        const w = IP_DEFAULT_DISPLAY * it.scale;
-        const ratio = it.h / Math.max(1, it.w);
-        const h = w * ratio;
-        const node = document.createElement('div');
-        node.className = 'ip-overlay-item';
-        node.dataset.idx = i;
-        node.style.cssText = `position:absolute;left:${it.x}px;top:${it.y}px;width:${w}px;height:${h}px;cursor:${isBgMode ? 'default' : 'grab'};user-select:none;pointer-events:${isBgMode ? 'none' : 'auto'};z-index:${10 + i};`;
-        node.innerHTML = `<img src="${it.url}" draggable="false" style="width:100%;height:100%;object-fit:contain;display:block;pointer-events:none">`;
-        if(!isBgMode) attachIpDrag(node, i);
-        overlay.appendChild(node);
-    });
-    container.appendChild(overlay);
-}
-
-function attachIpDrag(node, idx) {
-    node.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        const startX = e.clientX, startY = e.clientY;
-        const it = ipList[idx];
-        if(!it) return;
-        const baseX = it.x, baseY = it.y;
-        node.style.cursor = 'grabbing';
-        try { node.setPointerCapture(e.pointerId); } catch(_) {}
-        const onMove = (ev) => {
-            it.x = baseX + (ev.clientX - startX);
-            it.y = baseY + (ev.clientY - startY);
-            node.style.left = it.x + 'px';
-            node.style.top = it.y + 'px';
-            syncIpToBgPreview();
-        };
-        const onUp = (ev) => {
-            node.style.cursor = 'grab';
-            node.removeEventListener('pointermove', onMove);
-            node.removeEventListener('pointerup', onUp);
-            node.removeEventListener('pointercancel', onUp);
-            try { node.releasePointerCapture(e.pointerId); } catch(_) {}
-            pushSnapshot();
-        };
-        node.addEventListener('pointermove', onMove);
-        node.addEventListener('pointerup', onUp);
-        node.addEventListener('pointercancel', onUp);
-    });
-}
-
-function syncIpToBgPreview() {
-    const c2 = document.getElementById('previewContainerBg');
-    if(!c2) return;
-    const overlay = c2.querySelector('.ip-overlay');
-    if(!overlay) return;
-    const items = overlay.querySelectorAll('.ip-overlay-item');
-    items.forEach((node, i) => {
-        const it = ipList[i];
-        if(!it) return;
-        node.style.left = it.x + 'px';
-        node.style.top = it.y + 'px';
-    });
-}
 
 // 获取装饰配置（当前为全局，不区分实例）
 function getModuleDeco(_key) {
@@ -5261,7 +5275,7 @@ function renderModuleTemplate(opts, innerHtml) {
                 ${titleDeco ? `<span style="${titleDecoWrapStyle}"><img src="${titleDeco}" style="max-width:${titleDeco === DEFAULT_MODULE_DECO.titleDeco ? '35px' : '70px'};max-height:${titleDeco === DEFAULT_MODULE_DECO.titleDeco ? '12px' : '24px'};width:auto;height:auto;object-fit:contain;display:block;transform:scaleX(-1)" onerror="this.style.display='none'"></span>` : ''}
             </div>
             ${subtitleHtml}`}
-            <div class="m-tpl-content" style="margin-top:${hideHeader ? 0 : 24*S}px">
+            <div class="m-tpl-content" style="margin-top:${hideHeader ? 0 : (opts.contentMarginTop != null ? opts.contentMarginTop : 24*S)}px">
                 ${innerHtml}
             </div>
         </div>
@@ -5409,13 +5423,186 @@ function getCurrentRedpacketData() {
     return null;
 }
 
+// ===== 新版口令码模块数据 =====
+// 模板（新建/复制时使用）——对齐 Figma「2026活动页模板 组件 / 口令码」
+const REDPACKET2_ASSET_BASE = 'assets/redpacket2/';
+const REDPACKET2_MAX_INVITE_REWARDS = 12;
+const REDPACKET2_MAX_POOL_ROWS = 10;
+const REDPACKET2_MAX_POOL_REWARDS = 2;
+const REDPACKET2_MAX_POOL_ICONS = 1;
+const REDPACKET2_ASSETS = {
+    iphone: `${REDPACKET2_ASSET_BASE}iphone.png`,
+    coin: `${REDPACKET2_ASSET_BASE}coin.png`,
+    avatarFrame: `${REDPACKET2_ASSET_BASE}avatar-frame.png`,
+    inviteTicket: `${REDPACKET2_ASSET_BASE}invite-ticket.png`,
+    coinSmall: `${REDPACKET2_ASSET_BASE}coin-small.png`,
+    lottery: `${REDPACKET2_ASSET_BASE}lottery.png`,
+    topPattern: `${REDPACKET2_ASSET_BASE}top-pattern.png`,
+    titleDeco: `${REDPACKET2_ASSET_BASE}title-deco.png`,
+};
+const REDPACKET2_DATA_TEMPLATE = {
+    title: '邀请好友 赢海量Q币',
+    subtitle: '活动期间邀请好友可获得多种档位的豪华奖励',
+    showSteps: true,
+    steps: [
+        { title: '生成口令码', desc: '分享给好友' },
+        { title: '好友复制口令码', desc: '回QQ浏览器使用' },
+        { title: '你和好友都领奖', desc: 'Q币道具拿不停' },
+    ],
+    showInviteSection: true,
+    inviteTitle: '被邀请人可领',
+    inviteRewards: [
+        { name: 'iPhone15ProMax*1', img: REDPACKET2_ASSETS.iphone },
+        { name: '88Q币', img: REDPACKET2_ASSETS.coin },
+        { name: '冰冻结晶头像框*1', img: REDPACKET2_ASSETS.avatarFrame },
+        { name: '深渊派对邀请函*200', img: REDPACKET2_ASSETS.inviteTicket },
+    ],
+    friendCodePlaceholder: '输入好友的口令码',
+    useBtnText: '去使用',
+    poolTitle: '我的奖励池',
+    poolRows: [
+        { people: '1人', leftName: '1Q币', leftImg: REDPACKET2_ASSETS.coinSmall, leftAction: '领取', rightName: '抽奖机会+1', rightImg: REDPACKET2_ASSETS.lottery, rightAction: '领取' },
+        { people: '3人', leftName: '1Q币', leftImg: REDPACKET2_ASSETS.coinSmall, leftAction: '领取', rightName: '抽奖机会+1', rightImg: REDPACKET2_ASSETS.lottery, rightAction: '领取' },
+        { people: '10人', leftName: '3Q币', leftImg: REDPACKET2_ASSETS.coinSmall, leftAction: '领取', rightName: '抽奖机会+1', rightImg: REDPACKET2_ASSETS.lottery, rightAction: '领取' },
+    ],
+    codeText: '点击右侧生成我的口令码',
+    generateBtnText: '生成',
+    shareBtnText: '分享口令',
+    invitedText: '当前已邀请好友：10',
+};
+
+/** 按 instanceId 隔离的新版口令码数据：每个模块实例一份独立配置 */
+let redpacket2DataMap = {};
+
+function cloneRedpacket2TemplatePart(v) {
+    return JSON.parse(JSON.stringify(v));
+}
+
+function _defaultRedpacket2PoolReward(rowIdx, rewardIdx) {
+    if(rewardIdx === 1) {
+        return { label: '抽奖机会+1', btnText: '领取', icon: REDPACKET2_ASSETS.lottery };
+    }
+    const labels = ['1Q币', '1Q币', '3Q币'];
+    return { label: labels[rowIdx] || '1Q币', btnText: '领取', icon: REDPACKET2_ASSETS.coinSmall };
+}
+
+function _createRedpacket2PoolRow(idx) {
+    const people = ['1人', '3人', '10人', '20人', '50人', '100人'];
+    return {
+        people: people[idx] || `${idx + 1}人`,
+        rewards: [
+            _defaultRedpacket2PoolReward(idx, 0),
+            _defaultRedpacket2PoolReward(idx, 1),
+        ],
+    };
+}
+
+function _normalizeRedpacket2PoolReward(reward, rowIdx, rewardIdx) {
+    const fallback = _defaultRedpacket2PoolReward(rowIdx, rewardIdx);
+    const r = (reward && typeof reward === 'object') ? reward : {};
+    if(r.label == null && r.name != null) r.label = r.name;
+    if(r.icon == null && r.img != null) r.icon = r.img;
+    if(r.btnText == null && r.action != null) r.btnText = r.action;
+    if(r.icons == null && r.iconList != null) r.icons = r.iconList;
+
+    r.label = String(r.label == null ? fallback.label : r.label).trim() || fallback.label;
+    r.btnText = String(r.btnText == null ? fallback.btnText : r.btnText).trim() || '领取';
+    r.icon = String(r.icon == null ? fallback.icon : r.icon).trim() || fallback.icon;
+
+    if(typeof r.icons === 'string') {
+        r.icons = r.icons.split(/[,，\n]/).map(s => s.trim()).filter(Boolean);
+    } else if(Array.isArray(r.icons)) {
+        r.icons = r.icons.map(s => String(s || '').trim()).filter(Boolean);
+    } else {
+        r.icons = [];
+    }
+    r.icons = r.icons.slice(0, REDPACKET2_MAX_POOL_ICONS);
+    if(r.icons.length) r.icon = r.icons[0];
+    return r;
+}
+
+function _normalizeRedpacket2PoolRow(row, idx) {
+    const fallback = _createRedpacket2PoolRow(idx);
+    const r = (row && typeof row === 'object') ? row : {};
+    r.people = String(r.people == null ? fallback.people : r.people).trim() || fallback.people;
+    if(!Array.isArray(r.rewards)) {
+        r.rewards = [];
+        if(r.leftName != null || r.leftImg != null || r.leftAction != null) {
+            r.rewards.push({ label: r.leftName, icon: r.leftImg, btnText: r.leftAction });
+        }
+        if(r.rightName != null || r.rightImg != null || r.rightAction != null) {
+            r.rewards.push({ label: r.rightName, icon: r.rightImg, btnText: r.rightAction });
+        }
+        if(!r.rewards.length) r.rewards = fallback.rewards;
+    }
+    r.rewards = r.rewards
+        .slice(0, REDPACKET2_MAX_POOL_REWARDS)
+        .map((reward, rewardIdx) => _normalizeRedpacket2PoolReward(reward, idx, rewardIdx));
+    if(r.rewards.length === 0) r.rewards.push(_defaultRedpacket2PoolReward(idx, 0));
+    return r;
+}
+
+/** 兼容旧工程中的占位版 redpacket2 数据，并补齐新增字段 */
+function normalizeRedpacket2Data(d) {
+    if(!d) return d;
+    const tpl = REDPACKET2_DATA_TEMPLATE;
+
+    // 旧版骨架占位文案自动迁移到设计稿默认文案；用户自定义过的文案保留。
+    if(!d.title || d.title === '新版口令码') d.title = tpl.title;
+    if(!d.subtitle || d.subtitle === '设计稿确认后补充具体内容') d.subtitle = tpl.subtitle;
+
+    ['inviteTitle','friendCodePlaceholder','useBtnText','poolTitle','codeText','generateBtnText','shareBtnText','invitedText'].forEach(k => {
+        if(d[k] == null || d[k] === '') d[k] = tpl[k];
+    });
+    if(typeof d.showSteps !== 'boolean') d.showSteps = tpl.showSteps;
+    if(typeof d.showInviteSection !== 'boolean') d.showInviteSection = tpl.showInviteSection;
+
+    const mergeFixedArray = (key) => {
+        if(!Array.isArray(d[key])) {
+            d[key] = cloneRedpacket2TemplatePart(tpl[key]);
+            return;
+        }
+        d[key] = tpl[key].map((item, i) => ({ ...cloneRedpacket2TemplatePart(item), ...(d[key][i] || {}) }));
+    };
+    mergeFixedArray('steps');
+    // poolRows 对齐列表型充值返利，支持配置档位数量和每档奖品数量，不能按模板固定为 3 档。
+    if(!Array.isArray(d.poolRows)) d.poolRows = cloneRedpacket2TemplatePart(tpl.poolRows);
+    d.poolRows = d.poolRows
+        .slice(0, REDPACKET2_MAX_POOL_ROWS)
+        .map((row, idx) => _normalizeRedpacket2PoolRow(row, idx));
+    if(d.poolRows.length < 1) d.poolRows.push(_createRedpacket2PoolRow(0));
+    // inviteRewards 是可配置数量，不能按模板固定为 4 个；只在缺失时初始化默认奖品。
+    if(!Array.isArray(d.inviteRewards)) d.inviteRewards = cloneRedpacket2TemplatePart(tpl.inviteRewards);
+    d.inviteRewards = d.inviteRewards.slice(0, REDPACKET2_MAX_INVITE_REWARDS).map((it, i) => ({
+        img: it && it.img ? it.img : REDPACKET2_ASSETS.coin,
+        name: it && it.name ? it.name : `新道具${i + 1}`,
+    }));
+    if(d.inviteRewards.length < 1) d.inviteRewards.push({ img: REDPACKET2_ASSETS.coin, name: '新道具' });
+    return d;
+}
+
+/**
+ * 获取某实例的新版口令码数据；不存在则用模板初始化
+ * @param {string} instanceId
+ */
+function getRedpacket2Data(instanceId) {
+    if(!instanceId) return null;
+    if(!redpacket2DataMap[instanceId]) {
+        redpacket2DataMap[instanceId] = cloneRedpacket2TemplatePart(REDPACKET2_DATA_TEMPLATE);
+    }
+    return normalizeRedpacket2Data(redpacket2DataMap[instanceId]);
+}
+
 // 生成一个唯一的模块实例 ID，用于复制/区分多个相同模块
 function genInstanceId() {
     return 'i_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
 }
 
 let modules = [
+    { instanceId: genInstanceId(), id:'rechargeList', name:'列表型充值返利', desc:'每行一个充值档位，每档最多 2 个奖品', enabled:true },
+    { instanceId: genInstanceId(), id:'redpacketNew', name:'红包拉新', desc:'按 Figma 自动排版，配置类型和数量', enabled:true },
     { instanceId: genInstanceId(), id:'redpacket', name:'口令码', desc:'口令码分享/好友助力/奖品展示', enabled:true },
+    { instanceId: genInstanceId(), id:'redpacket2', name:'新版口令码', desc:'新版口令码 - 邀请好友/奖励池/口令分享', enabled:true },
     { instanceId: genInstanceId(), id:'signin',    name:'签到', desc:'连续签到领好礼',   enabled:true },
     { instanceId: genInstanceId(), id:'lottery',   name:'抽奖', desc:'九宫格 / 多宫格抽奖，可选任务列表', enabled:true },
     { instanceId: genInstanceId(), id:'content',   name:'内容组件', desc:'多张图片，可选小标题', enabled:true },
@@ -5430,6 +5617,136 @@ let rechargeData = {
     subtitle: '这里是一句文案我也不知道写啥',
     bgColor: '#065A5C'
 };
+
+// ===== 列表型充值返利（rechargeList）数据：按 instanceId 隔离 =====
+// 对齐 Figma：每行一个充值档位，右侧最多 2 个奖品卡，每个奖品卡带独立领取入口。
+const RECHARGE_LIST_MAX_ITEMS = 10; // 最多 10 档
+const RECHARGE_LIST_MAX_REWARDS = 2; // 每档最多 2 个奖品
+const RECHARGE_LIST_MAX_ICONS = 1; // 每个奖品最多 1 个图标
+const RECHARGE_LIST_ASSETS = {
+    coin: 'assets/image/morenjinbi.png',
+    lottery: 'assets/redpacket2/lottery.png',
+    ticket: 'assets/CodeBuddyAssets/259_892/5.png',
+    gift: 'assets/CodeBuddyAssets/259_892/9.png',
+    card: 'assets/CodeBuddyAssets/259_892/7.png'
+};
+const RECHARGE_LIST_DATA_TEMPLATE = {
+    title: 'QQ浏览器渠道用户专属充值返利',
+    subtitle: '累计充值领大奖，数量有限，先到先得',
+    totalLabel: '当前已累计充值：',
+    total: '1000元',
+    items: [
+        { amount: '6元', rewards: [
+            { label: '5Q币', btnText: '领取', icon: RECHARGE_LIST_ASSETS.coin },
+            { label: '道具名称', btnText: '领取', icon: RECHARGE_LIST_ASSETS.ticket }
+        ]},
+        { amount: '30元', rewards: [
+            { label: '抽奖机会+15', btnText: '领取', icon: RECHARGE_LIST_ASSETS.lottery },
+            { label: '道具名称', btnText: '领取', icon: RECHARGE_LIST_ASSETS.ticket }
+        ]},
+        { amount: '198元', rewards: [
+            { label: '抽奖机会+20', btnText: '领取', icon: RECHARGE_LIST_ASSETS.lottery },
+            { label: '道具名称', btnText: '领取', icon: RECHARGE_LIST_ASSETS.ticket }
+        ]},
+        { amount: '328元', rewards: [
+            { label: '抽奖机会+25', btnText: '领取', icon: RECHARGE_LIST_ASSETS.lottery },
+            { label: '道具名称', btnText: '领取', icon: RECHARGE_LIST_ASSETS.ticket }
+        ]},
+        { amount: '648元', rewards: [
+            { label: '抽奖机会+30', btnText: '领取', icon: RECHARGE_LIST_ASSETS.lottery },
+            { label: '道具名称', btnText: '领取', icon: RECHARGE_LIST_ASSETS.ticket }
+        ]},
+    ],
+};
+let rechargeListDataMap = {};
+
+function _defaultRechargeListReward(itemIdx, rewardIdx) {
+    if(rewardIdx === 1) {
+        return {
+            label: '道具名称',
+            btnText: '领取',
+            icon: RECHARGE_LIST_ASSETS.ticket
+        };
+    }
+    const labels = ['5Q币', '抽奖机会+15', '抽奖机会+20', '抽奖机会+25', '抽奖机会+30'];
+    return {
+        label: labels[itemIdx] || '抽奖机会+10',
+        btnText: '领取',
+        icon: itemIdx === 0 ? RECHARGE_LIST_ASSETS.coin : RECHARGE_LIST_ASSETS.lottery
+    };
+}
+function _createRechargeListItem(idx) {
+    const amounts = ['6元', '30元', '198元', '328元', '648元'];
+    return {
+        amount: amounts[idx] || '128元',
+        rewards: [
+            _defaultRechargeListReward(idx, 0),
+            _defaultRechargeListReward(idx, 1)
+        ]
+    };
+}
+function _normalizeRechargeListReward(reward, itemIdx, rewardIdx) {
+    const fallback = _defaultRechargeListReward(itemIdx, rewardIdx);
+    const r = (reward && typeof reward === 'object') ? reward : {};
+    if(r.label == null && r.text != null) r.label = r.text;
+    if(r.icon == null && r.img != null) r.icon = r.img;
+    if(r.icons == null && r.iconList != null) r.icons = r.iconList;
+
+    r.label = String(r.label == null ? (fallback.label || '道具名称') : r.label).trim() || '道具名称';
+    r.btnText = String(r.btnText == null ? (fallback.btnText || '领取') : r.btnText).trim() || '领取';
+    r.icon = String(r.icon == null ? (fallback.icon || RECHARGE_LIST_ASSETS.coin) : r.icon).trim();
+
+    if(typeof r.icons === 'string') {
+        r.icons = r.icons.split(/[,，\n]/).map(s => s.trim()).filter(Boolean);
+    } else if(Array.isArray(r.icons)) {
+        r.icons = r.icons.map(s => String(s || '').trim()).filter(Boolean);
+    } else if(Array.isArray(fallback.icons)) {
+        r.icons = fallback.icons.slice();
+    } else {
+        r.icons = [];
+    }
+    r.icons = r.icons.slice(0, RECHARGE_LIST_MAX_ICONS);
+    if(r.icons.length) r.icon = r.icons[0];
+    return r;
+}
+function _normalizeRechargeListData(d) {
+    if(!d) return d;
+    if(d.title == null) d.title = 'QQ浏览器渠道用户专属充值返利';
+    if(d.subtitle == null) d.subtitle = '';
+    if(d.totalLabel == null) d.totalLabel = '当前已累计充值：';
+    if(d.total == null) d.total = '1000元';
+    if(!Array.isArray(d.items)) d.items = [];
+    d.items.forEach((it, idx) => {
+        if(it.amount == null) it.amount = '充值档位';
+        if(!Array.isArray(it.rewards)) {
+            it.rewards = [{
+                label: it.reward == null ? _defaultRechargeListReward(idx, 0).label : it.reward,
+                btnText: it.btnText == null ? '领取' : it.btnText,
+                icon: it.icon || _defaultRechargeListReward(idx, 0).icon
+            }];
+        }
+        it.rewards = it.rewards
+            .slice(0, RECHARGE_LIST_MAX_REWARDS)
+            .map((reward, rewardIdx) => _normalizeRechargeListReward(reward, idx, rewardIdx));
+        if(it.rewards.length === 0) it.rewards.push(_defaultRechargeListReward(idx, 0));
+    });
+    return d;
+}
+function getRechargeListData(instanceId) {
+    if(!instanceId) return null;
+    if(!rechargeListDataMap[instanceId]) {
+        rechargeListDataMap[instanceId] = JSON.parse(JSON.stringify(RECHARGE_LIST_DATA_TEMPLATE));
+    }
+    return _normalizeRechargeListData(rechargeListDataMap[instanceId]);
+}
+function _currentRechargeListInstanceId() {
+    if(_expandedModuleId) {
+        const m = modules.find(mm => mm.instanceId === _expandedModuleId && mm.id === 'rechargeList');
+        if(m) return m.instanceId;
+    }
+    const m0 = modules.find(mm => mm.id === 'rechargeList');
+    return m0 ? m0.instanceId : null;
+}
 
 // ===== 主态/客态视图切换 =====
 let currentView = 'host'; // 'host' | 'guest'
@@ -5447,11 +5764,25 @@ let guestHeaderLogos = [
     { url: 'assets/image/qblogo.png', name: 'QQ浏览器' },
 ];
 
+let guestTopButtonData = { enabled: true, count: 1, buttons: [{ text: '进入游戏' }, { text: '助力好友' }] };
+
+const G_QBPULL_DESC = '复用主态红包拉新内容（不显示剩余库存）';
 let guestModules = [
     { id:'g_return',    name:'回归礼包', desc:'回归玩家专属礼包卡片', enabled:true },
     { id:'g_redpacket', name:'红包开奖', desc:'好友红包开奖互动', enabled:true },
     { id:'g_send',      name:'发红包',   desc:'免费发红包领奖励', enabled:true },
+    { id:'g_qbpull',    name:'Q币拉新引流', desc:G_QBPULL_DESC, enabled:true },
 ];
+
+function ensureGuestQbPullModule() {
+    const m = guestModules.find(mm => mm.id === 'g_qbpull');
+    if(m) {
+        m.name = 'Q币拉新引流';
+        m.desc = G_QBPULL_DESC;
+    } else {
+        guestModules.push({ id:'g_qbpull', name:'Q币拉新引流', desc:G_QBPULL_DESC, enabled:true });
+    }
+}
 
 // 客态 - 回归礼包模块数据
 const G_RETURN_MAX_PRIZES = 12;
@@ -5507,6 +5838,12 @@ let gSendData = {
     ],
 };
 
+// 客态 - Q币拉新引流模块数据
+function createDefaultGQbPullData() {
+    return { btnText: '前往参与' };
+}
+let gQbPullData = createDefaultGQbPullData();
+
 // 客态 - 底部导航
 let guestFooterData = {
     link1: '活动规则',
@@ -5551,12 +5888,18 @@ function switchView(view) {
     const guestToggleLabel = document.getElementById('guestToggleLabel');
     if(guestToggleLabel) guestToggleLabel.innerHTML = view === 'guest' ? '切换<br>主态' : '切换<br>客态';
     // 切换面板显示
-    document.getElementById('hostPanel').style.display = view === 'host' ? '' : 'none';
-    document.getElementById('guestPanel').style.display = view === 'guest' ? '' : 'none';
+    const hostPanel = document.getElementById('hostPanel');
+    const guestPanel = document.getElementById('guestPanel');
+    if(hostPanel) hostPanel.style.display = view === 'host' ? '' : 'none';
+    if(guestPanel) guestPanel.style.display = view === 'guest' ? '' : 'none';
     const gSection = document.getElementById('gSectionModules');
     if(view === 'guest' && gSection) gSection.classList.remove('collapsed');
-    // 重新渲染预览
-    renderPreview();
+    // 重新渲染预览；即使某个模块渲染异常，也不要阻断切换按钮状态更新
+    try {
+        renderPreview();
+    } catch(e) {
+        console.error('[switchView] renderPreview failed', e);
+    }
 }
 
 function openToolSection(sectionId) {
@@ -5582,10 +5925,25 @@ function openToolSection(sectionId) {
     }
 }
 
+function toggleGuestView(event) {
+    if(event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    const nextView = currentView === 'guest' ? 'host' : 'guest';
+    switchView(nextView);
+    if(nextView === 'host') {
+        document.querySelectorAll('.tool-rail-item').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tool === 'color');
+        });
+        openToolSection('sectionColor');
+    }
+    return false;
+}
+
 function activateToolNav(tool) {
     if(tool === 'guest') {
-        switchView(currentView === 'guest' ? 'host' : 'guest');
-        if(currentView === 'host') openToolSection('sectionColor');
+        toggleGuestView();
         return;
     }
 
@@ -5608,7 +5966,6 @@ function activateToolNav(tool) {
         case 'header': openToolSection('sectionHeader'); break;
         case 'deco': openToolSection('sectionModuleBase'); break;
         case 'modules': openToolSection('sectionModules'); break;
-        case 'ip': openToolSection('sectionIp'); break;
         case 'slice': openToolSection('sectionSlice'); break;
     }
     renderPreview();
@@ -5637,6 +5994,79 @@ function onGuestHeaderTitleEdit(el) {
         renderPreview();
         pushSnapshot();
     }
+}
+
+// ===== 客态顶部按钮 =====
+function normalizeGuestTopButtonData() {
+    const oldText = guestTopButtonData && guestTopButtonData.text;
+    const oldButtons = Array.isArray(guestTopButtonData && guestTopButtonData.buttons) ? guestTopButtonData.buttons : [];
+    const count = Math.max(1, Math.min(2, Number(guestTopButtonData && guestTopButtonData.count) || 1));
+    guestTopButtonData = {
+        enabled: guestTopButtonData ? guestTopButtonData.enabled !== false : true,
+        count,
+        buttons: [
+            { text: String((oldButtons[0] && oldButtons[0].text) || oldText || '进入游戏') },
+            { text: String((oldButtons[1] && oldButtons[1].text) || '助力好友') },
+        ],
+    };
+}
+
+function getGuestTopButtonText(index) {
+    normalizeGuestTopButtonData();
+    return guestTopButtonData.buttons[index] && guestTopButtonData.buttons[index].text
+        ? guestTopButtonData.buttons[index].text
+        : (index === 1 ? '助力好友' : '进入游戏');
+}
+
+function syncGuestTopButtonInputs() {
+    normalizeGuestTopButtonData();
+    const enabledInput = document.getElementById('gTopButtonEnabled');
+    const countBtn1 = document.getElementById('gTopButtonCount1');
+    const countBtn2 = document.getElementById('gTopButtonCount2');
+    if(enabledInput) enabledInput.checked = !!guestTopButtonData.enabled;
+    if(countBtn1) countBtn1.classList.toggle('active', guestTopButtonData.count === 1);
+    if(countBtn2) countBtn2.classList.toggle('active', guestTopButtonData.count === 2);
+}
+
+function updateGuestTopButtonEnabled(enabled) {
+    normalizeGuestTopButtonData();
+    guestTopButtonData.enabled = !!enabled;
+    renderPreview();
+    pushSnapshot();
+}
+
+function updateGuestTopButtonCount(count) {
+    normalizeGuestTopButtonData();
+    guestTopButtonData.count = Math.max(1, Math.min(2, Number(count) || 1));
+    syncGuestTopButtonInputs();
+    renderPreview();
+    pushSnapshot();
+}
+
+function onGuestTopButtonTextEdit(el, index) {
+    normalizeGuestTopButtonData();
+    const i = Math.max(0, Math.min(1, Number(index) || 0));
+    const fallback = i === 1 ? '助力好友' : '进入游戏';
+    const newVal = el.textContent.trim() || fallback;
+    if(newVal !== guestTopButtonData.buttons[i].text) {
+        guestTopButtonData.buttons[i].text = newVal;
+        renderPreview();
+        pushSnapshot();
+    } else if(el.textContent.trim() !== newVal) {
+        el.textContent = newVal;
+    }
+}
+
+function renderGuestTopButton(pc, isBgMode) {
+    normalizeGuestTopButtonData();
+    if(!guestTopButtonData.enabled) return '';
+    const hiddenStyle = isBgMode ? 'visibility:hidden;' : '';
+    const buttons = guestTopButtonData.buttons.slice(0, guestTopButtonData.count).map((btn, index) => {
+        const text = escapeHtml(getGuestTopButtonText(index));
+        return `<div class="m-role-enter-btn" style="${getBtnStyle(pc, 80)};${hiddenStyle}"><span class="editable-text" contenteditable="true" data-field="guestTopButtonText${index+1}" onblur="onGuestTopButtonTextEdit(this, ${index})" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:#fff">${text}</span></div>`;
+    }).join('');
+    const rowClass = guestTopButtonData.count === 2 ? ' g-top-button-row' : '';
+    return `<div class="preview-module-wrap" data-module-id="guestTopBtn"><div class="${rowClass.trim() || 'g-top-button-single'}">${buttons}</div></div>`;
 }
 
 // ===== 客态顶部Logo管理 =====
@@ -5723,13 +6153,21 @@ function renderGuestModuleList() {
         const detailHtml = getGuestModuleDetailHtml(m.id);
         const hasDetail = detailHtml.length > 0;
         return `
-        <div class="module-section${expandedClass}" data-idx="${i}">
-            <div class="module-section-header" ${hasDetail ? `onclick="toggleGuestModuleDetail('${m.id}', event)"` : ''} style="${hasDetail ? 'cursor:pointer' : ''}">
+        <div class="module-section${expandedClass}" draggable="true" data-idx="${i}" data-module-id="${m.id||''}"
+             ondragstart="onGuestModuleDragStart(event,${i})"
+             ondragend="onGuestModuleDragEnd(event)"
+             ondragover="onGuestModuleDragOver(event,${i})"
+             ondragleave="onGuestModuleDragLeave(event)"
+             ondrop="onGuestModuleDrop(event,${i})">
+            <div class="module-section-header">
+                <div class="module-drag-handle" title="拖拽排序">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </div>
                 <input type="checkbox" ${m.enabled?'checked':''} onclick="event.stopPropagation();toggleGuestModule(${i})">
-                <div class="module-info">
+                <div class="module-info" ${hasDetail ? `onclick="toggleGuestModuleDetail('${m.id}', event)" style="cursor:pointer"` : ''}>
                     <div class="module-name">${m.name}</div>
                 </div>
-                ${hasDetail ? `<span class="module-expand-btn" style="margin-left:auto;font-size:12px;color:var(--text-4);transition:transform 0.2s;${isExpanded?'transform:rotate(180deg)':''}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>` : ''}
+                ${hasDetail ? `<div class="module-detail-toggle${isExpanded?' active':''}" onclick="toggleGuestModuleDetail('${m.id}',event)" title="展开详细配置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>` : ''}
             </div>
             ${hasDetail ? `<div class="module-detail-body">${detailHtml}</div>` : ''}
         </div>`;
@@ -5743,10 +6181,66 @@ function toggleGuestModuleDetail(moduleId, event) {
     renderGuestModuleList();
 }
 
+let _gDragIdx = null;
+function onGuestModuleDragStart(e, idx) {
+    _gDragIdx = idx;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', idx);
+    setTimeout(() => {
+        const el = document.querySelectorAll('#gModuleList .module-section')[idx];
+        if(el) el.classList.add('dragging');
+    }, 0);
+}
+function onGuestModuleDragEnd() {
+    document.querySelectorAll('#gModuleList .module-section').forEach(el => {
+        el.classList.remove('dragging', 'drag-over', 'drag-over-top', 'drag-over-bottom');
+    });
+    _gDragIdx = null;
+}
+function onGuestModuleDragOver(e, idx) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if(_gDragIdx === null || _gDragIdx === idx) return;
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const isTop = e.clientY < rect.top + rect.height / 2;
+    el.classList.remove('drag-over-top', 'drag-over-bottom');
+    el.classList.add(isTop ? 'drag-over-top' : 'drag-over-bottom', 'drag-over');
+}
+function onGuestModuleDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over', 'drag-over-top', 'drag-over-bottom');
+}
+function onGuestModuleDrop(e, targetIdx) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over', 'drag-over-top', 'drag-over-bottom');
+    if(_gDragIdx === null || _gDragIdx === targetIdx) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const insertBelow = e.clientY >= rect.top + rect.height / 2;
+    const item = guestModules.splice(_gDragIdx, 1)[0];
+    let insertIdx = targetIdx;
+    if(_gDragIdx < targetIdx) insertIdx--;
+    if(insertBelow) insertIdx++;
+    guestModules.splice(Math.max(0, insertIdx), 0, item);
+    _gDragIdx = null;
+    renderGuestModuleList();
+    renderPreview();
+    pushSnapshot();
+}
+
+function renderGQbPullSyncNotice() {
+    return `
+    <div class="detail-sub-section">
+        <div style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elev-1);font-size:11px;color:var(--text-3);line-height:1.6">
+            自动对齐主态「红包拉新」样式：主态配置成什么样，客态这里就展示什么样；仅不显示剩余库存。
+        </div>
+    </div>`;
+}
+
 function getGuestModuleDetailHtml(moduleId) {
     switch(moduleId) {
         case 'g_return': return renderGReturnIconConfig();
         case 'g_send': return renderGSendIconConfig();
+        case 'g_qbpull': return renderGQbPullSyncNotice();
         default: return '';
     }
 }
@@ -6390,10 +6884,16 @@ async function loadProjectIntoEditor(id, options = {}) {
     // 恢复快照
     if(snapshot) {
         restoreSnapshot(snapshot);
+        const orderChanged = moveDefaultModulesToPageTop();
         // 恢复后手动推一个初始快照
         undoStack = [snapshot];
         redoStack = [];
         updateUndoRedoButtons();
+        if(orderChanged) {
+            renderModuleList();
+            if(_expandedModuleId) _rerenderModuleDetail(_expandedModuleId);
+            renderPreview();
+        }
     }
 
     // 兜底：恢复后如果某些"默认应该有"的素材仍为空（旧版本项目可能没保存），自动加载默认
@@ -6669,6 +7169,7 @@ function collectButtonColorInfoForExport(container) {
         '.m-role-enter-btn',
         '.redpacket-copy-btn',
         '.redpacket-use-btn',
+        '.redpacket2-share-btn',
         '.lottery-task-slice-btn',
         '.more-benefit-slice-btn',
         '.signin-slice-btn',
@@ -6984,9 +7485,15 @@ function importProject() {
 
             // 恢复快照
             restoreSnapshot(snapshotStr);
+            const orderChanged = moveDefaultModulesToPageTop();
             undoStack = [snapshotStr];
             redoStack = [];
             updateUndoRedoButtons();
+            if(orderChanged) {
+                renderModuleList();
+                if(_expandedModuleId) _rerenderModuleDetail(_expandedModuleId);
+                renderPreview();
+            }
 
             showExportImportToast('✅ 项目导入成功');
 
@@ -7296,7 +7803,6 @@ function resetAllSilent() {
     headerLogoImg = null;
     headerBrowserLogoImg = createDefaultHeaderBrowserLogo();
     moduleDecorations = {};
-    ipList = [];
     colors = { background:'#2B5B39', primary:'#63A545' };
     assistBgColor = '#065A5C';
     assistMode = 'noTask';
@@ -7309,8 +7815,13 @@ function resetAllSilent() {
     const initialContentIid = genInstanceId();
     const initialCustomIid = genInstanceId();
     const initialPassIid = genInstanceId();
+    const initialRechargeListIid = genInstanceId();
+    const initialRedpacketNewIid = genInstanceId();
     modules.push(
+        { instanceId: initialRechargeListIid, id:'rechargeList', name:'列表型充值返利', desc:'每行一个充值档位，每档最多 2 个奖品', enabled:true },
+        { instanceId: initialRedpacketNewIid, id:'redpacketNew', name:'红包拉新', desc:'按 Figma 自动排版，配置类型和数量', enabled:true },
         { instanceId: initialIid, id:'redpacket', name:'口令码', desc:'口令码分享/好友助力/奖品展示', enabled:true },
+        { instanceId: genInstanceId(), id:'redpacket2', name:'新版口令码', desc:'新版口令码 - 邀请好友/奖励池/口令分享', enabled:true },
         { instanceId: initialSigninIid, id:'signin', name:'签到', desc:'连续签到领好礼', enabled:true },
         { instanceId: initialLotteryIid, id:'lottery', name:'抽奖', desc:'九宫格 / 多宫格抽奖，可选任务列表', enabled:true },
         { instanceId: initialContentIid, id:'content', name:'内容组件', desc:'多张图片，可选小标题', enabled:true },
@@ -7322,6 +7833,7 @@ function resetAllSilent() {
     // 重置实例数据：清空 map，按当前模块表为每个口令码实例创建一份模板数据
     redpacketDataMap = {};
     redpacketDataMap[initialIid] = JSON.parse(JSON.stringify(REDPACKET_DATA_TEMPLATE));
+    redpacket2DataMap = {};
     signinDataMap = {};
     signinDataMap[initialSigninIid] = JSON.parse(JSON.stringify(SIGNIN_DATA_TEMPLATE));
     moreDataMap = {};
@@ -7334,6 +7846,10 @@ function resetAllSilent() {
     customDataMap[initialCustomIid] = JSON.parse(JSON.stringify(CUSTOM_DATA_TEMPLATE));
     passDataMap = {};
     passDataMap[initialPassIid] = JSON.parse(JSON.stringify(PASS_DATA_TEMPLATE));
+    rechargeListDataMap = {};
+    rechargeListDataMap[initialRechargeListIid] = JSON.parse(JSON.stringify(RECHARGE_LIST_DATA_TEMPLATE));
+    redpacketNewDataMap = {};
+    redpacketNewDataMap[initialRedpacketNewIid] = JSON.parse(JSON.stringify(REDPACKET_NEW_DATA_TEMPLATE));
     roleData = { selectText: '点击选择角色' };
     assistData = { title: '攒好友助力兑奖品', subtitle: 'Q币每12小时补货一次，补完即止', taskTitle: '领积分，兑奖品', tasks: [
         { text: '每日登录本活动页面', reward: '+10积分', btnText: '立即领取' },
@@ -7407,16 +7923,20 @@ function resetAllSilent() {
         { url: 'assets/image/wangzhelogo.png', name: '王者荣耀' },
         { url: 'assets/image/qblogo.png', name: 'QQ浏览器' },
     ];
+    guestTopButtonData = { enabled: true, count: 1, buttons: [{ text: '进入游戏' }, { text: '助力好友' }] };
     guestModules.length = 0;
     guestModules.push(
         { id:'g_return',    name:'回归礼包', desc:'回归玩家专属礼包卡片', enabled:true },
         { id:'g_redpacket', name:'红包开奖', desc:'好友红包开奖互动', enabled:true },
         { id:'g_send',      name:'发红包',   desc:'免费发红包领奖励', enabled:true },
+        { id:'g_qbpull',    name:'Q币拉新引流', desc:G_QBPULL_DESC, enabled:true },
     );
     gReturnData = createDefaultGReturnData();
     gRedpacketData = { title: '来自你的好友', subtitle: '送你一个游戏红包，快看看能抽中什么吧', step1Text: '先点击助力你的好友', step2Text: '再打开好友送你的红包', openCountLabel: '开奖次数：10', recordLabel: '查看开奖记录', btn1Text: '助力', btn2Text: '打开', prizeImg1: GUEST_IMG+'14.png', prizeImg2: GUEST_IMG+'15.png', lotteryImg: 'assets/image/hongbao.png' };
     gSendData = { title: '免费发红包\u00A0领奖励', subtitle: '赠人红包，手留福利！快和游戏搭子一起发起来～', leftTag: '好友可抽', rightTag: '我可以抽', leftPrizeText: 'Q币、海量游戏道具', rightPrizeText: '华为手机、周边、Q币', btnText: '我也去发一份', leftIcons: [{url:'assets/CodeBuddyAssets/982_1225/4.png'},{url:'assets/CodeBuddyAssets/982_1225/5.png'},{url:'assets/CodeBuddyAssets/982_1225/6.png'}], rightIcons: [{url:'assets/CodeBuddyAssets/982_1225/9.png'},{url:'assets/CodeBuddyAssets/982_1225/8.png'},{url:'assets/CodeBuddyAssets/982_1225/7.png'}] };
+    gQbPullData = createDefaultGQbPullData();
     guestFooterData = { link1: '活动规则', link2: '中奖记录', link3: '意见反馈' };
+    syncGuestTopButtonInputs();
     undoStack = [];
     redoStack = [];
 }
@@ -7451,6 +7971,7 @@ function init() {
     renderHeaderBrowserLogoPreview();
 
     // 初始化客态 UI 控件
+    syncGuestTopButtonInputs();
 
     // 确保视图 tab 正确
     switchView(currentView);
@@ -7463,7 +7984,6 @@ function init() {
     renderGuestModuleList();
     renderGuestLogoList();
     renderModuleBaseDeco();
-    renderIpList();
     renderPreview();
     // 首次进入 / 重新初始化时，强制预览滚动区回到顶部，避免浏览器恢复上次滚动位置后
     // sticky 标题贴边，造成顶部 UI 像被裁切的错觉。
@@ -8965,6 +9485,14 @@ function getModuleDetailHtml(key) {
                 <div id="passImageSlot_${key}"></div>
             </div>`;
         }
+        case 'redpacketNew': {
+            return `
+            <div class="detail-sub-section">
+                <div class="detail-sub-title">红包配置</div>
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">按 Figma 自动排版：先选 Q币 / 道具，再设红包数量（1~${REDPACKET_NEW_MAX} 个）。红色 / 棕色都默认最后一个红包为特殊样式，其余红包使用默认素材。文案、条件、库存可在预览区直接编辑</div>
+                <div id="redpacketNewList_${key}"></div>
+            </div>`;
+        }
         case 'lottery': {
             const d = getLotteryData(key);
             const isMulti = d.kind === 'multi';
@@ -9023,9 +9551,49 @@ function getModuleDetailHtml(key) {
                 <div id="drawTaskIconGrid" style="display:none"></div>
             </div>`;
             /* 奖品图标管理已移除 — 该模块只允许配置底色 */
+        case 'redpacket2': {
+            const d = getRedpacket2Data(key);
+            const count = d && d.inviteRewards ? d.inviteRewards.length : 4;
+            return `
+            <div class="detail-sub-section">
+                <div class="detail-sub-title">步骤引导</div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);cursor:pointer;user-select:none">
+                    <input type="checkbox" ${d.showSteps ? 'checked' : ''} onchange="window.setRedpacket2ShowSteps && window.setRedpacket2ShowSteps('${key}', this.checked)">
+                    <span>显示顶部步骤引导</span>
+                </label>
+            </div>
+            <div class="detail-sub-section">
+                <div class="detail-sub-title">被邀请人奖励管理</div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);cursor:pointer;user-select:none;margin-bottom:10px">
+                    <input type="checkbox" ${d.showInviteSection ? 'checked' : ''} onchange="window.setRedpacket2ShowInviteSection && window.setRedpacket2ShowInviteSection('${key}', this.checked)">
+                    <span>显示被邀请人奖励区</span>
+                </label>
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">奖品数量可配置，一排最多 4 个，最多 ${REDPACKET2_MAX_INVITE_REWARDS} 个；点击图标可上传替换，奖品名称可在预览区直接编辑。</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                    <span style="font-size:12px;color:var(--text-2)">奖品数量</span>
+                    <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" data-rp2-action="dec-invite-reward" data-iid="${key}" onclick="event.preventDefault();event.stopPropagation();window.setRedpacket2InviteRewardCount && window.setRedpacket2InviteRewardCount(this.dataset.iid, window.getRedpacket2Data(this.dataset.iid).inviteRewards.length - 1)">－</button>
+                    <input type="number" id="redpacket2InviteRewardCount_${key}" class="prop-input task-count-input" min="1" max="${REDPACKET2_MAX_INVITE_REWARDS}" value="${count}" style="width:56px;text-align:center" data-rp2-count-input="invite-reward" data-iid="${key}" onchange="event.stopPropagation();window.setRedpacket2InviteRewardCount && window.setRedpacket2InviteRewardCount(this.dataset.iid, Number(this.value))">
+                    <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" data-rp2-action="inc-invite-reward" data-iid="${key}" onclick="event.preventDefault();event.stopPropagation();window.setRedpacket2InviteRewardCount && window.setRedpacket2InviteRewardCount(this.dataset.iid, window.getRedpacket2Data(this.dataset.iid).inviteRewards.length + 1)">＋</button>
+                    <span style="font-size:11px;color:var(--text-4)">/ 最多 ${REDPACKET2_MAX_INVITE_REWARDS}</span>
+                </div>
+                <div id="redpacket2InviteRewardList_${key}" style="display:flex;flex-wrap:wrap;gap:12px"></div>
+            </div>
+            <div class="detail-sub-section">
+                <div class="detail-sub-title">奖励池管理</div>
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">样式和逻辑与列表型充值返利一致：左侧配置档位数量、每档奖品数量和奖励图标；档位、奖品文案和领取文字可在预览区直接编辑。</div>
+                <div id="redpacket2PoolItems_${key}"></div>
+            </div>`;
+        }
         case 'recharge': return `
             <div class="detail-sub-section">
                 <div style="font-size:11px;color:var(--text-3)">深色卡片底色根据页面背景色自动生成，文案可在预览区直接编辑</div>
+            </div>`;
+        case 'rechargeList': return `
+            <div class="detail-sub-section">
+                <div class="detail-sub-title">列表型充值返利</div>
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">已按设计稿对齐：每行一个档位，每档最多 2 个奖品；档位、奖品文案和领取文字可编辑。</div>
+                <div id="rechargeListItems_${key}"></div>
+                <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="addRechargeListItem('${key}')">＋ 添加档位（最多 ${RECHARGE_LIST_MAX_ITEMS} 档）</button>
             </div>`;
         case 'benefits': return `
             <div class="detail-sub-section">
@@ -9094,6 +9662,13 @@ function _rerenderModuleDetail(key) {
         case 'pass':
             renderPassImageSlot(key);
             break;
+        case 'redpacket2':
+            renderRedpacket2InviteRewardList(key);
+            renderRedpacket2PoolPanel(key);
+            break;
+        case 'redpacketNew':
+            renderRedpacketNewPanel(key);
+            break;
         case 'benefits':
             renderBenefitIconPanel();
             break;
@@ -9102,7 +9677,25 @@ function _rerenderModuleDetail(key) {
             break;
         case 'recharge':
             break;
+        case 'rechargeList':
+            renderRechargeListItemPanel(key);
+            break;
     }
+}
+
+function moveDefaultModulesToPageTop() {
+    const priority = ['rechargeList', 'redpacketNew'];
+    const topModules = [];
+    const otherModules = [];
+    modules.forEach(m => {
+        if(priority.includes(m.id)) topModules.push(m);
+        else otherModules.push(m);
+    });
+    topModules.sort((a, b) => priority.indexOf(a.id) - priority.indexOf(b.id));
+    const nextModules = topModules.concat(otherModules);
+    const changed = nextModules.some((m, i) => modules[i] !== m);
+    if(changed) modules.splice(0, modules.length, ...nextModules);
+    return changed;
 }
 
 function renderModuleList() {
@@ -9172,6 +9765,12 @@ function duplicateModule(i) {
             redpacketDataMap[newId] = JSON.parse(JSON.stringify(srcData));
         }
     }
+    if(src.id === 'redpacket2') {
+        const srcData = getRedpacket2Data(src.instanceId);
+        if(srcData) {
+            redpacket2DataMap[newId] = JSON.parse(JSON.stringify(srcData));
+        }
+    }
     if(src.id === 'signin') {
         const srcData = getSigninData(src.instanceId);
         if(srcData) {
@@ -9208,6 +9807,18 @@ function duplicateModule(i) {
             passDataMap[newId] = JSON.parse(JSON.stringify(srcData));
         }
     }
+    if(src.id === 'rechargeList') {
+        const srcData = getRechargeListData(src.instanceId);
+        if(srcData) {
+            rechargeListDataMap[newId] = JSON.parse(JSON.stringify(srcData));
+        }
+    }
+    if(src.id === 'redpacketNew') {
+        const srcData = getRedpacketNewData(src.instanceId);
+        if(srcData) {
+            redpacketNewDataMap[newId] = JSON.parse(JSON.stringify(srcData));
+        }
+    }
     if(moduleDecorations[src.instanceId]) {
         moduleDecorations[newId] = JSON.parse(JSON.stringify(moduleDecorations[src.instanceId]));
     }
@@ -9231,12 +9842,15 @@ function removeModule(i) {
     modules.splice(i, 1);
     // 清理对应实例的数据 / 装饰资源
     delete redpacketDataMap[target.instanceId];
+    delete redpacket2DataMap[target.instanceId];
     delete signinDataMap[target.instanceId];
     delete moreDataMap[target.instanceId];
     delete lotteryDataMap[target.instanceId];
     delete contentDataMap[target.instanceId];
     delete customDataMap[target.instanceId];
     delete passDataMap[target.instanceId];
+    delete rechargeListDataMap[target.instanceId];
+    delete redpacketNewDataMap[target.instanceId];
     delete moduleDecorations[target.instanceId];
     // 如果删的是当前展开的详情，折叠一下
     if(_expandedModuleId === target.instanceId) _expandedModuleId = null;
@@ -9588,12 +10202,12 @@ function renderPreview() {
     // 渲染“空页面图”（只保留头部 KV + 页面底色）
     renderEmptyPagePreview();
 
-    // 渲染 IP 浮层（覆盖在所有模块之上，可拖动）
-    renderIpOverlay(c1, false);
-    renderIpOverlay(c2, true);
-
-    // 同步左右预览区每个模块的高度：右侧模块高度与左侧保持一致
-    setTimeout(syncModuleHeights, 50);
+    // 同步左右预览区每个模块的高度：右侧模块高度与左侧保持一致；同步完成后再对齐空页面高度
+    setTimeout(() => {
+        syncModuleHeights();
+        syncEmptyPageHeight();
+    }, 50);
+    setTimeout(syncEmptyPageHeight, 160);
 
     // 绑定预览区按钮的切图hover事件
     setTimeout(bindSliceHoverEvents, 60);
@@ -9613,15 +10227,28 @@ function renderEmptyPagePreview() {
 
     c3.style.background = colors.background;
     c3.style.position = 'relative';
+    c3.style.height = 'auto';
+    c3.style.minHeight = '262px';
     c3.innerHTML = header;
 
     // 导出空页面图时保持“长图”尺寸：高度跟随当前完整页面，模块区域全部显示为页面底色。
-    requestAnimationFrame(() => {
-        const c1 = document.getElementById('previewContainer');
-        const c2 = document.getElementById('previewContainerBg');
-        const h = Math.max(262, c1 ? c1.scrollHeight : 0, c2 ? c2.scrollHeight : 0);
-        c3.style.minHeight = h + 'px';
-    });
+    requestAnimationFrame(syncEmptyPageHeight);
+}
+
+function syncEmptyPageHeight() {
+    const c3 = document.getElementById('previewContainerEmpty');
+    if(!c3) return;
+    const c1 = document.getElementById('previewContainer');
+    const c2 = document.getElementById('previewContainerBg');
+    const h = Math.ceil(Math.max(
+        262,
+        c1 ? c1.scrollHeight : 0,
+        c1 ? c1.offsetHeight : 0,
+        c2 ? c2.scrollHeight : 0,
+        c2 ? c2.offsetHeight : 0
+    ));
+    c3.style.height = h + 'px';
+    c3.style.minHeight = h + 'px';
 }
 
 // 同步左右预览区所有模块高度，确保右侧每个模块与左侧一模一样高
@@ -9682,6 +10309,7 @@ function renderModule(m, pc, isBgMode) {
     let html = '';
     switch(m.id) {
         case 'redpacket': html = renderRedpacket(pc, isBgMode, m); break;
+        case 'redpacket2': html = renderRedpacket2(pc, isBgMode, m); break;
         case 'assist': html = renderAssist(pc, isBgMode); break;
         case 'skin': html = renderSkin(pc, isBgMode); break;
         case 'signin': html = renderSignin(pc, isBgMode, m); break;
@@ -9690,8 +10318,10 @@ function renderModule(m, pc, isBgMode) {
         case 'content':html = renderContent(pc, isBgMode, m); break;
         case 'custom': html = renderCustom(pc, isBgMode, m); break;
         case 'pass':   html = renderPass(pc, isBgMode, m); break;
+        case 'redpacketNew': html = renderRedpacketNew(pc, isBgMode, m); break;
         case 'draw': html = renderDraw(pc, isBgMode); break;
         case 'recharge': html = renderRecharge(pc, isBgMode); break;
+        case 'rechargeList': html = renderRechargeList(pc, isBgMode, m); break;
         case 'benefits': html = renderBenefits(pc, isBgMode); break;
         default: return '';
     }
@@ -9878,6 +10508,468 @@ function onRedpacketTextEdit(el, field, instanceId) {
         pushSnapshot();
     }
 }
+
+// ---- Module: 新版口令码 ----
+function renderRedpacket2(pc, isBgMode, m) {
+    const iid = (m && m.instanceId) || (modules.find(mm => mm.id === 'redpacket2') || {}).instanceId;
+    const d = getRedpacket2Data(iid);
+    const editable = 'contenteditable="true"';
+    const S = 0.5; // 750→375 缩放比
+    const buttonVis = isBgMode ? 'visibility:hidden;' : '';
+    const editAttrs = field => `class="editable-text" ${editable} data-field="${field}" onblur="onRedpacket2TextEdit(this,'${field}','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"`;
+    const baseText = 'font-family:PingFang SC,Arial,sans-serif;color:#242424;box-sizing:border-box';
+    const rewardBg = '#F6F7FA';
+    const lineColor = 'rgba(0,0,0,0.18)';
+
+    function poolRewardCard(rowIndex, side, img, name, action) {
+        const nameField = `poolRows.${rowIndex}.${side}Name`;
+        const actionField = `poolRows.${rowIndex}.${side}Action`;
+        return `
+            <div style="height:${80*S}px;background:${rewardBg};border-radius:${16*S}px;padding:${16*S}px;display:flex;align-items:center;justify-content:space-between;gap:${8*S}px;box-sizing:border-box;overflow:hidden">
+                <div style="display:flex;align-items:center;gap:${12*S}px;min-width:0;flex:1">
+                    <div style="width:${48*S}px;height:${48*S}px;border-radius:${12*S}px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto">
+                        <img src="${img}" style="width:92%;height:92%;object-fit:contain;display:block" onerror="this.style.visibility='hidden'">
+                    </div>
+                    <span style="font-size:${20*S}px;line-height:${26*S}px;color:#242424;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" ${editAttrs(nameField)}>${name}</span>
+                </div>
+                <span style="font-size:${24*S}px;line-height:${32*S}px;color:#66A848;white-space:nowrap;flex:0 0 auto" ${editAttrs(actionField)}>${action}</span>
+            </div>`;
+    }
+
+    const titleHtml = `
+        <span style="display:inline-flex;align-items:center;justify-content:center;gap:${8*S}px;max-width:100%">
+            <img src="${REDPACKET2_ASSETS.titleDeco}" style="width:${24*S}px;height:${24*S}px;display:block;object-fit:contain" onerror="this.style.display='none'">
+            <span ${editAttrs('title')}>${d.title}</span>
+            <img src="${REDPACKET2_ASSETS.titleDeco}" style="width:${24*S}px;height:${24*S}px;display:block;object-fit:contain" onerror="this.style.display='none'">
+        </span>`;
+    const subtitleHtml = `<span ${editAttrs('subtitle')}>${d.subtitle}</span>`;
+
+    const sectionTitle = (field, text) => `
+        <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;width:100%;${baseText}">
+            <span style="width:${32*S}px;border-top:${Math.max(0.5, 1*S)}px solid ${lineColor};height:0;flex:0 0 auto"></span>
+            <span style="font-size:${22*S}px;line-height:${30*S}px;white-space:nowrap" ${editAttrs(field)}>${text}</span>
+            <span style="width:${32*S}px;border-top:${Math.max(0.5, 1*S)}px solid ${lineColor};height:0;flex:0 0 auto"></span>
+        </div>`;
+
+    const stepHtml = d.steps.map((step, i) => `
+        <div style="display:flex;align-items:center;justify-content:center;gap:${16*S}px;min-width:0;flex:1 1 0;height:100%;${baseText}">
+            <div style="width:${28*S}px;height:${28*S}px;border-radius:50%;background:${pc};color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:${17*S}px;line-height:${23*S}px;font-weight:600">${i+1}</div>
+            <div style="display:flex;flex-direction:column;align-items:flex-start;min-width:0;white-space:nowrap;text-align:left">
+                <span style="font-size:${20*S}px;line-height:${30*S}px;font-weight:500" ${editAttrs(`steps.${i}.title`)}>${step.title}</span>
+                <span style="font-size:${20*S}px;line-height:${24*S}px;font-weight:400" ${editAttrs(`steps.${i}.desc`)}>${step.desc}</span>
+            </div>
+        </div>`).join('');
+    const stepSectionHtml = d.showSteps ? `
+            <div style="height:${90*S}px;width:100%;border:${Math.max(0.5, 1*S)}px solid rgba(0,0,0,0.08);border-radius:${16*S}px;background:#fff;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 ${16*S}px;overflow:hidden">
+                ${stepHtml}
+            </div>` : '';
+
+    const inviteItems = (d.inviteRewards || []).slice(0, REDPACKET2_MAX_INVITE_REWARDS);
+    const inviteRows = [];
+    for(let i = 0; i < inviteItems.length; i += 4) inviteRows.push(inviteItems.slice(i, i + 4));
+    const inviteRewardsHtml = inviteRows.map((row, ri) => {
+        const cols = row.length || 1;
+        const gap = 16 * S;
+        const cells = row.map((reward, ii) => {
+            const i = ri * 4 + ii;
+            return `
+            <div style="width:calc((100% - ${(cols-1)*gap}px) / ${cols});height:${180*S}px;background:${rewardBg};border-radius:${16*S}px;padding:${16*S}px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:${16*S}px;overflow:hidden;${baseText};flex:0 0 auto">
+                <div style="width:${72*S}px;height:${72*S}px;border-radius:${16*S}px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto;background:${i >= 2 ? '#fff' : 'transparent'}">
+                    <img src="${reward.img}" style="max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;display:block" onerror="this.style.visibility='hidden'">
+                </div>
+                <div style="height:${60*S}px;width:100%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:${22*S}px;line-height:${30*S}px;overflow:hidden;word-break:break-word;overflow-wrap:anywhere" ${editAttrs(`inviteRewards.${i}.name`)}>${reward.name}</div>
+            </div>`;
+        }).join('');
+        return `<div style="display:flex;gap:${gap}px${ri > 0 ? ';margin-top:'+gap+'px' : ''}">${cells}</div>`;
+    }).join('');
+
+    const smallButton = (cls, field, text) => `
+        <div class="${cls}" style="width:${144*S}px;height:${64*S}px;${getBtnStyle(pc,64)};${buttonVis}border-radius:${16*S}px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;box-sizing:border-box;overflow:hidden">
+            <span style="color:#fff;font-size:${28*S}px;line-height:${36*S}px;font-family:PingFang SC,Arial,sans-serif;white-space:nowrap" ${editAttrs(field)}>${text}</span>
+        </div>`;
+
+    const inputRow = (placeholderField, placeholderText, btnClass, btnField, btnText) => `
+        <div style="display:flex;align-items:center;gap:${24*S}px;width:100%;height:${64*S}px;box-sizing:border-box">
+            <div style="height:${64*S}px;flex:1;min-width:0;border:${Math.max(0.5, 1*S)}px solid rgba(0,0,0,0.08);border-radius:${16*S}px;background:#fff;display:flex;align-items:center;padding:0 ${24*S}px;box-sizing:border-box;overflow:hidden">
+                <span style="font-size:${22*S}px;line-height:${30*S}px;color:rgba(0,0,0,0.60);font-family:PingFang SC,Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" ${editAttrs(placeholderField)}>${placeholderText}</span>
+            </div>
+            ${smallButton(btnClass, btnField, btnText)}
+        </div>`;
+    const inviteSectionHtml = d.showInviteSection ? `
+            <div style="display:flex;flex-direction:column;gap:${16*S}px;width:100%">
+                ${sectionTitle('inviteTitle', d.inviteTitle)}
+                <div style="width:100%">
+                    ${inviteRewardsHtml}
+                </div>
+                ${inputRow('friendCodePlaceholder', d.friendCodePlaceholder, 'redpacket-use-btn', 'useBtnText', d.useBtnText)}
+            </div>` : '';
+
+    const renderPoolIcon = src => `
+        <span style="width:${48*S}px;height:${48*S}px;border-radius:${12*S}px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.72)">
+            <img src="${escapeHtml(src || REDPACKET2_ASSETS.coinSmall)}" style="width:100%;height:100%;object-fit:contain;display:block" onerror="this.style.display='none'">
+        </span>`;
+    const renderPoolReward = (reward, rowIdx, rewardIdx, rewardCount) => {
+        const icons = (reward.icons && reward.icons.length ? reward.icons : [reward.icon || REDPACKET2_ASSETS.coinSmall]).slice(0, REDPACKET2_MAX_POOL_ICONS);
+        const rewardWidth = rewardCount === 1 ? 560 : 272;
+        const rewardFlex = rewardCount === 1 ? '1 1 auto' : `0 0 ${rewardWidth*S}px`;
+        const label = String(reward.label || '道具名称').replace(/\s*\n+\s*/g, '');
+        return `
+        <div class="redpacket2-pool-reward-cell" data-row-idx="${rowIdx}" data-reward-idx="${rewardIdx}" style="width:${rewardWidth*S}px;height:${80*S}px;background:${rewardBg};border-radius:${16*S}px;display:flex;align-items:center;min-width:0;flex:${rewardFlex};overflow:hidden;position:relative;box-sizing:border-box;padding:${16*S}px ${64*S}px ${16*S}px ${16*S}px;${isBgMode ? 'visibility:hidden;' : ''}">
+            <div style="display:flex;align-items:center;gap:${12*S}px;min-width:0;max-width:100%;flex:1">
+                ${icons.map(src => renderPoolIcon(src)).join('')}
+                <span style="min-width:0;flex:1;font-size:${20*S}px;line-height:${24*S}px;font-weight:400;color:#242424;font-family:PingFang SC,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                    <span style="display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:top" ${editAttrs(`poolRows.${rowIdx}.rewards.${rewardIdx}.label`)}>${escapeHtml(label)}</span>
+                </span>
+            </div>
+            <div class="redpacket2-pool-claim-text" style="position:absolute;right:${16*S}px;top:50%;transform:translateY(-50%);font-size:${24*S}px;line-height:${32*S}px;color:${pc};font-family:PingFang SC,sans-serif;white-space:nowrap;">
+                <span ${editAttrs(`poolRows.${rowIdx}.rewards.${rewardIdx}.btnText`)}>${escapeHtml(reward.btnText || '领取')}</span>
+            </div>
+        </div>`;
+    };
+    const poolRows = (d.poolRows || []).slice(0, REDPACKET2_MAX_POOL_ROWS);
+    const poolRowsHtml = poolRows.map((row, i) => {
+        const rewards = (row.rewards || []).slice(0, REDPACKET2_MAX_POOL_REWARDS);
+        return `
+        <div style="height:${80*S}px;display:flex;align-items:center;position:relative;${i === 0 ? '' : `margin-top:${16*S}px`};${baseText}">
+            ${i < poolRows.length - 1 ? `<div style="position:absolute;left:${39*S}px;top:${67*S}px;width:0;height:${42*S}px;border-left:1px solid rgba(0,0,0,0.08);transform:translateX(-0.5px);pointer-events:none"></div>` : ''}
+            <div style="width:${78*S}px;height:${38*S}px;border:1px solid rgba(0,0,0,0.08);border-radius:${8*S}px;background:rgba(255,255,255,0.58);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#8D8D8D;font-size:${24*S}px;line-height:${30*S}px;font-family:PingFang SC,sans-serif;white-space:nowrap;overflow:hidden">
+                <span ${editAttrs(`poolRows.${i}.people`)}>${escapeHtml(row.people)}</span>
+            </div>
+            <div style="margin-left:${16*S}px;display:flex;align-items:center;gap:${16*S}px;flex:1;min-width:0;height:100%">
+                ${rewards.map((reward, rewardIdx) => renderPoolReward(reward, i, rewardIdx, rewards.length)).join('')}
+            </div>
+        </div>`;
+    }).join('');
+
+    const shareIconSvg = `<svg viewBox="0 0 32 32" width="${32*S}" height="${32*S}" aria-hidden="true" style="display:block;flex:0 0 auto"><path d="M21 6h5v5M26 6L14 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 17v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V12a3 3 0 0 1 3-3h8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`;
+    const inviteIconHtml = `<img src="assets/image/yaoqing.png" style="width:${30*S}px;height:${30*S}px;object-fit:contain;display:block;flex:0 0 auto" onerror="this.style.display='none'">`;
+    const invitedTextHtml = isBgMode ? escapeHtml(String(d.invitedText || '').replace(/([：:]\s*)\d+\s*$/, '$1')) : escapeHtml(d.invitedText || '');
+
+    const innerHtml = `
+        <div style="display:flex;flex-direction:column;gap:${36*S}px;width:100%;${baseText}">
+            ${stepSectionHtml}
+
+            ${inviteSectionHtml}
+
+            <div style="display:flex;flex-direction:column;gap:${16*S}px;width:100%">
+                ${sectionTitle('poolTitle', d.poolTitle)}
+                <div style="display:flex;flex-direction:column;width:100%">
+                    ${poolRowsHtml}
+                </div>
+                ${inputRow('codeText', d.codeText, 'redpacket-copy-btn', 'generateBtnText', d.generateBtnText)}
+                <div class="redpacket2-share-btn" style="height:${80*S}px;width:100%;${getBtnStyle(pc,80)};${buttonVis}border-radius:${16*S}px;display:flex;align-items:center;justify-content:center;gap:${8*S}px;color:#fff;box-sizing:border-box;overflow:hidden">
+                    ${shareIconSvg}
+                    <span style="font-size:${28*S}px;line-height:${36*S}px;font-family:PingFang SC,Arial,sans-serif;white-space:nowrap" ${editAttrs('shareBtnText')}>${d.shareBtnText}</span>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:center;gap:${4*S}px;color:#242424;width:100%">
+                ${inviteIconHtml}
+                <span style="font-size:${22*S}px;line-height:${30*S}px;font-family:PingFang SC,Arial,sans-serif;white-space:nowrap" ${editAttrs('invitedText')}>${invitedTextHtml}</span>
+            </div>
+        </div>`;
+
+    return renderModuleTemplate({
+        moduleId: iid,
+        title: titleHtml,
+        subtitle: subtitleHtml,
+        primaryColor: pc,
+        bgPattern: REDPACKET2_ASSETS.topPattern,
+        titleDeco: null,
+        scale: S,
+        bodyPad: `padding:${36*S}px ${24*S}px ${36*S}px`,
+        contentMarginTop: 36*S,
+    }, innerHtml);
+}
+
+function setRedpacket2ValueByPath(obj, path, value) {
+    if(!obj || !path) return false;
+    const parts = String(path).split('.');
+    let cur = obj;
+    for(let i = 0; i < parts.length; i++) {
+        const rawKey = parts[i];
+        const key = /^\d+$/.test(rawKey) ? Number(rawKey) : rawKey;
+        if(i === parts.length - 1) {
+            if(cur[key] === value) return false;
+            cur[key] = value;
+            return true;
+        }
+        if(cur[key] == null) return false;
+        cur = cur[key];
+    }
+    return false;
+}
+
+// 新版口令码模块画布上编辑文字的回调（带 instanceId）
+function onRedpacket2TextEdit(el, field, instanceId) {
+    const newVal = el.textContent.trim();
+    const d = getRedpacket2Data(instanceId);
+    if(!d || !newVal) return;
+    if(setRedpacket2ValueByPath(d, field, newVal)) {
+        renderPreview();
+        pushSnapshot();
+    }
+}
+
+function setRedpacket2ShowSteps(instanceId, checked) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d) return;
+    const next = !!checked;
+    if(d.showSteps === next) return;
+    d.showSteps = next;
+    renderPreview();
+    pushSnapshot();
+}
+
+function setRedpacket2ShowInviteSection(instanceId, checked) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d) return;
+    const next = !!checked;
+    if(d.showInviteSection === next) return;
+    d.showInviteSection = next;
+    renderPreview();
+    pushSnapshot();
+}
+
+// ===== 新版口令码 · 被邀请人奖励配置 =====
+function bindRedpacket2InviteRewardControls(instanceId) {
+    const iid = instanceId;
+    document.querySelectorAll(`[data-iid="${iid}"][data-rp2-action]`).forEach(el => {
+        el.onclick = (event) => {
+            const action = el.dataset.rp2Action;
+            const d = getRedpacket2Data(iid);
+            if(!d) return;
+            event.preventDefault();
+            event.stopPropagation();
+            if(action === 'inc-invite-reward') {
+                setRedpacket2InviteRewardCount(iid, d.inviteRewards.length + 1);
+            } else if(action === 'dec-invite-reward') {
+                setRedpacket2InviteRewardCount(iid, d.inviteRewards.length - 1);
+            } else if(action === 'upload-invite-reward') {
+                uploadRedpacket2InviteRewardImg(iid, Number(el.dataset.idx));
+            }
+        };
+    });
+    const input = document.querySelector(`[data-iid="${iid}"][data-rp2-count-input="invite-reward"]`);
+    if(input) {
+        input.onchange = (event) => {
+            event.stopPropagation();
+            setRedpacket2InviteRewardCount(iid, Number(input.value));
+        };
+    }
+}
+function renderRedpacket2InviteRewardList(instanceId) {
+    const iid = instanceId || ((modules.find(mm => mm.id === 'redpacket2') || {}).instanceId);
+    if(!iid) return;
+    const d = getRedpacket2Data(iid);
+    const container = document.getElementById(`redpacket2InviteRewardList_${iid}`);
+    if(!container || !d) return;
+    container.innerHTML = (d.inviteRewards || []).map((it, i) => `
+        <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div class="icon-upload-item" data-rp2-action="upload-invite-reward" data-iid="${iid}" data-idx="${i}" onclick="event.preventDefault();event.stopPropagation();window.uploadRedpacket2InviteRewardImg && window.uploadRedpacket2InviteRewardImg(this.dataset.iid, Number(this.dataset.idx))" title="点击替换图标">
+                <img src="${it.img}">
+            </div>
+            <div style="font-size:10px;color:var(--text-3);line-height:1;max-width:64px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.name || '道具'+(i+1)}</div>
+        </div>`).join('');
+    const input = document.getElementById(`redpacket2InviteRewardCount_${iid}`);
+    if(input) input.value = d.inviteRewards.length;
+    bindRedpacket2InviteRewardControls(iid);
+}
+
+function renderRedpacket2PoolPanel(instanceId) {
+    const iid = instanceId || ((modules.find(mm => mm.id === 'redpacket2') || {}).instanceId);
+    if(!iid) return;
+    const d = getRedpacket2Data(iid);
+    const container = document.getElementById(`redpacket2PoolItems_${iid}`);
+    if(!container || !d) return;
+    const rows = d.poolRows || [];
+    const renderIconThumb = (src, onclick, title) => `
+        <button type="button" onclick="${onclick}" title="${title || '点击上传替换图标'}" style="width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--bg-elev-2);padding:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden">
+            <img src="${escapeHtml(src || REDPACKET2_ASSETS.coinSmall)}" style="width:100%;height:100%;object-fit:contain;border-radius:7px" onerror="this.style.visibility='hidden'">
+        </button>`;
+    container.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="font-size:12px;color:var(--text-2)">档位数量</span>
+            <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacket2PoolRowCount('${iid}', getRedpacket2Data('${iid}').poolRows.length - 1)">－</button>
+            <input type="number" id="redpacket2PoolCount_${iid}" class="prop-input task-count-input" min="1" max="${REDPACKET2_MAX_POOL_ROWS}" value="${rows.length}" style="width:56px;text-align:center" onchange="setRedpacket2PoolRowCount('${iid}', +this.value)">
+            <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacket2PoolRowCount('${iid}', getRedpacket2Data('${iid}').poolRows.length + 1)">＋</button>
+            <span style="font-size:11px;color:var(--text-4)">/ 最多 ${REDPACKET2_MAX_POOL_ROWS}</span>
+        </div>
+        ${rows.map((row, idx) => {
+            const rewards = row.rewards || [];
+            return `
+            <div style="padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elev-1);margin-bottom:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                    <div style="font-size:12px;color:var(--text-2);font-weight:500">第 ${idx + 1} 档</div>
+                    ${rows.length > 1 ? `<button class="module-action-btn danger" onclick="removeRedpacket2PoolRow('${iid}',${idx})" title="删除此档">🗑</button>` : ''}
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                    <span style="font-size:11px;color:var(--text-3);min-width:58px">奖品数量</span>
+                    <button class="rpn-opt-btn${rewards.length === 1 ? ' active' : ''}" style="flex:0 0 54px;padding:5px 0" onclick="setRedpacket2PoolRewardCount('${iid}',${idx},1)">1 个</button>
+                    <button class="rpn-opt-btn${rewards.length !== 1 ? ' active' : ''}" style="flex:0 0 54px;padding:5px 0" onclick="setRedpacket2PoolRewardCount('${iid}',${idx},2)">2 个</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(2,42px);gap:10px;margin-top:8px">
+                    ${rewards.map((reward, rewardIdx) => {
+                        const src = (reward.icons && reward.icons.length ? reward.icons[0] : reward.icon) || REDPACKET2_ASSETS.coinSmall;
+                        return renderIconThumb(src, `triggerRedpacket2PoolIconUpload('${iid}',${idx},${rewardIdx})`, `奖品 ${rewardIdx + 1} 图标`);
+                    }).join('')}
+                </div>
+            </div>`;
+        }).join('')}
+        <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="addRedpacket2PoolRow('${iid}')">＋ 添加档位（最多 ${REDPACKET2_MAX_POOL_ROWS} 档）</button>
+    `;
+}
+
+function setRedpacket2InviteRewardCount(instanceId, target) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d) return;
+    const items = d.inviteRewards || (d.inviteRewards = []);
+    target = Math.max(1, Math.min(REDPACKET2_MAX_INVITE_REWARDS, Number(target) || 1));
+    while(items.length > target) items.pop();
+    while(items.length < target) {
+        items.push({ img: REDPACKET2_ASSETS.coin, name: '新道具' });
+    }
+    renderRedpacket2InviteRewardList(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function uploadRedpacket2InviteRewardImg(instanceId, idx) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d || !d.inviteRewards || !d.inviteRewards[idx]) return;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const f = e.target.files && e.target.files[0];
+        if(!f || !f.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            d.inviteRewards[idx].img = ev.target.result;
+            renderRedpacket2InviteRewardList(instanceId);
+            renderPreview();
+            pushSnapshot();
+        };
+        reader.readAsDataURL(f);
+    };
+    input.click();
+}
+
+function addRedpacket2PoolRow(instanceId) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d) return;
+    if(d.poolRows.length >= REDPACKET2_MAX_POOL_ROWS) { alert('最多 ' + REDPACKET2_MAX_POOL_ROWS + ' 档'); return; }
+    d.poolRows.push(_createRedpacket2PoolRow(d.poolRows.length));
+    renderRedpacket2PoolPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function removeRedpacket2PoolRow(instanceId, idx) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d || d.poolRows.length <= 1) return;
+    d.poolRows.splice(idx, 1);
+    renderRedpacket2PoolPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function setRedpacket2PoolRowCount(instanceId, target) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d) return;
+    target = Math.max(1, Math.min(REDPACKET2_MAX_POOL_ROWS, Number(target) || 1));
+    while(d.poolRows.length > target) d.poolRows.pop();
+    while(d.poolRows.length < target) d.poolRows.push(_createRedpacket2PoolRow(d.poolRows.length));
+    d.poolRows = d.poolRows.map((row, idx) => _normalizeRedpacket2PoolRow(row, idx));
+    renderRedpacket2PoolPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function setRedpacket2PoolRewardCount(instanceId, rowIdx, count) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d || !d.poolRows[rowIdx]) return;
+    count = Math.max(1, Math.min(REDPACKET2_MAX_POOL_REWARDS, Number(count) || 1));
+    const rewards = d.poolRows[rowIdx].rewards || (d.poolRows[rowIdx].rewards = []);
+    while(rewards.length > count) rewards.pop();
+    while(rewards.length < count) rewards.push(_defaultRedpacket2PoolReward(rowIdx, rewards.length));
+    d.poolRows[rowIdx].rewards = rewards.map((reward, rewardIdx) => _normalizeRedpacket2PoolReward(reward, rowIdx, rewardIdx));
+    renderRedpacket2PoolPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function triggerRedpacket2PoolIconUpload(instanceId, rowIdx, rewardIdx) {
+    const d = getRedpacket2Data(instanceId);
+    if(!d || !d.poolRows[rowIdx] || !d.poolRows[rowIdx].rewards[rewardIdx]) return;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const file = e.target.files && e.target.files[0];
+        if(!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const reward = d.poolRows[rowIdx].rewards[rewardIdx];
+            reward.icon = ev.target.result;
+            reward.icons = [];
+            d.poolRows[rowIdx].rewards[rewardIdx] = _normalizeRedpacket2PoolReward(reward, rowIdx, rewardIdx);
+            renderRedpacket2PoolPanel(instanceId);
+            renderPreview();
+            pushSnapshot();
+        };
+        reader.readAsDataURL(file);
+    };
+    input.click();
+}
+
+// 新版口令码配置面板使用 inline onclick，显式挂到 window，避免局部作用域导致按钮不生效。
+Object.assign(window, {
+    getRedpacket2Data,
+    setRedpacket2ShowSteps,
+    setRedpacket2ShowInviteSection,
+    setRedpacket2InviteRewardCount,
+    renderRedpacket2InviteRewardList,
+    uploadRedpacket2InviteRewardImg,
+    renderRedpacket2PoolPanel,
+    addRedpacket2PoolRow,
+    removeRedpacket2PoolRow,
+    setRedpacket2PoolRowCount,
+    setRedpacket2PoolRewardCount,
+    triggerRedpacket2PoolIconUpload,
+    bindRedpacket2InviteRewardControls,
+});
+
+
+// 新版口令码配置面板事件委托：不依赖 inline onclick，避免动态面板作用域问题。
+document.addEventListener('click', (event) => {
+    const target = event.target && event.target.closest ? event.target.closest('[data-rp2-action]') : null;
+    if(!target) return;
+    const iid = target.dataset.iid;
+    const d = getRedpacket2Data(iid);
+    if(!d) return;
+    const action = target.dataset.rp2Action;
+    if(action === 'inc-invite-reward') {
+        event.preventDefault();
+        event.stopPropagation();
+        setRedpacket2InviteRewardCount(iid, d.inviteRewards.length + 1);
+    } else if(action === 'dec-invite-reward') {
+        event.preventDefault();
+        event.stopPropagation();
+        setRedpacket2InviteRewardCount(iid, d.inviteRewards.length - 1);
+    } else if(action === 'upload-invite-reward') {
+        event.preventDefault();
+        event.stopPropagation();
+        uploadRedpacket2InviteRewardImg(iid, Number(target.dataset.idx));
+    }
+}, true);
+
+document.addEventListener('change', (event) => {
+    const target = event.target;
+    if(!target || !target.matches || !target.matches('[data-rp2-count-input="invite-reward"]')) return;
+    event.stopPropagation();
+    setRedpacket2InviteRewardCount(target.dataset.iid, Number(target.value));
+}, true);
 
 // 通用模块文字编辑回调
 function onModuleTextEdit(el, dataObj, field) {
@@ -12003,6 +13095,340 @@ function uploadPassImage(instanceId) {
 }
 
 
+// ---- Module: 红包拉新（redpacketNew）----
+// 复用通用模块模板（顶部装饰 + 主/副标题）+ 1~6 个红包；
+// 排版严格对应 Figma：内容宽 654@2x，卡片高 220@2x，卡片行与库存行分离。
+// 1大 / 2中 / 3小 / 3小+1大 / 3小+2中 / 6小。
+const RPN_CARD_METRICS = {
+    large:  { w:654, h:220 },
+    medium: { w:315, h:220 },
+    small:  { w:202, h:220 },
+};
+const RPN_QB_LAYOUT = {
+    large:  { textX:141, textY:33, textW:213, numF:80, unitF:36, condF:22, amountMb:-16, btnCx:530, btnCy:110, btnF:33 },
+    medium: { textX:26,  textY:35, textW:168, numF:72, unitF:32, condF:20, amountMb:-12, btnCx:248, btnCy:110, btnF:27 },
+    small:  { textX:17,  textY:26, textW:168, numF:44, unitF:20, condF:18, amountMb:-6,  btnCx:101, btnCy:169, btnF:22 },
+};
+const RPN_ITEM_LAYOUT = {
+    large:  { groupX:55, groupY:57, groupW:384, icon:64, gap:16, textGap:12, condF:22, btnCx:530, btnCy:110, btnF:33 },
+    medium: { groupX:26, groupY:58, groupW:168, icon:64, gap:16, textGap:12, condF:20, btnCx:248, btnCy:110, btnF:27 },
+    small:  { groupX:17, groupY:26, groupW:168, icon:64, gap:16, textGap:8,  condF:18, btnCx:101, btnCy:169, btnF:22 },
+};
+function rpnRowsForCount(count) {
+    const sizes = rpnSizeLayout(count);
+    if(count <= 3) return [sizes.map((size, i) => ({ size, index:i }))];
+    return [
+        sizes.slice(0, 3).map((size, i) => ({ size, index:i })),
+        sizes.slice(3).map((size, i) => ({ size, index:i + 3 })),
+    ];
+}
+function rpnTextColor(color, special) {
+    if(color === 'brown') return special ? '#FBF5D5' : '#78461A';
+    return '#FBF5D5';
+}
+function rpnButtonTextColor(color) {
+    return color === 'brown' ? '#78461A' : '#E8472F';
+}
+function rpnRewardTypeLabel(type) {
+    return RPN_REWARD_CN[type] || 'Q币';
+}
+function renderRedpacketNew(pc, isBgMode, m, opts = {}) {
+    const iid = (m && m.instanceId) || _currentRedpacketNewInstanceId();
+    const d = getRedpacketNewData(iid);
+    if(!d) return '';
+    const editable = 'contenteditable="true"';
+    const S = 0.5;
+    const count = Math.max(1, Math.min(REDPACKET_NEW_MAX, d.items.length));
+    const color = d.color === 'red' ? 'red' : 'brown';
+    const gap = 24 * S;
+    const rowStockGap = 16 * S;
+    const rowGap = 24 * S;
+
+    const renderQbContent = (it, idx, size, special) => {
+        const L = RPN_QB_LAYOUT[size] || RPN_QB_LAYOUT.small;
+        const textColor = rpnTextColor(color, special);
+        const condStyle = size === 'large'
+            ? `width:max-content;max-width:none;white-space:nowrap!important;overflow:visible;text-overflow:clip;overflow-wrap:normal;word-break:normal`
+            : `width:100%;white-space:normal!important;overflow:hidden;text-overflow:clip;overflow-wrap:anywhere;word-break:break-word`;
+        return `
+            <div style="position:absolute;left:${L.textX*S}px;top:${L.textY*S}px;width:${L.textW*S}px;display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1;color:${textColor};font-family:'PingFang SC',sans-serif;pointer-events:auto">
+                <div style="display:flex;align-items:baseline;justify-content:center;gap:${6*S}px;margin-bottom:${L.amountMb*S}px;white-space:nowrap;font-weight:600">
+                    <span class="editable-text" ${editable} data-field="rpnNum${idx}" onblur="onRedpacketNewItemEdit(this,${idx},'amount','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="min-width:0;max-width:none;white-space:nowrap!important;overflow-wrap:normal;word-break:normal;font-size:${L.numF*S}px;line-height:1.4;font-weight:600;font-family:'PingFang SC',sans-serif;color:${textColor}">${it.amount}</span>
+                    <span class="editable-text" ${editable} data-field="rpnUnit${idx}" onblur="onRedpacketNewItemEdit(this,${idx},'unit','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="min-width:0;max-width:none;white-space:nowrap!important;overflow-wrap:normal;word-break:normal;font-size:${L.unitF*S}px;line-height:1.4;font-weight:600;color:${textColor}">${it.unit || 'Q币'}</span>
+                </div>
+                <div class="editable-text" ${editable} data-field="rpnCond${idx}" onblur="onRedpacketNewItemEdit(this,${idx},'condition','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="font-size:${L.condF*S}px;line-height:1.4;font-weight:400;color:${textColor};${condStyle}">${it.condition}</div>
+            </div>`;
+    };
+
+    const renderItemContent = (it, idx, size, special) => {
+        const L = RPN_ITEM_LAYOUT[size] || RPN_ITEM_LAYOUT.small;
+        const maxIcons = rpnMaxItemIcons(size);
+        const iconCount = Math.max(1, Math.min(maxIcons, Number(it.itemIconCount) || maxIcons));
+        const icons = (Array.isArray(it.itemIcons) && it.itemIcons.length ? it.itemIcons : rpnCloneItemIcons(5)).slice(0, iconCount);
+        const textColor = rpnTextColor(color, special);
+        const condStyle = size === 'large'
+            ? `width:max-content;max-width:none;white-space:nowrap!important;overflow:visible;text-overflow:clip;overflow-wrap:normal;word-break:normal`
+            : `width:100%;white-space:normal!important;overflow:hidden;text-overflow:clip;overflow-wrap:anywhere;word-break:break-word`;
+        const iconHtml = icons.map((ic, iconIdx) => `
+            <img src="${ic.url}" title="${ic.name || `道具${iconIdx+1}`}" style="width:${L.icon*S}px;height:${L.icon*S}px;border-radius:${16*S}px;object-fit:cover;display:block;flex:0 0 auto" onerror="this.style.visibility='hidden'">
+        `).join('');
+        return `
+            <div style="position:absolute;left:${L.groupX*S}px;top:${L.groupY*S}px;width:${L.groupW*S}px;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:'PingFang SC',sans-serif;pointer-events:auto">
+                <div style="display:flex;align-items:center;justify-content:center;gap:${L.gap*S}px;width:100%;height:${L.icon*S}px;overflow:hidden">${iconHtml}</div>
+                <div class="editable-text" ${editable} data-field="rpnCond${idx}" onblur="onRedpacketNewItemEdit(this,${idx},'condition','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="margin-top:${L.textGap*S}px;font-size:${L.condF*S}px;line-height:1.4;font-weight:400;color:${textColor};${condStyle}">${it.condition}</div>
+            </div>`;
+    };
+
+    const renderCard = ({ size, index }) => {
+        const it = d.items[index] || _rpnDefaultItem(index, count);
+        const M = RPN_CARD_METRICS[size] || RPN_CARD_METRICS.small;
+        const special = rpnIsSpecialCard(d, index, count);
+        const visualType = rpnVisualType(d, index, count);
+        const img = rpnImgPath(color, visualType, size, false);
+        const claimedImg = rpnImgPath(color, visualType, size, true);
+        const itemRewardType = rpnItemRewardType(it, d.rewardType);
+        const contentHtml = isBgMode ? '' : (itemRewardType === 'item'
+            ? renderItemContent(it, index, size, special || color === 'red')
+            : renderQbContent(it, index, size, special || color === 'red'));
+        const L = itemRewardType === 'item' ? (RPN_ITEM_LAYOUT[size] || RPN_ITEM_LAYOUT.small) : (RPN_QB_LAYOUT[size] || RPN_QB_LAYOUT.small);
+        const claimHtml = isBgMode ? '' : `<div class="rpn-claim-text" style="position:absolute;left:${L.btnCx*S}px;top:${L.btnCy*S}px;transform:translate(-50%,-50%);font-size:${L.btnF*S}px;font-weight:600;color:${rpnButtonTextColor(color)};font-family:'PingFang SC',sans-serif;pointer-events:none;white-space:nowrap">${it.btnText || '领'}</div>`;
+        return `
+        <div class="rpn-card" data-rpn-card="1" data-rpn-index="${index}" data-rpn-size="${size}" data-rpn-visual-type="${visualType}" data-rpn-color="${color}" style="position:relative;width:${M.w*S}px;height:${M.h*S}px;border-radius:${16*S}px;overflow:hidden;flex:0 0 auto">
+            <img class="rpn-card-bg" src="${img}" data-unclaimed-src="${img}" data-claimed-src="${claimedImg}" style="position:absolute;left:0;top:0;width:100%;height:100%;display:block" onerror="this.style.visibility='hidden'">
+            <div style="position:absolute;inset:0;pointer-events:none">
+                ${contentHtml}
+                ${claimHtml}
+            </div>
+        </div>`;
+    };
+
+    const renderStockRow = (row) => {
+        if(opts.hideStock || d.stockVisible === false) return '';
+        return `
+        <div style="display:grid;grid-template-columns:repeat(${row.length}, minmax(0, 1fr));width:${654*S}px;margin-top:${rowStockGap}px;font-size:${20*S}px;line-height:${28*S}px;color:rgba(0,0,0,0.60);font-family:'PingFang SC',sans-serif;text-align:center">
+            ${row.map(({ index }) => {
+                const it = d.items[index] || _rpnDefaultItem(index, count);
+                const stockText = it.stockText || `剩余库存： ${it.stock || ''}`;
+                return `<div class="editable-text" ${editable} data-field="rpnStockText${index}" onblur="onRedpacketNewItemEdit(this,${index},'stockText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="min-width:0;max-width:100%;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis">${stockText}</div>`;
+            }).join('')}
+        </div>`;
+    };
+
+    const rowsHtml = rpnRowsForCount(count).map((row, rowIdx, rows) => `
+        <div style="width:${654*S}px;${rowIdx < rows.length - 1 ? `margin-bottom:${rowGap}px` : ''}">
+            <div style="display:flex;align-items:flex-start;gap:${gap}px;width:${654*S}px">${row.map(renderCard).join('')}</div>
+            ${renderStockRow(row)}
+        </div>
+    `).join('');
+
+    const inner = `<div style="width:${654*S}px">${rowsHtml}</div>${opts.afterContentHtml || ''}`;
+
+    const titleHtml = `<span class="editable-text" ${editable} data-field="title" onblur="onRedpacketNewFieldEdit(this,'title','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.title}</span>`;
+    const subtitleHtml = `<span class="editable-text" ${editable} data-field="subtitle" onblur="onRedpacketNewFieldEdit(this,'subtitle','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.subtitle}</span>`;
+
+    return renderModuleTemplate({
+        moduleId: iid,
+        title: titleHtml,
+        subtitle: subtitleHtml,
+        primaryColor: pc,
+        scale: S,
+        contentMarginTop: 36 * S
+    }, inner);
+}
+
+function onRedpacketNewFieldEdit(el, field, instanceId) {
+    const v = el.textContent.trim();
+    const d = getRedpacketNewData(instanceId); if(!d) return;
+    if(v !== d[field]) { d[field] = v; renderPreview(); pushSnapshot(); }
+}
+function onRedpacketNewItemEdit(el, idx, field, instanceId) {
+    const v = el.textContent.trim();
+    const d = getRedpacketNewData(instanceId); if(!d || !d.items[idx]) return;
+    if(v !== d.items[idx][field]) {
+        d.items[idx][field] = v;
+        if(field === 'stockText') {
+            const m = v.match(/\d+/g);
+            if(m && m.length) d.items[idx].stock = m[m.length - 1];
+        }
+        renderPreview();
+        pushSnapshot();
+    }
+}
+
+// ===== 红包拉新·左侧详情面板 =====
+function renderRedpacketNewPanel(instanceId) {
+    const iid = instanceId || _currentRedpacketNewInstanceId();
+    if(!iid) return;
+    const d = getRedpacketNewData(iid);
+    const container = document.getElementById(`redpacketNewList_${iid}`);
+    if(!container) return;
+    const colorOpts = [['brown','棕色'],['red','红色']];
+    const typeOpts = [['qb','Q币'],['item','道具']];
+    const sizes = rpnSizeLayout(d.items.length);
+    const colorBtns = colorOpts.map(([v,label]) =>
+        `<button class="rpn-opt-btn${d.color===v?' active':''}" onclick="setRedpacketNewProp('${iid}','color','${v}')">${label}</button>`
+    ).join('');
+    const itemCards = d.items.map((it, i) => {
+        const type = rpnItemRewardType(it, d.rewardType);
+        const size = sizes[i] || 'small';
+        const maxIcons = rpnMaxItemIcons(size);
+        const iconCount = Math.max(1, Math.min(maxIcons, Number(it.itemIconCount) || maxIcons));
+        const typeBtns = typeOpts.map(([v,label]) =>
+            `<button class="rpn-opt-btn${type===v?' active':''}" onclick="setRedpacketNewItemType('${iid}',${i},'${v}')">${label}</button>`
+        ).join('');
+        const iconPanel = type === 'item' ? `
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                    <span style="font-size:12px;color:var(--text-2)">道具图标</span>
+                    <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketNewItemIconCount('${iid}',${i}, getRedpacketNewData('${iid}').items[${i}].itemIconCount - 1)">－</button>
+                    <input type="number" class="prop-input" min="1" max="${maxIcons}" value="${iconCount}" style="width:56px;text-align:center" onchange="setRedpacketNewItemIconCount('${iid}',${i}, +this.value)">
+                    <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketNewItemIconCount('${iid}',${i}, getRedpacketNewData('${iid}').items[${i}].itemIconCount + 1)">＋</button>
+                    <span style="font-size:11px;color:var(--text-4)">/ 最多 ${maxIcons} 个</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    ${it.itemIcons.slice(0, iconCount).map((ic, iconIdx) => `
+                        <div style="width:44px;height:44px;border-radius:10px;background:var(--bg-elev-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="triggerRedpacketNewItemIconUpload('${iid}',${i},${iconIdx})" title="点击替换道具图标">
+                            <img src="${escapeHtml(ic.url)}" style="width:36px;height:36px;object-fit:cover;border-radius:8px" onerror="this.style.visibility='hidden'">
+                        </div>
+                    `).join('')}
+                </div>
+            </div>` : '';
+        return `
+            <div style="margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--bg-elev-1)">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px">
+                    <div style="font-size:12px;color:var(--text-2);font-weight:600">红包 ${i+1} · ${RPN_SIZE_CN[size] || ''}${i === d.items.length - 1 ? ' · 特殊样式' : ''}</div>
+                    <div style="font-size:11px;color:var(--text-4)">${type === 'item' ? '道具红包' : 'Q币红包'}</div>
+                </div>
+                <div class="rpn-opt-row">${typeBtns}</div>
+                ${iconPanel}
+            </div>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div style="margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:12px;color:var(--text-2)">红包数量</span>
+                <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketNewCount('${iid}', getRedpacketNewData('${iid}').items.length - 1)">－</button>
+                <input type="number" class="prop-input" min="1" max="${REDPACKET_NEW_MAX}" value="${d.items.length}" style="width:56px;text-align:center" onchange="setRedpacketNewCount('${iid}', +this.value)">
+                <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRedpacketNewCount('${iid}', getRedpacketNewData('${iid}').items.length + 1)">＋</button>
+                <span style="font-size:11px;color:var(--text-4)">/ 最多 ${REDPACKET_NEW_MAX}</span>
+            </div>
+        </div>
+        <div style="margin-bottom:12px">
+            <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">颜色方案</div>
+            <div class="rpn-opt-row">${colorBtns}</div>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12px;color:var(--text-2);cursor:pointer">
+            <input type="checkbox" ${d.stockVisible === false ? '' : 'checked'} onchange="setRedpacketNewStockVisible('${iid}', this.checked)">
+            <span>显示剩余库存</span>
+        </label>
+        <div style="font-size:11px;color:var(--text-4);line-height:1.5;background:var(--bg-elev-1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:12px">
+            当前：${RPN_COLOR_CN[d.color]} · ${d.items.length} 个红包 · ${d.stockVisible === false ? '隐藏库存' : '显示库存'}。每个红包可独立选择 Q币 / 道具；最后一个红包自动使用对应特殊底图，其余使用默认底图。
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:6px">单个红包配置</div>
+        ${itemCards}`;
+}
+
+function setRedpacketNewCount(instanceId, count) {
+    const d = getRedpacketNewData(instanceId); if(!d) return;
+    count = Math.max(1, Math.min(REDPACKET_NEW_MAX, count|0));
+    if(count === d.items.length) return;
+    const next = [];
+    for(let i=0;i<count;i++) {
+        const old = d.items[i] || {};
+        next.push({
+            ..._rpnDefaultItem(i, count),
+            ...old,
+            amount: rpnDefaultAmount(i, count),
+            unit: old.unit || 'Q币',
+        });
+    }
+    d.items = next;
+    normalizeRedpacketNewData(d);
+    renderRedpacketNewPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function setRedpacketNewProp(instanceId, field, value) {
+    const d = getRedpacketNewData(instanceId); if(!d) return;
+    if(field === 'color' && value !== 'red' && value !== 'brown') return;
+    if(field === 'rewardType' && value !== 'qb' && value !== 'item') return;
+    if(d[field] === value) return;
+    d[field] = value;
+    if(field === 'rewardType') d.items.forEach(it => { it.rewardType = value; });
+    normalizeRedpacketNewData(d);
+    renderRedpacketNewPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function setRedpacketNewStockVisible(instanceId, visible) {
+    const d = getRedpacketNewData(instanceId); if(!d) return;
+    const next = !!visible;
+    if(d.stockVisible === next) return;
+    d.stockVisible = next;
+    renderRedpacketNewPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function setRedpacketNewItemType(instanceId, idx, value) {
+    const d = getRedpacketNewData(instanceId); if(!d || !d.items[idx]) return;
+    if(value !== 'qb' && value !== 'item') return;
+    if(d.items[idx].rewardType === value) return;
+    d.items[idx].rewardType = value;
+    normalizeRedpacketNewData(d);
+    renderRedpacketNewPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function setRedpacketNewItemIconCount(instanceId, idx, count) {
+    const d = getRedpacketNewData(instanceId); if(!d || !d.items[idx]) return;
+    const size = rpnSizeLayout(d.items.length)[idx] || 'small';
+    const max = rpnMaxItemIcons(size);
+    const val = Math.max(1, Math.min(max, Number(count) || 1));
+    if(d.items[idx].itemIconCount === val) return;
+    d.items[idx].itemIconCount = val;
+    normalizeRedpacketNewData(d);
+    renderRedpacketNewPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function triggerRedpacketNewItemIconUpload(instanceId, idx, iconIdx) {
+    const d = getRedpacketNewData(instanceId); if(!d || !d.items[idx]) return;
+    const item = d.items[idx];
+    if(!Array.isArray(item.itemIcons)) item.itemIcons = rpnCloneItemIcons(5);
+    while(item.itemIcons.length <= iconIdx) item.itemIcons.push({...RPN_DEFAULT_ITEM_ICONS[item.itemIcons.length % RPN_DEFAULT_ITEM_ICONS.length]});
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const f = e.target.files[0];
+        if(!f || !f.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            item.itemIcons[iconIdx].url = ev.target.result;
+            normalizeRedpacketNewData(d);
+            renderRedpacketNewPanel(instanceId);
+            renderPreview();
+            pushSnapshot();
+        };
+        reader.readAsDataURL(f);
+    };
+    input.click();
+}
+
+function setRedpacketNewItemProp(instanceId, idx, field, value) {
+    const d = getRedpacketNewData(instanceId); if(!d || !d.items[idx]) return;
+    d.items[idx][field] = value;
+    normalizeRedpacketNewData(d);
+    renderRedpacketNewPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
 
 
 // ---- Module 6: 抽奖组件（深色模块） ----
@@ -12181,6 +13607,254 @@ function updateRechargeBgColor(val) {
     pushSnapshot();
 }
 
+// ---- Module: 列表型充值返利 ----
+function renderRechargeList(pc, isBgMode, m) {
+    const iid = (m && m.instanceId) || _currentRechargeListInstanceId();
+    const d = getRechargeListData(iid);
+    const editable = 'contenteditable="true"';
+    const S = 0.5;
+    if(!d) return '';
+
+    const titleHtml = `<span class="editable-text" ${editable} data-field="title" onblur="onRechargeListFieldEdit(this,'title','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(d.title)}</span>`;
+    const subtitleHtml = `<span class="editable-text" ${editable} data-field="subtitle" onblur="onRechargeListFieldEdit(this,'subtitle','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(d.subtitle)}</span>`;
+
+    const renderIcon = (src, extraStyle = '') => `
+        <span style="width:${48*S}px;height:${48*S}px;border-radius:${12*S}px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.72);${extraStyle}">
+            <img src="${escapeHtml(src || RECHARGE_LIST_ASSETS.coin)}" style="width:100%;height:100%;object-fit:contain;display:block" onerror="this.style.display='none'">
+        </span>`;
+
+    const renderReward = (reward, itemIdx, rewardIdx, rewardCount) => {
+        const icons = (reward.icons && reward.icons.length ? reward.icons : [reward.icon || RECHARGE_LIST_ASSETS.coin]).slice(0, RECHARGE_LIST_MAX_ICONS);
+        const iconGap = `${12*S}px`;
+        const rewardWidth = rewardCount === 1 ? 560 : 272;
+        const rewardFlex = rewardCount === 1 ? '1 1 auto' : `0 0 ${rewardWidth*S}px`;
+        const label = String(reward.label || '道具名称').replace(/\s*\n+\s*/g, '');
+        const labelHtml = `
+            <span style="min-width:0;flex:1;font-size:${20*S}px;line-height:${24*S}px;font-weight:400;color:#242424;font-family:PingFang SC,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                <span class="editable-text" ${editable} data-field="rewardLabel${itemIdx}_${rewardIdx}" onblur="onRechargeListRewardFieldEdit(this,${itemIdx},${rewardIdx},'label','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:top">${escapeHtml(label)}</span>
+            </span>`;
+        return `
+        <div class="recharge-list-reward-cell" data-item-idx="${itemIdx}" data-reward-idx="${rewardIdx}" style="width:${rewardWidth*S}px;height:${80*S}px;background:#F6F7FA;border-radius:${16*S}px;display:flex;align-items:center;min-width:0;flex:${rewardFlex};overflow:hidden;position:relative;box-sizing:border-box;padding:${16*S}px ${64*S}px ${16*S}px ${16*S}px;${isBgMode ? 'visibility:hidden;' : ''}">
+            <div style="display:flex;align-items:center;gap:${iconGap};min-width:0;max-width:100%;flex:1;">
+                ${icons.map(src => renderIcon(src)).join('')}
+                ${labelHtml}
+            </div>
+            <div class="recharge-list-claim-text" style="position:absolute;right:${16*S}px;top:50%;transform:translateY(-50%);font-size:${24*S}px;line-height:${32*S}px;color:${pc};font-family:PingFang SC,sans-serif;white-space:nowrap;">
+                <span class="editable-text" ${editable} data-field="rewardBtn${itemIdx}_${rewardIdx}" onblur="onRechargeListRewardFieldEdit(this,${itemIdx},${rewardIdx},'btnText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(reward.btnText || '领取')}</span>
+            </div>
+        </div>`;
+    };
+
+    const itemsHtml = (d.items || []).slice(0, RECHARGE_LIST_MAX_ITEMS).map((it, idx) => {
+        const rewards = (it.rewards || []).slice(0, RECHARGE_LIST_MAX_REWARDS);
+        return `
+        <div style="height:${80*S}px;display:flex;align-items:center;position:relative;${idx === 0 ? '' : `margin-top:${16*S}px`}">
+            ${idx < Math.min((d.items || []).length, RECHARGE_LIST_MAX_ITEMS) - 1 ? `<div style="position:absolute;left:${39*S}px;top:${67*S}px;width:0;height:${42*S}px;border-left:1px solid rgba(0,0,0,0.08);transform:translateX(-0.5px);pointer-events:none"></div>` : ''}
+            <div style="width:${78*S}px;height:${38*S}px;border:1px solid rgba(0,0,0,0.08);border-radius:${8*S}px;background:rgba(255,255,255,0.58);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#8D8D8D;font-size:${24*S}px;line-height:${30*S}px;font-family:PingFang SC,sans-serif;white-space:nowrap;overflow:hidden">
+                <span class="editable-text" ${editable} data-field="amount${idx}" onblur="onRechargeListItemFieldEdit(this,${idx},'amount','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(it.amount)}</span>
+            </div>
+            <div style="margin-left:${16*S}px;display:flex;align-items:center;gap:${16*S}px;flex:1;min-width:0;height:100%">
+                ${rewards.map((reward, rewardIdx) => renderReward(reward, idx, rewardIdx, rewards.length)).join('')}
+            </div>
+        </div>`;
+    }).join('');
+
+    const totalHtml = `
+        <div style="display:flex;align-items:center;justify-content:center;gap:${8*S}px;margin-top:${36*S}px;height:${30*S}px;color:#242424;font-family:PingFang SC,sans-serif;font-size:${24*S}px;line-height:${30*S}px">
+            <img src="assets/image/chongfan.png" style="width:${30*S}px;height:${30*S}px;object-fit:contain;display:block;flex-shrink:0" onerror="this.style.display='none'">
+            <span class="editable-text" ${editable} data-field="totalLabel" onblur="onRechargeListFieldEdit(this,'totalLabel','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(d.totalLabel || '当前已累计充值：')}</span>
+            <span class="editable-text" ${editable} data-field="total" onblur="onRechargeListFieldEdit(this,'total','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="${isBgMode ? 'visibility:hidden;' : ''}">${escapeHtml(d.total || '')}</span>
+        </div>`;
+
+    return renderModuleTemplate({
+        moduleId: iid,
+        title: titleHtml,
+        subtitle: subtitleHtml,
+        primaryColor: pc,
+        scale: S,
+        contentMarginTop: 36 * S,
+        bodyPad: `padding:${36*S}px ${24*S}px ${36*S}px`
+    }, itemsHtml + totalHtml);
+}
+
+function onRechargeListFieldEdit(el, field, instanceId) {
+    const d = getRechargeListData(instanceId); if(!d) return;
+    const fallback = field === 'title' ? 'QQ浏览器渠道用户专属充值返利' : (field === 'total' ? '1000元' : (field === 'totalLabel' ? '当前已累计充值：' : '累计充值领大奖，数量有限，先到先得'));
+    const v = el.textContent.trim() || fallback;
+    if(v !== d[field]) { d[field] = v; renderRechargeListItemPanel(instanceId); renderPreview(); pushSnapshot(); }
+}
+function onRechargeListItemFieldEdit(el, idx, field, instanceId) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[idx]) return;
+    const fallback = '充值档位';
+    const v = el.textContent.trim() || fallback;
+    if(v !== d.items[idx][field]) { d.items[idx][field] = v; renderRechargeListItemPanel(instanceId); renderPreview(); pushSnapshot(); }
+}
+function onRechargeListRewardFieldEdit(el, itemIdx, rewardIdx, field, instanceId) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[itemIdx] || !d.items[itemIdx].rewards[rewardIdx]) return;
+    const fallback = field === 'btnText' ? '领取' : (field === 'label' ? '道具名称' : '');
+    const v = el.textContent.trim() || fallback;
+    if(v !== d.items[itemIdx].rewards[rewardIdx][field]) {
+        d.items[itemIdx].rewards[rewardIdx][field] = v;
+        d.items[itemIdx].rewards[rewardIdx] = _normalizeRechargeListReward(d.items[itemIdx].rewards[rewardIdx], itemIdx, rewardIdx);
+        renderRechargeListItemPanel(instanceId);
+        renderPreview();
+        pushSnapshot();
+    }
+}
+function renderRechargeListItemPanel(instanceId) {
+    const iid = instanceId || _currentRechargeListInstanceId();
+    if(!iid) return;
+    const d = getRechargeListData(iid);
+    const container = document.getElementById(`rechargeListItems_${iid}`);
+    if(!container || !d) return;
+    const items = d.items || [];
+    const renderIconThumb = (src, onclick, title) => `
+        <button type="button" onclick="${onclick}" title="${title || '点击上传替换图标'}" style="width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--bg-elev-2);padding:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden">
+            <img src="${escapeHtml(src || RECHARGE_LIST_ASSETS.coin)}" style="width:100%;height:100%;object-fit:contain;border-radius:7px" onerror="this.style.visibility='hidden'">
+        </button>`;
+    container.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="font-size:12px;color:var(--text-2)">档位数量</span>
+            <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRechargeListItemCount('${iid}', getRechargeListData('${iid}').items.length - 1)">－</button>
+            <input type="number" id="rechargeListCount_${iid}" class="prop-input task-count-input" min="1" max="${RECHARGE_LIST_MAX_ITEMS}" value="${items.length}" style="width:56px;text-align:center" onchange="setRechargeListItemCount('${iid}', +this.value)">
+            <button class="btn btn-outline btn-sm" style="width:28px;height:28px;padding:0;justify-content:center" onclick="setRechargeListItemCount('${iid}', getRechargeListData('${iid}').items.length + 1)">＋</button>
+            <span style="font-size:11px;color:var(--text-4)">/ 最多 ${RECHARGE_LIST_MAX_ITEMS}</span>
+        </div>
+        ${items.map((it, idx) => {
+            const rewards = it.rewards || [];
+            return `
+            <div style="padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elev-1);margin-bottom:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                    <div style="font-size:12px;color:var(--text-2);font-weight:500">第 ${idx+1} 档</div>
+                    ${items.length > 1 ? `<button class="module-action-btn danger" onclick="removeRechargeListItem('${iid}',${idx})" title="删除此档">🗑</button>` : ''}
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                    <span style="font-size:11px;color:var(--text-3);min-width:58px">奖品数量</span>
+                    <button class="rpn-opt-btn${rewards.length === 1 ? ' active' : ''}" style="flex:0 0 54px;padding:5px 0" onclick="setRechargeListRewardCount('${iid}',${idx},1)">1 个</button>
+                    <button class="rpn-opt-btn${rewards.length !== 1 ? ' active' : ''}" style="flex:0 0 54px;padding:5px 0" onclick="setRechargeListRewardCount('${iid}',${idx},2)">2 个</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(2,42px);gap:10px;margin-top:8px">
+                    ${rewards.map((reward, rewardIdx) => {
+                        const src = (reward.icons && reward.icons.length ? reward.icons[0] : reward.icon) || RECHARGE_LIST_ASSETS.coin;
+                        return renderIconThumb(src, `triggerRechargeListIconUpload('${iid}',${idx},${rewardIdx},0)`, `奖品 ${rewardIdx+1} 图标`);
+                    }).join('')}
+                </div>
+            </div>`;
+        }).join('')}
+    `;
+}
+function addRechargeListItem(instanceId) {
+    const d = getRechargeListData(instanceId); if(!d) return;
+    if(d.items.length >= RECHARGE_LIST_MAX_ITEMS) { alert('最多 ' + RECHARGE_LIST_MAX_ITEMS + ' 档'); return; }
+    d.items.push(_createRechargeListItem(d.items.length));
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function removeRechargeListItem(instanceId, idx) {
+    const d = getRechargeListData(instanceId); if(!d || d.items.length <= 1) return;
+    d.items.splice(idx, 1);
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function setRechargeListItemCount(instanceId, target) {
+    const d = getRechargeListData(instanceId); if(!d) return;
+    target = Math.max(1, Math.min(RECHARGE_LIST_MAX_ITEMS, Number(target) || 1));
+    while(d.items.length > target) d.items.pop();
+    while(d.items.length < target) d.items.push(_createRechargeListItem(d.items.length));
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function setRechargeListFieldProp(instanceId, field, value) {
+    const d = getRechargeListData(instanceId); if(!d) return;
+    const fallback = field === 'total' ? '1000元' : '';
+    d[field] = String(value || '').trim() || fallback;
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function setRechargeListItemProp(instanceId, idx, field, value) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[idx]) return;
+    const fallback = '充值档位';
+    d.items[idx][field] = String(value || '').trim() || fallback;
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function addRechargeListReward(instanceId, itemIdx) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[itemIdx]) return;
+    const rewards = d.items[itemIdx].rewards || (d.items[itemIdx].rewards = []);
+    if(rewards.length >= RECHARGE_LIST_MAX_REWARDS) { alert('每档最多 ' + RECHARGE_LIST_MAX_REWARDS + ' 个奖品'); return; }
+    rewards.push(_defaultRechargeListReward(itemIdx, rewards.length));
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function removeRechargeListReward(instanceId, itemIdx, rewardIdx) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[itemIdx]) return;
+    const rewards = d.items[itemIdx].rewards || [];
+    if(rewards.length <= 1) return;
+    rewards.splice(rewardIdx, 1);
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function setRechargeListRewardCount(instanceId, itemIdx, count) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[itemIdx]) return;
+    count = Math.max(1, Math.min(RECHARGE_LIST_MAX_REWARDS, Number(count) || 1));
+    const rewards = d.items[itemIdx].rewards || (d.items[itemIdx].rewards = []);
+    while(rewards.length > count) rewards.pop();
+    while(rewards.length < count) rewards.push(_defaultRechargeListReward(itemIdx, rewards.length));
+    d.items[itemIdx].rewards = rewards.map((reward, rewardIdx) => _normalizeRechargeListReward(reward, itemIdx, rewardIdx));
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function triggerRechargeListIconUpload(instanceId, itemIdx, rewardIdx, iconIdx) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[itemIdx] || !d.items[itemIdx].rewards[rewardIdx]) return;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const file = e.target.files && e.target.files[0];
+        if(!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const reward = d.items[itemIdx].rewards[rewardIdx];
+            const url = ev.target.result;
+            reward.icon = url;
+            reward.icons = [];
+            d.items[itemIdx].rewards[rewardIdx] = _normalizeRechargeListReward(reward, itemIdx, rewardIdx);
+            renderRechargeListItemPanel(instanceId);
+            renderPreview();
+            pushSnapshot();
+        };
+        reader.readAsDataURL(file);
+    };
+    input.click();
+}
+function setRechargeListRewardProp(instanceId, itemIdx, rewardIdx, field, value) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[itemIdx] || !d.items[itemIdx].rewards[rewardIdx]) return;
+    const fallback = field === 'btnText' ? '领取' : (field === 'label' ? '道具名称' : '');
+    d.items[itemIdx].rewards[rewardIdx][field] = String(value || '').trim() || fallback;
+    d.items[itemIdx].rewards[rewardIdx] = _normalizeRechargeListReward(d.items[itemIdx].rewards[rewardIdx], itemIdx, rewardIdx);
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function setRechargeListRewardIconsProp(instanceId, itemIdx, rewardIdx, value) {
+    const d = getRechargeListData(instanceId); if(!d || !d.items[itemIdx] || !d.items[itemIdx].rewards[rewardIdx]) return;
+    const icons = String(value || '').split(/[,，\n]/).map(s => s.trim()).filter(Boolean).slice(0, RECHARGE_LIST_MAX_ICONS);
+    d.items[itemIdx].rewards[rewardIdx].icons = icons;
+    if(icons.length) d.items[itemIdx].rewards[rewardIdx].icon = icons[0];
+    d.items[itemIdx].rewards[rewardIdx] = _normalizeRechargeListReward(d.items[itemIdx].rewards[rewardIdx], itemIdx, rewardIdx);
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
 // ---- Module 7: 更多福利内容 ----
 function renderBenefits(pc, isBgMode) {
     const editable = 'contenteditable="true"';
@@ -12262,33 +13936,37 @@ function renderGuestRedpacket(pc, isBgMode) {
     const openCountText = String(d.openCountLabel || '开奖次数：').replace(/[0-9０-９]+\s*$/, '').trim();
     const editable = 'contenteditable="true"';
     const S = 0.5;
-    const redpacketSrc = d.lotteryImg || 'assets/image/hongbao.png';
+    const RP_ASSET = 'assets/CodeBuddyAssets/1364_9192';
     const titleHtml = `<span class="editable-text" ${editable} data-field="title" onblur="onGuestModuleTextEdit(this,gRedpacketData,'title')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.title}</span>`;
     const subtitleHtml = `<span class="editable-text" ${editable} data-field="subtitle" onblur="onGuestModuleTextEdit(this,gRedpacketData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.subtitle}</span>`;
+
+    // 红包：直接使用切图 assets/redpot/ketairedpot.png
+    const redPacketHtml = `
+        <img src="assets/redpot/ketairedpot.png" style="position:absolute;left:${64*S}px;top:0;width:${224*S}px;height:${244*S}px;object-fit:contain;display:block">`;
     const innerHtml = `
-        <div style="height:${300*S}px;position:relative;margin:0 ${51*S}px 0">
-            <img src="${redpacketSrc}" style="position:absolute;left:0;top:0;width:${225*S}px;height:${300*S}px;object-fit:contain;display:block">
-            <div style="position:absolute;left:${289*S}px;top:${15*S}px;width:${264*S}px;height:${270*S}px">
-                <div style="position:absolute;left:${16*S}px;top:${25*S}px;width:1px;height:${158*S}px;background:rgba(0,0,0,0.08);transform:translateX(-50%)"></div>
+        <div style="height:${244*S}px;position:relative">
+            ${redPacketHtml}
+            <div style="position:absolute;left:${340*S}px;top:0;width:${264*S}px;height:${244*S}px">
+                <div style="position:absolute;left:${16*S}px;top:${40*S}px;width:1px;height:${92*S}px;background:rgba(0,0,0,0.08);transform:translateX(-50%)"></div>
                 <div style="position:absolute;left:0;top:0;width:100%;height:${32*S}px;display:flex;align-items:center;gap:${12*S}px">
                     <div style="position:relative;width:${32*S}px;height:${32*S}px;flex:none">
-                        <img src="assets/CodeBuddyAssets/982_920/6.svg" style="width:100%;height:100%;display:block">
+                        <img src="${RP_ASSET}/5.svg" style="width:100%;height:100%;display:block">
                         <span style="position:absolute;left:0;right:0;top:${2*S}px;text-align:center;font-size:${20*S}px;line-height:${28*S}px;color:#B3B3B3;font-family:PingFang SC;font-weight:500">1</span>
                     </div>
                     <span class="editable-text" ${editable} data-field="step1Text" onblur="onGuestModuleTextEdit(this,gRedpacketData,'step1Text')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="font-size:${22*S}px;line-height:${30*S}px;color:#242424;font-family:PingFang SC;white-space:pre-wrap">${d.step1Text}</span>
                 </div>
-                <div style="position:absolute;left:${44*S}px;top:${47*S}px;width:${200*S}px;height:${64*S}px;${getBtnStyle(pc,64)};border-radius:${16*S}px;display:flex;align-items:center;justify-content:center">
-                    <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="btn1Text" onblur="onGuestModuleTextEdit(this,gRedpacketData,'btn1Text')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.btn1Text}</span>
+                <div style="position:absolute;left:${44*S}px;top:${48*S}px;width:${120*S}px;height:${56*S}px;${getBtnStyle(pc,56)};border-radius:${16*S}px;display:flex;align-items:center;justify-content:center">
+                    <span style="color:#fff;font-size:${24*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="btn1Text" onblur="onGuestModuleTextEdit(this,gRedpacketData,'btn1Text')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.btn1Text}</span>
                 </div>
-                <div style="position:absolute;left:0;top:${159*S}px;width:100%;height:${32*S}px;display:flex;align-items:center;gap:${12*S}px">
+                <div style="position:absolute;left:0;top:${140*S}px;width:100%;height:${32*S}px;display:flex;align-items:center;gap:${12*S}px">
                     <div style="position:relative;width:${32*S}px;height:${32*S}px;flex:none">
-                        <img src="assets/CodeBuddyAssets/982_920/7.svg" style="width:100%;height:100%;display:block">
+                        <img src="${RP_ASSET}/5.svg" style="width:100%;height:100%;display:block">
                         <span style="position:absolute;left:0;right:0;top:${2*S}px;text-align:center;font-size:${20*S}px;line-height:${28*S}px;color:#B3B3B3;font-family:PingFang SC;font-weight:500">2</span>
                     </div>
                     <span class="editable-text" ${editable} data-field="step2Text" onblur="onGuestModuleTextEdit(this,gRedpacketData,'step2Text')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="font-size:${22*S}px;line-height:${30*S}px;color:#242424;font-family:PingFang SC;white-space:pre-wrap">${d.step2Text}</span>
                 </div>
-                <div style="position:absolute;left:${44*S}px;top:${206*S}px;width:${200*S}px;height:${64*S}px;${getBtnStyle(pc,64)};border-radius:${16*S}px;display:flex;align-items:center;justify-content:center">
-                    <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="btn2Text" onblur="onGuestModuleTextEdit(this,gRedpacketData,'btn2Text')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.btn2Text}</span>
+                <div style="position:absolute;left:${44*S}px;top:${188*S}px;width:${120*S}px;height:${56*S}px;${getBtnStyle(pc,56)};border-radius:${16*S}px;display:flex;align-items:center;justify-content:center">
+                    <span style="color:#fff;font-size:${24*S}px;font-family:PingFang SC" class="editable-text" ${editable} data-field="btn2Text" onblur="onGuestModuleTextEdit(this,gRedpacketData,'btn2Text')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.btn2Text}</span>
                 </div>
             </div>
         </div>
@@ -12307,7 +13985,9 @@ function renderGuestRedpacket(pc, isBgMode) {
         title: titleHtml,
         subtitle: subtitleHtml,
         primaryColor: pc,
-        scale: S
+        scale: S,
+        contentMarginTop: 36*S,                              // 设计稿：副标题→内容区 36（实现原为 24）
+        bodyPad: `padding:${36*S}px ${24*S}px ${36*S}px`     // 设计稿：底部内边距 36（实现原为 24）
     }, innerHtml);
 }
 
@@ -12380,6 +14060,28 @@ function renderGuestSend(pc, isBgMode) {
     }, innerHtml);
 }
 
+// 客态 - Q币拉新引流：直接复用主态「红包拉新」内容，但不显示剩余库存
+function renderGuestQbPull(pc, isBgMode) {
+    const S = 0.5;
+    const btnText = escapeHtml(gQbPullData.btnText || '前往参与');
+    const joinBtnHtml = `
+        <div style="margin-top:${24*S}px;width:${654*S}px;height:${80*S}px;${getBtnStyle(pc,80)};border-radius:${16*S}px;display:flex;align-items:center;justify-content:center">
+            <span style="color:#fff;font-size:${28*S}px;font-family:PingFang SC" class="editable-text" contenteditable="true" data-field="gQbPullBtnText" onblur="onGuestQbPullButtonTextEdit(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${btnText}</span>
+        </div>`;
+    const hostModule = getCurrentRedpacketNewModule();
+    if(hostModule) {
+        return renderRedpacketNew(pc, isBgMode, hostModule, { hideStock: true, afterContentHtml: joinBtnHtml });
+    }
+    return renderModuleTemplate({
+        moduleId: 'g_qbpull',
+        hideHeader: true,
+        primaryColor: pc,
+        scale: S,
+        contentMarginTop: 0,
+        bodyPad: `padding:${24*S}px`
+    }, `<div class="g-qbpull-empty" style="height:${120*S}px"></div>${joinBtnHtml}`);
+}
+
 // 客态 - 模块分发
 function renderGuestModule(m, pc, isBgMode) {
     let html = '';
@@ -12387,6 +14089,7 @@ function renderGuestModule(m, pc, isBgMode) {
         case 'g_return': html = renderGuestReturn(pc, isBgMode); break;
         case 'g_redpacket': html = renderGuestRedpacket(pc, isBgMode); break;
         case 'g_send': html = renderGuestSend(pc, isBgMode); break;
+        case 'g_qbpull': html = renderGuestQbPull(pc, isBgMode); break;
         default: return '';
     }
     return `<div class="preview-module-wrap" data-module-id="${m.id}">${html}</div>`;
@@ -12399,6 +14102,17 @@ function onGuestModuleTextEdit(el, dataObj, field) {
         dataObj[field] = newVal;
         renderPreview();
         pushSnapshot();
+    }
+}
+
+function onGuestQbPullButtonTextEdit(el) {
+    const newVal = el.textContent.trim() || '前往参与';
+    if(newVal !== gQbPullData.btnText) {
+        gQbPullData.btnText = newVal;
+        renderPreview();
+        pushSnapshot();
+    } else if(el.textContent.trim() !== newVal) {
+        el.textContent = newVal;
     }
 }
 
@@ -12477,6 +14191,7 @@ function renderGuestPreview() {
 
     let html1 = headerHtml;
     html1 += `<div class="modules-wrap" style="margin-top:${_overlap}px;position:relative;z-index:1;display:flex;flex-direction:column;gap:12px">`;
+    html1 += renderGuestTopButton(pc, false);
     enabled.forEach(m => { html1 += renderGuestModule(m, pc, false); });
     html1 += renderFooterWithBottomBg(pc, false, true);
     html1 += `</div>`;
@@ -12490,6 +14205,7 @@ function renderGuestPreview() {
 
     let html2 = headerHtml;
     html2 += `<div class="modules-wrap" style="margin-top:${_overlap}px;position:relative;z-index:1;display:flex;flex-direction:column;gap:12px">`;
+    html2 += renderGuestTopButton(pc, true);
     enabled.forEach(m => { html2 += renderGuestModule(m, pc, true); });
     html2 += renderFooterWithBottomBg(pc, true, true);
     html2 += `</div>`;
@@ -12545,7 +14261,6 @@ function resetAll() {
     headerLogoImg = null;
     headerBrowserLogoImg = createDefaultHeaderBrowserLogo();
     moduleDecorations = {};
-    ipList = [];
     colors = { background:'#2B5B39', primary:'#63A545' };
     assistBgColor = '#065A5C';
     assistMode = 'noTask';
@@ -12578,8 +14293,13 @@ function resetAll() {
     const _initContentIid = genInstanceId();
     const _initCustomIid = genInstanceId();
     const _initPassIid = genInstanceId();
+    const _initRechargeListIid = genInstanceId();
+    const _initRedpacketNewIid = genInstanceId();
     modules.push(
+        { instanceId: _initRechargeListIid, id:'rechargeList', name:'列表型充值返利', desc:'每行一个充值档位，每档最多 2 个奖品', enabled:true },
+        { instanceId: _initRedpacketNewIid, id:'redpacketNew', name:'红包拉新', desc:'按 Figma 自动排版，配置类型和数量', enabled:true },
         { instanceId: _initIid, id:'redpacket', name:'口令码', desc:'口令码分享/好友助力/奖品展示', enabled:true },
+        { instanceId: genInstanceId(), id:'redpacket2', name:'新版口令码', desc:'新版口令码 - 邀请好友/奖励池/口令分享', enabled:true },
         { instanceId: _initSigninIid, id:'signin', name:'签到', desc:'连续签到领好礼', enabled:true },
         { instanceId: _initLotteryIid, id:'lottery', name:'抽奖', desc:'九宫格 / 多宫格抽奖，可选任务列表', enabled:true },
         { instanceId: _initContentIid, id:'content', name:'内容组件', desc:'多张图片，可选小标题', enabled:true },
@@ -12592,6 +14312,7 @@ function resetAll() {
     // 恢复口令码默认数据：清空 map，按当前模块创建模板数据
     redpacketDataMap = {};
     redpacketDataMap[_initIid] = JSON.parse(JSON.stringify(REDPACKET_DATA_TEMPLATE));
+    redpacket2DataMap = {};
     // 恢复签到默认数据
     signinDataMap = {};
     signinDataMap[_initSigninIid] = JSON.parse(JSON.stringify(SIGNIN_DATA_TEMPLATE));
@@ -12608,6 +14329,10 @@ function resetAll() {
     customDataMap[_initCustomIid] = JSON.parse(JSON.stringify(CUSTOM_DATA_TEMPLATE));
     passDataMap = {};
     passDataMap[_initPassIid] = JSON.parse(JSON.stringify(PASS_DATA_TEMPLATE));
+    rechargeListDataMap = {};
+    rechargeListDataMap[_initRechargeListIid] = JSON.parse(JSON.stringify(RECHARGE_LIST_DATA_TEMPLATE));
+    redpacketNewDataMap = {};
+    redpacketNewDataMap[_initRedpacketNewIid] = JSON.parse(JSON.stringify(REDPACKET_NEW_DATA_TEMPLATE));
     // 恢复其他模块默认数据
     roleData = { selectText: '点击选择角色' };
     assistData = { title: '攒好友助力兑奖品', subtitle: 'Q币每12小时补货一次，补完即止', taskTitle: '领积分，兑奖品', tasks: [
@@ -12682,19 +14407,23 @@ function resetAll() {
         { url: 'assets/image/wangzhelogo.png', name: '王者荣耀' },
         { url: 'assets/image/qblogo.png', name: 'QQ浏览器' },
     ];
+    guestTopButtonData = { enabled: true, count: 1, buttons: [{ text: '进入游戏' }, { text: '助力好友' }] };
     guestModules.length = 0;
     guestModules.push(
         { id:'g_return',    name:'回归礼包', desc:'回归玩家专属礼包卡片', enabled:true },
         { id:'g_redpacket', name:'红包开奖', desc:'好友红包开奖互动', enabled:true },
         { id:'g_send',      name:'发红包',   desc:'免费发红包领奖励', enabled:true },
+        { id:'g_qbpull',    name:'Q币拉新引流', desc:G_QBPULL_DESC, enabled:true },
     );
     gReturnData = createDefaultGReturnData();
     gRedpacketData = { title: '来自你的好友', subtitle: '送你一个游戏红包，快看看能抽中什么吧', step1Text: '先点击助力你的好友', step2Text: '再打开好友送你的红包', openCountLabel: '开奖次数：10', recordLabel: '查看开奖记录', btn1Text: '助力', btn2Text: '打开', prizeImg1: GUEST_IMG+'14.png', prizeImg2: GUEST_IMG+'15.png', lotteryImg: 'assets/image/hongbao.png' };
     gSendData = { title: '免费发红包\u00A0领奖励', subtitle: '赠人红包，手留福利！快和游戏搭子一起发起来～', leftTag: '好友可抽', rightTag: '我可以抽', leftPrizeText: 'Q币、海量游戏道具', rightPrizeText: '华为手机、周边、Q币', btnText: '我也去发一份', leftIcons: [{url:'assets/CodeBuddyAssets/982_1225/4.png'},{url:'assets/CodeBuddyAssets/982_1225/5.png'},{url:'assets/CodeBuddyAssets/982_1225/6.png'}], rightIcons: [{url:'assets/CodeBuddyAssets/982_1225/9.png'},{url:'assets/CodeBuddyAssets/982_1225/8.png'},{url:'assets/CodeBuddyAssets/982_1225/7.png'}] };
+    gQbPullData = createDefaultGQbPullData();
     guestFooterData = { link1: '活动规则', link2: '中奖记录', link3: '意见反馈' };
+    syncGuestTopButtonInputs();
     switchView('host');
     loadDefaultHeaderAssets();
-    renderPosterPreview(); renderHeaderTitlePreview(); renderHeaderLogoPreview(); renderHeaderBrowserLogoPreview(); _expandedModuleId = null; renderModuleList(); renderGuestModuleList(); renderGuestLogoList(); renderModuleBaseDeco(); renderIpList(); renderPreview(); updateInfo();
+    renderPosterPreview(); renderHeaderTitlePreview(); renderHeaderLogoPreview(); renderHeaderBrowserLogoPreview(); _expandedModuleId = null; renderModuleList(); renderGuestModuleList(); renderGuestLogoList(); renderModuleBaseDeco(); renderPreview(); updateInfo();
     openToolSection('sectionColor');
     document.querySelectorAll('.tool-rail-item').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === 'color'));
     pushSnapshot();
@@ -12754,23 +14483,27 @@ function getSnapshot() {
         drawData: {...drawData, prizes: drawData.prizes ? drawData.prizes.map(p => ({...p})) : []},
         footerData: {...footerData},
         moduleDecorations: JSON.parse(JSON.stringify(moduleDecorations || {})),
-        ipList: JSON.parse(JSON.stringify(ipList || [])),
         redpacketDataMap: JSON.parse(JSON.stringify(redpacketDataMap || {})),
+        redpacket2DataMap: JSON.parse(JSON.stringify(redpacket2DataMap || {})),
         signinDataMap: JSON.parse(JSON.stringify(signinDataMap || {})),
         moreDataMap: JSON.parse(JSON.stringify(moreDataMap || {})),
         lotteryDataMap: JSON.parse(JSON.stringify(lotteryDataMap || {})),
         contentDataMap: JSON.parse(JSON.stringify(contentDataMap || {})),
         customDataMap: JSON.parse(JSON.stringify(customDataMap || {})),
         passDataMap: JSON.parse(JSON.stringify(passDataMap || {})),
+        rechargeListDataMap: JSON.parse(JSON.stringify(rechargeListDataMap || {})),
+        redpacketNewDataMap: JSON.parse(JSON.stringify(redpacketNewDataMap || {})),
         // ===== 客态数据 =====
         currentView,
         guestColors: {...guestColors},
         guestHeaderTitle,
         guestHeaderLogos: guestHeaderLogos.map(l => ({url:l.url, name:l.name})),
+        guestTopButtonData: {...guestTopButtonData, buttons: (guestTopButtonData.buttons || []).map(b => ({...b}))},
         guestModules: guestModules.map(m => ({id:m.id, name:m.name, desc:m.desc, enabled:m.enabled})),
         gReturnData: {...gReturnData, prizes: (gReturnData.prizes || []).map(p => ({...p})), prizeIcons: gReturnData.prizeIcons ? gReturnData.prizeIcons.map(ic => ({...ic})) : undefined},
         gRedpacketData: {...gRedpacketData},
         gSendData: {...gSendData, leftIcons: gSendData.leftIcons.map(ic => ({...ic})), rightIcons: gSendData.rightIcons.map(ic => ({...ic}))},
+        gQbPullData: {...gQbPullData},
         guestFooterData: {...guestFooterData},
     });
 }
@@ -12820,11 +14553,11 @@ function restoreSnapshot(snapStr) {
     snap.modules.forEach(sm => {
         if(sm.id === 'footer') return; // footer不再作为可配置模块
         // 过滤掉已移除的内置模块（只保留 redpacket；如需扩展请在此补充）
-        const allowedIds = ['redpacket', 'signin', 'more', 'lottery', 'content', 'custom', 'pass'];
+        const allowedIds = ['redpacket', 'signin', 'more', 'lottery', 'content', 'custom', 'pass', 'rechargeList', 'redpacketNew'];
         if(!allowedIds.includes(sm.id)) return;
         // 保留旧快照的 instanceId；旧版快照没有这个字段，则现生成一个
         // 模块名按 id 统一成无 emoji 版本（向后兼容，老快照带 emoji 的会被迁移）
-        const NAME_BY_ID = { redpacket: '口令码', signin: '签到', more: '更多福利内容', lottery: '抽奖', content: '内容组件', custom: '自由定制组件', pass: '通行证' };
+        const NAME_BY_ID = { redpacket: '口令码', signin: '签到', more: '更多福利内容', lottery: '抽奖', content: '内容组件', custom: '自由定制组件', pass: '通行证', rechargeList: '列表型充值返利', redpacketNew: '红包拉新' };
         const normalizedName = NAME_BY_ID[sm.id] || sm.name;
         modules.push({instanceId: sm.instanceId || genInstanceId(), id:sm.id, name:normalizedName, desc:sm.desc, enabled:sm.enabled});
     });
@@ -12836,10 +14569,21 @@ function restoreSnapshot(snapStr) {
     if(!modules.some(m => m.id === 'pass')) {
         modules.push({ instanceId: genInstanceId(), id:'pass', name:'通行证', desc:'上传一张切图，固定高度 492px', enabled:true });
     }
+    // 旧项目自动补齐新增的"新版口令码"模块
+    if(!modules.some(m => m.id === 'redpacket2')) {
+        modules.push({ instanceId: genInstanceId(), id:'redpacket2', name:'新版口令码', desc:'新版口令码 - 邀请好友/奖励池/口令分享', enabled:true });
+    }
+    // 旧项目自动补齐新增的"列表型充值返利"模块
+    if(!modules.some(m => m.id === 'rechargeList')) {
+        modules.push({ instanceId: genInstanceId(), id:'rechargeList', name:'列表型充值返利', desc:'每行一个充值档位，每档最多 2 个奖品', enabled:true });
+    }
+    // 旧项目自动补齐新增的"红包拉新"模块
+    if(!modules.some(m => m.id === 'redpacketNew')) {
+        modules.push({ instanceId: genInstanceId(), id:'redpacketNew', name:'红包拉新', desc:'按 Figma 自动排版，配置类型和数量', enabled:true });
+    }
 
     // 恢复模块装饰覆盖
     moduleDecorations = (snap.moduleDecorations && typeof snap.moduleDecorations === 'object') ? JSON.parse(JSON.stringify(snap.moduleDecorations)) : {};
-    ipList = Array.isArray(snap.ipList) ? JSON.parse(JSON.stringify(snap.ipList)) : [];
 
     // 恢复 redpacketDataMap（按 instanceId 隔离的口令码数据）
     redpacketDataMap = {};
@@ -12873,6 +14617,16 @@ function restoreSnapshot(snapStr) {
     // 兜底：每个签到实例都得有数据
     modules.forEach(mm => {
         if(mm.id === 'signin') getSigninData(mm.instanceId);
+    });
+
+    // 恢复 redpacket2DataMap（按 instanceId 隔离的新版口令码数据）
+    redpacket2DataMap = {};
+    if(snap.redpacket2DataMap && typeof snap.redpacket2DataMap === 'object') {
+        redpacket2DataMap = JSON.parse(JSON.stringify(snap.redpacket2DataMap));
+    }
+    // 兜底：每个新版口令码实例都得有数据
+    modules.forEach(mm => {
+        if(mm.id === 'redpacket2') getRedpacket2Data(mm.instanceId);
     });
 
     // 恢复 moreDataMap（按 instanceId 隔离的更多福利数据）
@@ -12918,6 +14672,24 @@ function restoreSnapshot(snapStr) {
     }
     modules.forEach(mm => {
         if(mm.id === 'pass') getPassData(mm.instanceId);
+    });
+
+    // 恢复 rechargeListDataMap（列表型充值返利数据）
+    rechargeListDataMap = {};
+    if(snap.rechargeListDataMap && typeof snap.rechargeListDataMap === 'object') {
+        rechargeListDataMap = JSON.parse(JSON.stringify(snap.rechargeListDataMap));
+    }
+    modules.forEach(mm => {
+        if(mm.id === 'rechargeList') getRechargeListData(mm.instanceId);
+    });
+
+    // 恢复 redpacketNewDataMap（红包拉新数据）
+    redpacketNewDataMap = {};
+    if(snap.redpacketNewDataMap && typeof snap.redpacketNewDataMap === 'object') {
+        redpacketNewDataMap = JSON.parse(JSON.stringify(snap.redpacketNewDataMap));
+    }
+    modules.forEach(mm => {
+        if(mm.id === 'redpacketNew') getRedpacketNewData(mm.instanceId);
     });
 
     // 恢复其他模块的可编辑数据
@@ -13009,8 +14781,6 @@ function restoreSnapshot(snapStr) {
     if(_expandedModuleId) _rerenderModuleDetail(_expandedModuleId);
     // 重新渲染"模块基础配置"中的装饰资源
     renderModuleBaseDeco();
-    // 重新渲染"IP 配置"
-    renderIpList();
 
     // 恢复 headerBgImg（头图背景）
     headerBgImg = snap.headerBgImg || null;
@@ -13073,11 +14843,14 @@ function restoreSnapshot(snapStr) {
     if(snap.guestHeaderLogos) {
         guestHeaderLogos = snap.guestHeaderLogos.map(l => ({url:l.url, name:l.name}));
     }
+    guestTopButtonData = Object.assign({ enabled: true, count: 1, buttons: [{ text: '进入游戏' }, { text: '助力好友' }] }, snap.guestTopButtonData || {});
+    normalizeGuestTopButtonData();
     if(snap.guestModules) {
         guestModules.length = 0;
-        const GUEST_NAME_BY_ID = { g_return: '回归礼包', g_redpacket: '红包开奖', g_send: '发红包' };
+        const GUEST_NAME_BY_ID = { g_return: '回归礼包', g_redpacket: '红包开奖', g_send: '发红包', g_qbpull: 'Q币拉新引流' };
         snap.guestModules.forEach(sm => guestModules.push({id:sm.id, name:GUEST_NAME_BY_ID[sm.id] || (sm.name || '').replace(/^[^\u4e00-\u9fa5A-Za-z0-9]+\s*/, ''), desc:sm.desc, enabled:sm.enabled}));
     }
+    ensureGuestQbPullModule();
     if(snap.gReturnData) {
         gReturnData = Object.assign(createDefaultGReturnData(), snap.gReturnData);
         if(snap.gReturnData.prizes) gReturnData.prizes = snap.gReturnData.prizes.map(p => ({...p}));
@@ -13104,6 +14877,11 @@ function restoreSnapshot(snapStr) {
         if(snap.gSendData.leftIcons) gSendData.leftIcons = snap.gSendData.leftIcons.map(ic => ({...ic}));
         if(snap.gSendData.rightIcons) gSendData.rightIcons = snap.gSendData.rightIcons.map(ic => ({...ic}));
     }
+    if(snap.gQbPullData) {
+        gQbPullData = Object.assign(createDefaultGQbPullData(), snap.gQbPullData);
+    } else {
+        gQbPullData = createDefaultGQbPullData();
+    }
     if(snap.guestFooterData) Object.assign(guestFooterData, snap.guestFooterData);
 
     // 恢复客态 UI 控件
@@ -13115,6 +14893,7 @@ function restoreSnapshot(snapStr) {
     if(gBgH) gBgH.value = guestColors.background;
     if(gPr) gPr.value = guestColors.primary;
     if(gPrH) gPrH.value = guestColors.primary;
+    syncGuestTopButtonInputs();
 
     // 恢复当前视图
     if(snap.currentView && snap.currentView !== currentView) {
@@ -13358,6 +15137,238 @@ async function dataUrlToBlob(dataUrl) {
     return res.blob();
 }
 
+async function buildRechargeListRewardStateFiles() {
+    const source = document.getElementById('previewContainer');
+    if(!source) return [];
+    const cells = Array.from(source.querySelectorAll('.recharge-list-reward-cell'));
+    if(!cells.length) return [];
+
+    const stage = document.createElement('div');
+    stage.style.cssText = 'position:fixed;left:-10000px;top:0;z-index:-1;pointer-events:none;background:transparent';
+    document.body.appendChild(stage);
+
+    const files = [];
+    const states = [
+        { key: 'unclaimed', label: '未领', text: null, color: null },
+        { key: 'claimed', label: '已领', text: '已领', color: 'rgba(0,0,0,0.30)' },
+    ];
+
+    try {
+        for(const cell of cells) {
+            const rect = cell.getBoundingClientRect();
+            const width = Math.ceil(rect.width || 136);
+            const height = Math.ceil(rect.height || 40);
+            const itemIdx = Number(cell.getAttribute('data-item-idx') || 0) + 1;
+            const rewardIdx = Number(cell.getAttribute('data-reward-idx') || 0) + 1;
+            const sourceClaim = cell.querySelector('.recharge-list-claim-text');
+            const sourceText = sourceClaim && sourceClaim.querySelector('.editable-text');
+            const activeText = ((sourceText || sourceClaim || {}).textContent || '领取').trim() || '领取';
+            const activeColor = sourceClaim ? window.getComputedStyle(sourceClaim).color : (colors.primary || '#63A545');
+
+            for(const state of states) {
+                const clone = cell.cloneNode(true);
+                clone.style.margin = '0';
+                clone.style.width = width + 'px';
+                clone.style.height = height + 'px';
+                clone.style.visibility = 'visible';
+                clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+                clone.querySelectorAll('.editable-text').forEach(el => {
+                    el.style.boxShadow = 'none';
+                    el.style.background = 'transparent';
+                });
+
+                const claim = clone.querySelector('.recharge-list-claim-text');
+                const claimText = claim && claim.querySelector('.editable-text');
+                if(claim) {
+                    claim.style.visibility = 'visible';
+                    claim.style.color = state.color || activeColor;
+                }
+                if(claimText) claimText.textContent = state.text || activeText;
+
+                stage.innerHTML = '';
+                stage.style.width = width + 'px';
+                stage.appendChild(clone);
+                await new Promise(r => requestAnimationFrame(r));
+                await convertImagesToBase64(clone);
+                await new Promise(r => requestAnimationFrame(r));
+
+                const dataUrl = await htmlToImage.toPng(clone, {
+                    pixelRatio: 2,
+                    width,
+                    height,
+                    cacheBust: true,
+                    backgroundColor: null,
+                    style: { transform: 'none', margin: '0', overflow: 'hidden' },
+                });
+                const sizeTag = `${Math.round(width * 2)}x${Math.round(height * 2)}`;
+                files.push({
+                    name: `列表型充值返利_第${itemIdx}档_奖品${rewardIdx}_${state.label}_${sizeTag}.png`,
+                    blob: await dataUrlToBlob(dataUrl),
+                });
+            }
+        }
+    } finally {
+        stage.remove();
+    }
+    return files;
+}
+
+async function buildRedpacket2PoolRewardStateFiles() {
+    const source = document.getElementById('previewContainer');
+    if(!source) return [];
+    const cells = Array.from(source.querySelectorAll('.redpacket2-pool-reward-cell'));
+    if(!cells.length) return [];
+
+    const stage = document.createElement('div');
+    stage.style.cssText = 'position:fixed;left:-10000px;top:0;z-index:-1;pointer-events:none;background:transparent';
+    document.body.appendChild(stage);
+
+    const files = [];
+    const states = [
+        { key: 'unclaimed', label: '未领取', text: null, color: null },
+        { key: 'claimed', label: '已领', text: '已领', color: 'rgba(0,0,0,0.30)' },
+    ];
+
+    try {
+        for(const cell of cells) {
+            const rect = cell.getBoundingClientRect();
+            const width = Math.ceil(rect.width || 136);
+            const height = Math.ceil(rect.height || 40);
+            const rowIdx = Number(cell.getAttribute('data-row-idx') || 0) + 1;
+            const rewardIdx = Number(cell.getAttribute('data-reward-idx') || 0) + 1;
+            const sourceClaim = cell.querySelector('.redpacket2-pool-claim-text');
+            const sourceText = sourceClaim && sourceClaim.querySelector('.editable-text');
+            const activeText = ((sourceText || sourceClaim || {}).textContent || '领取').trim() || '领取';
+            const activeColor = sourceClaim ? window.getComputedStyle(sourceClaim).color : (colors.primary || '#63A545');
+
+            for(const state of states) {
+                const clone = cell.cloneNode(true);
+                clone.style.margin = '0';
+                clone.style.width = width + 'px';
+                clone.style.height = height + 'px';
+                clone.style.visibility = 'visible';
+                clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+                clone.querySelectorAll('.editable-text').forEach(el => {
+                    el.style.boxShadow = 'none';
+                    el.style.background = 'transparent';
+                });
+
+                const claim = clone.querySelector('.redpacket2-pool-claim-text');
+                const claimText = claim && claim.querySelector('.editable-text');
+                if(claim) {
+                    claim.style.visibility = 'visible';
+                    claim.style.color = state.color || activeColor;
+                }
+                if(claimText) claimText.textContent = state.text || activeText;
+
+                stage.innerHTML = '';
+                stage.style.width = width + 'px';
+                stage.appendChild(clone);
+                await new Promise(r => requestAnimationFrame(r));
+                await convertImagesToBase64(clone);
+                await new Promise(r => requestAnimationFrame(r));
+
+                const dataUrl = await htmlToImage.toPng(clone, {
+                    pixelRatio: 2,
+                    width,
+                    height,
+                    cacheBust: true,
+                    backgroundColor: null,
+                    style: { transform: 'none', margin: '0', overflow: 'hidden' },
+                });
+                const sizeTag = `${Math.round(width * 2)}x${Math.round(height * 2)}`;
+                files.push({
+                    name: `新版口令码_奖励池_第${rowIdx}档_奖品${rewardIdx}_${state.label}_${sizeTag}.png`,
+                    blob: await dataUrlToBlob(dataUrl),
+                });
+            }
+        }
+    } finally {
+        stage.remove();
+    }
+    return files;
+}
+
+async function buildRedpacketNewCardStateFiles() {
+    const source = document.getElementById('previewContainer');
+    if(!source) return [];
+    const cards = Array.from(source.querySelectorAll('.rpn-card[data-rpn-card="1"]'));
+    if(!cards.length) return [];
+
+    const stage = document.createElement('div');
+    stage.style.cssText = 'position:fixed;left:-10000px;top:0;z-index:-1;pointer-events:none;background:transparent';
+    document.body.appendChild(stage);
+
+    const files = [];
+    const states = [
+        { key: 'unclaimed', label: '未领取', text: null, color: null },
+        { key: 'claimed', label: '已领取', text: '已领', color: 'rgba(0,0,0,0.30)' },
+    ];
+
+    try {
+        for(const card of cards) {
+            const rect = card.getBoundingClientRect();
+            const width = Math.ceil(rect.width || card.offsetWidth || 101);
+            const height = Math.ceil(rect.height || card.offsetHeight || 110);
+            const idx = Number(card.getAttribute('data-rpn-index') || 0) + 1;
+            const size = RPN_SIZE_CN[card.getAttribute('data-rpn-size')] || card.getAttribute('data-rpn-size') || '';
+            const sourceClaim = card.querySelector('.rpn-claim-text');
+            const activeText = ((sourceClaim || {}).textContent || '领').trim() || '领';
+            const activeColor = sourceClaim ? window.getComputedStyle(sourceClaim).color : rpnButtonTextColor(card.getAttribute('data-rpn-color') || 'brown');
+
+            for(const state of states) {
+                const clone = card.cloneNode(true);
+                clone.style.margin = '0';
+                clone.style.width = width + 'px';
+                clone.style.height = height + 'px';
+                clone.style.visibility = 'visible';
+                clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+                clone.querySelectorAll('.editable-text').forEach(el => {
+                    el.style.boxShadow = 'none';
+                    el.style.background = 'transparent';
+                });
+
+                const bg = clone.querySelector('.rpn-card-bg');
+                if(bg) {
+                    const nextSrc = state.key === 'claimed'
+                        ? (bg.getAttribute('data-claimed-src') || bg.src)
+                        : (bg.getAttribute('data-unclaimed-src') || bg.src);
+                    bg.src = nextSrc;
+                }
+                const claim = clone.querySelector('.rpn-claim-text');
+                if(claim) {
+                    claim.style.color = state.color || activeColor;
+                    claim.textContent = state.text || activeText;
+                }
+
+                stage.innerHTML = '';
+                stage.style.width = width + 'px';
+                stage.appendChild(clone);
+                await new Promise(r => requestAnimationFrame(r));
+                await convertImagesToBase64(clone);
+                await new Promise(r => requestAnimationFrame(r));
+
+                const dataUrl = await htmlToImage.toPng(clone, {
+                    pixelRatio: 2,
+                    width,
+                    height,
+                    cacheBust: true,
+                    backgroundColor: null,
+                    style: { transform: 'none', margin: '0', overflow: 'hidden' },
+                });
+                const sizeTag = `${Math.round(width * 2)}x${Math.round(height * 2)}`;
+                files.push({
+                    name: `红包拉新_红包${idx}_${sanitizeFileName(size)}_${state.label}_${sizeTag}.png`,
+                    blob: await dataUrlToBlob(dataUrl),
+                });
+            }
+        }
+    } finally {
+        stage.remove();
+    }
+    return files;
+}
+
 function getModuleExportName(wrap, index) {
     const moduleId = wrap.getAttribute('data-module-id') || '';
     const instanceId = wrap.getAttribute('data-instance-id') || '';
@@ -13461,12 +15472,32 @@ async function exportEmptyImage() {
             style: { transform: 'none', borderRadius: '0', overflow: 'visible' },
         });
 
-        bar.style.width='62%'; txt.textContent='正在生成模块图...';
+        bar.style.width='58%'; txt.textContent='正在生成模块图...';
         const moduleFiles = await buildModuleImageFiles();
+        bar.style.width='70%'; txt.textContent='正在生成奖励格状态切图...';
+        const rechargeRewardStateFiles = await buildRechargeListRewardStateFiles();
+        const redpacket2RewardStateFiles = await buildRedpacket2PoolRewardStateFiles();
+        const redpacketNewCardStateFiles = await buildRedpacketNewCardStateFiles();
+        const rewardStateCount = rechargeRewardStateFiles.length + redpacket2RewardStateFiles.length + redpacketNewCardStateFiles.length;
         const zip = new JSZip();
         zip.file('00_页面底图_空页面图.png', await dataUrlToBlob(bgDataUrl));
         const moduleFolder = zip.folder('模块图') || zip;
         moduleFiles.forEach(file => moduleFolder.file(file.name, file.blob));
+        if(rechargeRewardStateFiles.length || redpacket2RewardStateFiles.length || redpacketNewCardStateFiles.length) {
+            const stateFolder = zip.folder('状态切图') || zip;
+            if(rechargeRewardStateFiles.length) {
+                const rechargeFolder = stateFolder.folder('列表型充值返利') || stateFolder;
+                rechargeRewardStateFiles.forEach(file => rechargeFolder.file(file.name, file.blob));
+            }
+            if(redpacket2RewardStateFiles.length) {
+                const redpacket2Folder = stateFolder.folder('新版口令码') || stateFolder;
+                redpacket2RewardStateFiles.forEach(file => redpacket2Folder.file(file.name, file.blob));
+            }
+            if(redpacketNewCardStateFiles.length) {
+                const redpacketNewFolder = stateFolder.folder('红包拉新') || stateFolder;
+                redpacketNewCardStateFiles.forEach(file => redpacketNewFolder.file(file.name, file.blob));
+            }
+        }
 
         bar.style.width='88%'; txt.textContent='正在打包导出文件...';
         const zipBlob = await zip.generateAsync({ type:'blob' });
@@ -13476,7 +15507,7 @@ async function exportEmptyImage() {
         link.href = url;
         link.click();
         URL.revokeObjectURL(url);
-        bar.style.width='100%'; txt.textContent=`导出完成，共 ${moduleFiles.length} 张模块图`;
+        bar.style.width='100%'; txt.textContent=`导出完成，共 ${moduleFiles.length} 张模块图、${rewardStateCount} 张状态切图`;
         await new Promise(r=>setTimeout(r,600));
     } catch(e) {
         alert('导出失败：'+e.message);
@@ -13525,6 +15556,7 @@ function _hideAllPageButtons(container) {
         '.m-role-enter-btn',
         '.redpacket-copy-btn',
         '.redpacket-use-btn',
+        '.redpacket2-share-btn',
         '.lottery-task-slice-btn',
         '.more-benefit-slice-btn',
         '.signin-slice-btn',
@@ -13796,7 +15828,19 @@ function usesThemedButtonCompletedStyle(el) {
     if(!el) return false;
     return el.classList.contains('more-benefit-slice-btn')
         || el.classList.contains('signin-slice-btn')
-        || el.classList.contains('lottery-task-slice-btn');
+        || el.classList.contains('lottery-task-slice-btn')
+        || el.classList.contains('redpacket-copy-btn')
+        || el.classList.contains('redpacket-use-btn')
+        || el.classList.contains('redpacket2-share-btn');
+}
+
+// 判断按钮是否为「纯文字按钮」：内部不含 img/svg/canvas/picture/video 等复杂子节点，
+// 只有背景渐变 + 居中文字。这类按钮可直接用 drawEnterButtonState 纯 Canvas 绘制，
+// 避免 htmlToImage 网络字体基线偏移导致文字底部被裁切。
+// 含图标/图片等复杂结构的按钮无法用纯 Canvas 还原，仍回退 htmlToImage。
+function isPureTextSliceButton(el) {
+    if(!el) return false;
+    return !el.querySelector('img, svg, canvas, picture, video');
 }
 
 function createButtonFillFromStyle(ctx, style, x, y, h) {
@@ -13811,6 +15855,29 @@ function createButtonFillFromStyle(ctx, style, x, y, h) {
     return style.backgroundColor && style.backgroundColor !== 'rgba(0, 0, 0, 0)'
         ? style.backgroundColor
         : '#63A545';
+}
+
+// 颜色 → 中性灰（按感知亮度 Lum=0.3R+0.59G+0.11B 取灰度值）
+function colorToNeutralGray(hexOrColor) {
+    const rgb = hexOrColorToRgb(hexOrColor) || { r: 99, g: 165, b: 69 };
+    const l = Math.round(0.3 * rgb.r + 0.59 * rgb.g + 0.11 * rgb.b);
+    return Math.max(0, Math.min(255, l));
+}
+
+// 生成「完成态」统一灰色渐变。
+// 关键点：不读取按钮各自的 computed 背景（不同按钮/状态可能读到略有差异的底色，
+// 导致去饱和后灰度不一致），而是一律从全局主题色推导，保证所有完成态按钮灰度完全相同。
+// 渐变规则与 getBtnStyle 一致：顶部=主题色，底部=主题色(明度-5%)，再各自取中性灰。
+function createCompletedGrayFill(ctx, y, h) {
+    const pc = (typeof colors !== 'undefined' && colors && colors.primary) ? colors.primary : '#63A545';
+    const rgb = hexOrColorToRgb(pc) || { r: 99, g: 165, b: 69 };
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const topGray = colorToNeutralGray(hslToHex(hsl.h, hsl.s, hsl.l));
+    const botGray = colorToNeutralGray(hslToHex(hsl.h, hsl.s, hsl.l - 0.05));
+    const g = ctx.createLinearGradient(0, y, 0, y + h);
+    g.addColorStop(0, `rgb(${topGray},${topGray},${topGray})`);
+    g.addColorStop(1, `rgb(${botGray},${botGray},${botGray})`);
+    return g;
 }
 
 function drawEnterButtonState(originalTarget, text) {
@@ -13849,14 +15916,20 @@ function drawEnterButtonState(originalTarget, text) {
     ctx.restore();
 
     if(isCompletedButtonText(text)) {
+        // 完成态：用「全局主题色推导的统一中性灰渐变」整体覆盖按钮背景。
+        // 不依赖元素自身 computed 背景，也不用 canvas 'saturation' 混合，
+        // 确保口令码 / 签到 / 抽奖 / 更多福利等所有完成态按钮灰度像素级一致。
         ctx.save();
         drawRoundedRectPath(ctx, x, y, w, h, radius);
         ctx.clip();
-        ctx.globalCompositeOperation = 'saturation';
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = createCompletedGrayFill(ctx, y, h);
         ctx.fillRect(x, y, w, h);
+        // 与默认态一致的顶部高光 / 底部暗角
+        ctx.fillStyle = 'rgba(255,255,255,0.20)';
+        ctx.fillRect(x, y, w, 1);
+        ctx.fillStyle = 'rgba(0,0,0,0.20)';
+        ctx.fillRect(x, y + h - 1, w, 1);
         ctx.restore();
-        ctx.globalCompositeOperation = 'source-over';
     }
 
     const fontSize = parseFloat(textStyle.fontSize || style.fontSize) || 14;
@@ -13978,15 +16051,20 @@ async function confirmSlice(e) {
             return;
         }
 
-        const dataUrl = await captureSliceTarget(target);
-        const id = 'slice_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
         const nameText = target.textContent.trim().substring(0, 20) || '按钮';
+        // 纯文字按钮直接用 Canvas 绘制，避免 htmlToImage 网络字体基线偏移裁切；
+        // 含图标/图片等复杂结构的按钮才回退 htmlToImage 截图
+        const dataUrl = isPureTextSliceButton(target)
+            ? drawEnterButtonState(target, nameText)
+            : await captureSliceTarget(target);
+        const id = 'slice_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
         sliceItems.push({ id, name: nameText, dataUrl });
 
         // 如果勾选了完成态，额外生成一张完成态按钮切图
         if(wantCompleted) {
             const completedText = getCompletedText(nameText);
-            const completedDataUrl = drawCompletedButton(target, completedText);
+            // 完成态统一走主题色去饱和，保持与一键导出一致
+            const completedDataUrl = drawEnterButtonState(target, completedText);
             const completedId = 'slice_' + Date.now() + '_c_' + Math.random().toString(36).substr(2,5);
             sliceItems.push({ id: completedId, name: completedText, dataUrl: completedDataUrl, isCompleted: true });
         }
@@ -14142,6 +16220,7 @@ function _btnTypeLabel(el) {
     if(el.classList.contains('m-role-enter-btn'))       return '进入游戏';
     if(el.classList.contains('redpacket-copy-btn'))     return '口令码复制';
     if(el.classList.contains('redpacket-use-btn'))      return '口令码使用';
+    if(el.classList.contains('redpacket2-share-btn'))   return '口令码分享';
     if(el.classList.contains('lottery-task-slice-btn')) return '抽奖任务';
     if(el.classList.contains('more-benefit-slice-btn')) return '更多福利';
     if(el.classList.contains('signin-slice-btn'))             return '签到按钮';
@@ -14165,6 +16244,7 @@ function _collectAllPageButtons() {
         '.m-role-enter-btn',
         '.redpacket-copy-btn',
         '.redpacket-use-btn',
+        '.redpacket2-share-btn',
         '.lottery-task-slice-btn',
         '.more-benefit-slice-btn',
         '.signin-slice-btn',
@@ -14245,8 +16325,14 @@ async function generateAllPageButtonSliceTasksForExport(onProgress) {
                 await new Promise(r => requestAnimationFrame(r));
             }
         } else {
+            // 纯文字按钮（签到/更多福利/抽奖任务/口令码等）默认态也用 Canvas 绘制，
+            // 与完成态、hover 单切保持一致；避免 htmlToImage 网络字体基线偏移导致文字被裁切。
+            // 仅含图标/图片等复杂结构的按钮才回退 htmlToImage。
+            const canDrawOnCanvas = isPureTextSliceButton(t.el);
             try {
-                const defaultDataUrl = await captureSliceTarget(t.el);
+                const defaultDataUrl = canDrawOnCanvas
+                    ? drawEnterButtonState(t.el, t.text)
+                    : await captureSliceTarget(t.el);
                 tasks.push({
                     name: `${t.typeLabel}${idxSuffix}_${sizeTag}_${t.text}`,
                     dataUrl: defaultDataUrl,
@@ -14259,9 +16345,7 @@ async function generateAllPageButtonSliceTasksForExport(onProgress) {
 
             const completedText = getCompletedText(t.text);
             try {
-                const completedDataUrl = usesThemedButtonCompletedStyle(t.el)
-                    ? drawEnterButtonState(t.el, completedText)
-                    : drawCompletedButton(t.el, completedText);
+                const completedDataUrl = drawEnterButtonState(t.el, completedText);
                 tasks.push({
                     name: `${t.typeLabel}${idxSuffix}_${sizeTag}_${completedText}`,
                     dataUrl: completedDataUrl,
@@ -14284,14 +16368,32 @@ async function exportAllPageButtons() {
         return;
     }
     const targets = _collectAllPageButtons();
-    if(targets.length === 0) {
-        alert('当前预览区没有检测到可导出的按钮');
+    const rechargeRewardCount = document.querySelectorAll('#previewContainer .recharge-list-reward-cell, #previewContainer .redpacket2-pool-reward-cell, #previewContainer .rpn-card[data-rpn-card="1"]').length;
+    if(targets.length === 0 && rechargeRewardCount === 0) {
+        alert('当前预览区没有检测到可导出的按钮或状态切图');
         return;
     }
 
     const allBtn = document.getElementById('sliceExportAllBtn');
     const originalText = allBtn ? allBtn.textContent : '';
-    if(allBtn) { allBtn.disabled = true; allBtn.textContent = '正在生成… 0%'; }
+    const exportStartAt = Date.now();
+    let exportStatusText = '正在生成… 0%';
+    const formatExportElapsed = () => {
+        const seconds = Math.max(0, Math.floor((Date.now() - exportStartAt) / 1000));
+        const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const ss = String(seconds % 60).padStart(2, '0');
+        return `${mm}:${ss}`;
+    };
+    const setExportAllButtonText = (text) => {
+        exportStatusText = text;
+        if(allBtn) allBtn.textContent = `${text}｜已用时 ${formatExportElapsed()}`;
+    };
+    let exportTimer = null;
+    if(allBtn) {
+        allBtn.disabled = true;
+        setExportAllButtonText(exportStatusText);
+        exportTimer = setInterval(() => setExportAllButtonText(exportStatusText), 1000);
+    }
 
     /** 收集到的所有切图：{ name, dataUrl, isCompleted } —— 仅本次任务使用 */
     const tasks = [];
@@ -14309,7 +16411,7 @@ async function exportAllPageButtons() {
         let processed = 0;
         const tick = () => {
             processed++;
-            if(allBtn) allBtn.textContent = `正在生成… ${Math.round(processed/total*100)}%`;
+            setExportAllButtonText(`正在生成… ${Math.round(processed / Math.max(1, total) * 100)}%`);
         };
 
         for(const t of targets) {
@@ -14331,8 +16433,14 @@ async function exportAllPageButtons() {
                 }
             } else {
                 // 普通按钮（含更多福利、抽奖任务、口令码、客态等）：默认态截图 + 完成态 Canvas 绘制
+                // 纯文字按钮（签到/更多福利/抽奖任务/口令码等）默认态也用 Canvas 绘制，
+                // 与完成态、hover 单切保持一致；避免 htmlToImage 网络字体基线偏移导致文字被裁切。
+                // 仅含图标/图片等复杂结构的按钮才回退 htmlToImage。
+                const canDrawOnCanvas = isPureTextSliceButton(t.el);
                 try {
-                    const defaultDataUrl = await captureSliceTarget(t.el);
+                    const defaultDataUrl = canDrawOnCanvas
+                        ? drawEnterButtonState(t.el, t.text)
+                        : await captureSliceTarget(t.el);
                     tasks.push({
                         name: `${t.typeLabel}${idxSuffix}_${sizeTag}_${t.text}`,
                         dataUrl: defaultDataUrl,
@@ -14345,9 +16453,10 @@ async function exportAllPageButtons() {
 
                 const completedText = getCompletedText(t.text);
                 try {
-                    const completedDataUrl = usesThemedButtonCompletedStyle(t.el)
-                        ? drawEnterButtonState(t.el, completedText)
-                        : drawCompletedButton(t.el, completedText);
+                    // 完成态统一走「主题色去饱和」逻辑（drawEnterButtonState 内对“已…”文字自动去饱和），
+                    // 确保口令码 / 签到 / 抽奖 / 普通按钮的完成态灰色完全一致，
+                    // 不再使用写死的 #B3B3B3，避免出现两种不同的灰。
+                    const completedDataUrl = drawEnterButtonState(t.el, completedText);
                     tasks.push({
                         name: `${t.typeLabel}${idxSuffix}_${sizeTag}_${completedText}`,
                         dataUrl: completedDataUrl,
@@ -14361,12 +16470,18 @@ async function exportAllPageButtons() {
             }
         }
 
-        if(tasks.length === 0) {
+        setExportAllButtonText('正在生成奖励格状态切图…');
+        const rechargeRewardStateFiles = await buildRechargeListRewardStateFiles();
+        const redpacket2RewardStateFiles = await buildRedpacket2PoolRewardStateFiles();
+        const redpacketNewCardStateFiles = await buildRedpacketNewCardStateFiles();
+        const rewardStateCount = rechargeRewardStateFiles.length + redpacket2RewardStateFiles.length + redpacketNewCardStateFiles.length;
+
+        if(tasks.length === 0 && rewardStateCount === 0) {
             alert('没有生成任何切图');
             return;
         }
 
-        if(allBtn) allBtn.textContent = '打包中…';
+        setExportAllButtonText('打包中…');
 
         // 打包 ZIP
         const zip = new JSZip();
@@ -14377,6 +16492,21 @@ async function exportAllPageButtons() {
             const suffix = item.isCompleted ? '_完成态' : '';
             zip.file(`${order}_${sanitizeFileName(item.name)}${suffix}_${sliceScale}x.png`, blob);
         }
+        if(rechargeRewardStateFiles.length || redpacket2RewardStateFiles.length || redpacketNewCardStateFiles.length) {
+            const stateFolder = zip.folder('奖励格状态切图') || zip;
+            if(rechargeRewardStateFiles.length) {
+                const rechargeFolder = stateFolder.folder('列表型充值返利') || stateFolder;
+                rechargeRewardStateFiles.forEach(file => rechargeFolder.file(file.name, file.blob));
+            }
+            if(redpacket2RewardStateFiles.length) {
+                const redpacket2Folder = stateFolder.folder('新版口令码') || stateFolder;
+                redpacket2RewardStateFiles.forEach(file => redpacket2Folder.file(file.name, file.blob));
+            }
+            if(redpacketNewCardStateFiles.length) {
+                const redpacketNewFolder = stateFolder.folder('红包拉新') || stateFolder;
+                redpacketNewCardStateFiles.forEach(file => redpacketNewFolder.file(file.name, file.blob));
+            }
+        }
         const zipBlob = await zip.generateAsync({ type:'blob' });
         const url = URL.createObjectURL(zipBlob);
         const link = document.createElement('a');
@@ -14386,12 +16516,13 @@ async function exportAllPageButtons() {
         setTimeout(() => URL.revokeObjectURL(url), 1000);
 
         if(typeof showExportImportToast === 'function') {
-            showExportImportToast(`✅ 已导出 ${tasks.length} 张按钮切图（${targets.length} 个按钮）`);
+            showExportImportToast(`✅ 已导出 ${tasks.length} 张按钮切图、${rewardStateCount} 张状态切图（${targets.length} 个按钮）`);
         }
     } catch(err) {
         console.error('一键导出按钮失败:', err);
         alert('一键导出失败：' + (err.message || '未知错误'));
     } finally {
+        if(exportTimer) clearInterval(exportTimer);
         if(allBtn) { allBtn.disabled = false; allBtn.textContent = originalText || '⚡ 一键导出所有按钮'; }
     }
 }
@@ -14413,6 +16544,7 @@ function bindSliceHoverEvents() {
         '.m-role-enter-btn',
         '.redpacket-copy-btn',
         '.redpacket-use-btn',
+        '.redpacket2-share-btn',
         '.lottery-task-slice-btn',
         '.more-benefit-slice-btn',
         '.signin-slice-btn',
@@ -14739,6 +16871,24 @@ function navigateToModule(moduleId, instanceId) {
     if(moduleId === 'roleEntry' || moduleId === 'roleSelect' || moduleId === 'enterBtn') {
         // 尝试定位到"进入游戏按钮"配置区（旧版本遗留，若节点不存在则静默）
         const section = document.getElementById('sectionEnterBtn');
+        if(!section) return;
+        section.classList.remove('collapsed');
+        setTimeout(() => {
+            section.scrollIntoView({ behavior:'smooth', block:'center' });
+            section.classList.remove('highlight-flash');
+            void section.offsetWidth;
+            section.classList.add('highlight-flash');
+            section.addEventListener('animationend', () => {
+                section.classList.remove('highlight-flash');
+            }, { once:true });
+        }, 100);
+        return;
+    }
+
+    // 客态顶部按钮处理
+    if(moduleId === 'guestTopBtn') {
+        if(currentView !== 'guest') switchView('guest');
+        const section = document.getElementById('gSectionTopButton');
         if(!section) return;
         section.classList.remove('collapsed');
         setTimeout(() => {
