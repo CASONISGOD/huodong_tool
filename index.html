@@ -5244,7 +5244,8 @@ function renderModuleTemplate(opts, innerHtml) {
     const bodyPad = opts.bodyPad || `padding:${36*S}px ${24*S}px ${24*S}px`;
 
     const hideHeader = !!opts.hideHeader;
-    const subtitleHtml = (!hideHeader && opts.subtitle) ? `
+    const showSubtitle = opts.showSubtitle !== false && isModuleSubtitleVisible(opts.moduleId);
+    const subtitleHtml = (!hideHeader && showSubtitle && opts.subtitle) ? `
         <div class="m-tpl-subtitle" style="text-align:center;margin:${12*S}px auto 0;max-width:100%;box-sizing:border-box;font-size:${20*S}px;line-height:${28*S}px;color:rgba(0,0,0,0.60);font-family:PingFang SC,sans-serif;white-space:normal;overflow-wrap:anywhere;word-break:break-word">
             ${opts.subtitle}
         </div>` : '';
@@ -6236,7 +6237,7 @@ function renderGuestModuleList() {
     document.getElementById('gModuleList').innerHTML = guestModules.map((m,i) => {
         const isExpanded = _gExpandedModuleId === m.id;
         const expandedClass = isExpanded ? ' detail-expanded' : '';
-        const detailHtml = getGuestModuleDetailHtml(m.id);
+        const detailHtml = renderSubtitleVisibilityConfig(m.id, '', true) + getGuestModuleDetailHtml(m.id);
         const hasDetail = detailHtml.length > 0;
         return `
         <div class="module-section${expandedClass}" draggable="true" data-idx="${i}" data-module-id="${m.id||''}"
@@ -9464,6 +9465,73 @@ function updateAssistBgColor(val) {
 
 // ===== Modules =====
 
+function getSubtitleConfigData(moduleId, instanceId) {
+    switch(moduleId) {
+        case 'redpacket': return getRedpacketData(instanceId);
+        case 'redpacket2': return getRedpacket2Data(instanceId);
+        case 'signin': return getSigninData(instanceId);
+        case 'lottery': return getLotteryData(instanceId);
+        case 'custom': return getCustomData(instanceId);
+        case 'pass': return getPassData(instanceId);
+        case 'redpacketNew': return getRedpacketNewData(instanceId);
+        case 'rechargeList': return getRechargeListData(instanceId);
+        case 'assist': return assistData;
+        case 'draw': return drawData;
+        case 'recharge': return rechargeData;
+        case 'g_return': return gReturnData;
+        case 'g_redpacket': return gRedpacketData;
+        case 'g_send': return gSendData;
+        default: return null;
+    }
+}
+
+function isSubtitleVisible(data) {
+    return !data || data.subtitleVisible !== false;
+}
+
+function isModuleSubtitleVisible(moduleKey) {
+    if(!moduleKey) return true;
+    const m = modules.find(mm => mm.instanceId === moduleKey);
+    if(m) return isSubtitleVisible(getSubtitleConfigData(m.id, m.instanceId));
+    return isSubtitleVisible(getSubtitleConfigData(moduleKey, moduleKey));
+}
+
+function renderSubtitleVisibilityConfig(moduleId, instanceId, isGuest = false) {
+    const data = getSubtitleConfigData(moduleId, instanceId);
+    if(!data || !Object.prototype.hasOwnProperty.call(data, 'subtitle')) return '';
+    const checked = isSubtitleVisible(data) ? 'checked' : '';
+    const handler = isGuest
+        ? `setGuestModuleSubtitleVisible('${moduleId}',this.checked)`
+        : `setModuleSubtitleVisible('${moduleId}','${instanceId || ''}',this.checked)`;
+    return `
+    <div class="detail-sub-section">
+        <div class="detail-sub-title">副标题展示</div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-1);cursor:pointer;user-select:none">
+            <input type="checkbox" ${checked} onchange="${handler}" style="accent-color:var(--primary)">
+            <span>在页面中展示副标题</span>
+        </label>
+    </div>`;
+}
+
+function setModuleSubtitleVisible(moduleId, instanceId, visible) {
+    const data = getSubtitleConfigData(moduleId, instanceId);
+    if(!data) return;
+    data.subtitleVisible = !!visible;
+    renderModuleList();
+    if(_expandedModuleId === instanceId) _rerenderModuleDetail(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+
+function setGuestModuleSubtitleVisible(moduleId, visible) {
+    const data = getSubtitleConfigData(moduleId, '');
+    if(!data) return;
+    data.subtitleVisible = !!visible;
+    renderGuestModuleList();
+    renderPreview();
+    pushSnapshot();
+}
+
 // 模块 ID → 详细配置 HTML 的映射
 // 入参 key 现在是 module.instanceId；通过 modules 表反查类型 id
 function getModuleDetailHtml(key) {
@@ -9822,7 +9890,7 @@ function renderModuleList() {
         const isDuplicate = idSeen[m.id] > 1; // 该项是否为副本（第 1 个保留原样，不显示删除按钮）
         const isExpanded = _expandedModuleId === m.instanceId;
         const expandedClass = isExpanded ? ' detail-expanded' : '';
-        const detailHtml = getModuleDetailHtml(m.instanceId);
+        const detailHtml = renderSubtitleVisibilityConfig(m.id, m.instanceId) + getModuleDetailHtml(m.instanceId);
         const hasDetail = detailHtml.length > 0;
         return `
         <div class="module-section${expandedClass}" draggable="true" data-idx="${i}" data-instance-id="${m.instanceId||''}" data-module-id="${m.id||''}"
@@ -11695,7 +11763,7 @@ function renderAssist(pc, isBgMode) {
                 <div class="m-card-title">
                     <span class="editable-text" contenteditable="true" data-field="title" onblur="onModuleTextEdit(this,assistData,'title')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:#fff">${assistData.title}</span>
                 </div>
-                <div class="m-card-subtitle"><span class="editable-text" contenteditable="true" data-field="subtitle" onblur="onModuleTextEdit(this,assistData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${assistData.subtitle}</span></div>
+                ${isSubtitleVisible(assistData) ? `<div class="m-card-subtitle"><span class="editable-text" contenteditable="true" data-field="subtitle" onblur="onModuleTextEdit(this,assistData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${assistData.subtitle}</span></div>` : ''}
             </div>
         </div>`;
     }
@@ -13579,7 +13647,7 @@ function renderDraw(pc, isBgMode) {
                 <div class="draw-title">
                     <span class="editable-text" ${editable} data-field="title" onblur="onModuleTextEdit(this,drawData,'title')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:#fff">${d.title}</span>
                 </div>
-                <div class="draw-subtitle"><span class="editable-text" ${editable} data-field="subtitle" onblur="onModuleTextEdit(this,drawData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${d.subtitle}</span></div>
+                ${isSubtitleVisible(drawData) ? `<div class="draw-subtitle"><span class="editable-text" ${editable} data-field="subtitle" onblur="onModuleTextEdit(this,drawData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${d.subtitle}</span></div>` : ''}
             </div>
         </div>`;
     }
@@ -13591,7 +13659,7 @@ function renderDraw(pc, isBgMode) {
             <div class="draw-title">
                 <span class="editable-text" ${editable} data-field="title" onblur="onModuleTextEdit(this,drawData,'title')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:#fff">${d.title}</span>
             </div>
-            <div class="draw-subtitle"><span class="editable-text" ${editable} data-field="subtitle" onblur="onModuleTextEdit(this,drawData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${d.subtitle}</span></div>
+            ${isSubtitleVisible(drawData) ? `<div class="draw-subtitle"><span class="editable-text" ${editable} data-field="subtitle" onblur="onModuleTextEdit(this,drawData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${d.subtitle}</span></div>` : ''}
         </div>
         <div class="draw-grid">${prizesHtml}</div>
         <div class="draw-btn-row">
@@ -13706,7 +13774,7 @@ function renderRecharge(pc, isBgMode) {
             <div class="recharge-title-row">
                 <span class="recharge-title"><span class="editable-text" ${editable} data-field="title" onblur="onModuleTextEdit(this,rechargeData,'title')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${d.title}</span></span>
             </div>
-            <div class="recharge-subtitle"><span class="editable-text" ${editable} data-field="subtitle" onblur="onModuleTextEdit(this,rechargeData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${d.subtitle}</span></div>
+            ${isSubtitleVisible(rechargeData) ? `<div class="recharge-subtitle"><span class="editable-text" ${editable} data-field="subtitle" onblur="onModuleTextEdit(this,rechargeData,'subtitle')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:rgba(255,255,255,0.60)">${d.subtitle}</span></div>` : ''}
         </div>${bodyHtml}
     </div>`;
 }
