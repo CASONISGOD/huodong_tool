@@ -5628,6 +5628,49 @@ let modules = [
     { instanceId: genInstanceId(), id:'pass',      name:'通行证', desc:'上传一张切图，固定高度 492px', enabled:true },
 ];
 
+function getModuleOrderSnapshot(sourceModules = modules) {
+    return (sourceModules || []).map((m, index) => ({
+        instanceId: m.instanceId || '',
+        id: m.id || '',
+        index
+    }));
+}
+
+function hasStoredModuleOrder(snapshot) {
+    try {
+        const snap = typeof snapshot === 'string' ? JSON.parse(snapshot) : snapshot;
+        return Array.isArray(snap?.moduleOrder) && snap.moduleOrder.length > 0;
+    } catch(_err) {
+        return false;
+    }
+}
+
+function applyStoredModuleOrder(moduleOrder) {
+    if(!Array.isArray(moduleOrder) || moduleOrder.length === 0) return false;
+    const orderIndex = new Map();
+    moduleOrder.forEach((item, index) => {
+        if(!item) return;
+        if(typeof item === 'string') {
+            orderIndex.set(`instance:${item}`, index);
+            orderIndex.set(`id:${item}`, index);
+            return;
+        }
+        if(item.instanceId) orderIndex.set(`instance:${item.instanceId}`, index);
+        if(item.id && !item.instanceId) orderIndex.set(`id:${item.id}`, index);
+    });
+    const ordered = modules.map((m, index) => {
+        const instanceKey = m.instanceId ? `instance:${m.instanceId}` : '';
+        const idKey = m.id ? `id:${m.id}` : '';
+        const order = (instanceKey && orderIndex.has(instanceKey))
+            ? orderIndex.get(instanceKey)
+            : (idKey && orderIndex.has(idKey) ? orderIndex.get(idKey) : Number.MAX_SAFE_INTEGER);
+        return { module: m, index, order };
+    }).sort((a, b) => (a.order - b.order) || (a.index - b.index));
+    const changed = ordered.some((item, index) => modules[index] !== item.module);
+    if(changed) modules.splice(0, modules.length, ...ordered.map(item => item.module));
+    return changed;
+}
+
 // 充值返利模块数据
 let rechargeData = {
     title: '充值返利',
@@ -6999,7 +7042,7 @@ async function loadProjectIntoEditor(id, options = {}) {
     // 恢复快照
     if(snapshot) {
         restoreSnapshot(snapshot);
-        const orderChanged = moveDefaultModulesToPageTop();
+        const orderChanged = hasStoredModuleOrder(snapshot) ? false : moveDefaultModulesToPageTop();
         // 恢复后手动推一个初始快照
         undoStack = [snapshot];
         redoStack = [];
@@ -7108,6 +7151,7 @@ async function exportProject() {
                 time: currentProjectMeta.time || '',
                 exportedAt: Date.now()
             },
+            moduleOrder: (Array.isArray(snapshotObj.moduleOrder) && snapshotObj.moduleOrder.length) ? snapshotObj.moduleOrder : getModuleOrderSnapshot(),
             colors: colorInfo,
             snapshot: snapshotObj,
             assets: assetResult.assets,
@@ -7580,6 +7624,9 @@ function importProject() {
             };
 
             // 保存快照到 IndexedDB
+            if(Array.isArray(data.moduleOrder) && data.moduleOrder.length && (!Array.isArray(data.snapshot.moduleOrder) || !data.snapshot.moduleOrder.length)) {
+                data.snapshot.moduleOrder = data.moduleOrder;
+            }
             const snapshotStr = JSON.stringify(data.snapshot);
             await saveProjectToDB(id, snapshotStr);
 
@@ -7599,7 +7646,7 @@ function importProject() {
 
             // 恢复快照
             restoreSnapshot(snapshotStr);
-            const orderChanged = moveDefaultModulesToPageTop();
+            const orderChanged = hasStoredModuleOrder(data.snapshot) ? false : moveDefaultModulesToPageTop();
             undoStack = [snapshotStr];
             redoStack = [];
             updateUndoRedoButtons();
@@ -14641,7 +14688,8 @@ function getSnapshot() {
         assistMode,
         enterBtnText,
         hostTopButtonData: {...hostTopButtonData, buttons: (hostTopButtonData.buttons || []).map(b => ({...b}))},
-        modules: modules.map(m => ({instanceId:m.instanceId, id:m.id, name:m.name, desc:m.desc, enabled:m.enabled})),
+        moduleOrder: getModuleOrderSnapshot(),
+        modules: modules.map((m, index) => ({instanceId:m.instanceId, id:m.id, name:m.name, desc:m.desc, enabled:m.enabled, order:index})),
         roleData: {...roleData},
         assistData: {
             ...assistData,
@@ -14773,6 +14821,9 @@ function restoreSnapshot(snapStr) {
     if(!modules.some(m => m.id === 'redpacketNew')) {
         modules.push({ instanceId: genInstanceId(), id:'redpacketNew', name:'红包拉新', desc:'按 Figma 自动排版，配置类型和数量', enabled:true });
     }
+
+    // 恢复显式保存的模块顺序（新项目/新导出文件会携带 moduleOrder）
+    applyStoredModuleOrder(snap.moduleOrder);
 
     // 恢复模块装饰覆盖
     moduleDecorations = (snap.moduleDecorations && typeof snap.moduleDecorations === 'object') ? JSON.parse(JSON.stringify(snap.moduleDecorations)) : {};
