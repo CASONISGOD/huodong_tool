@@ -717,6 +717,16 @@
         }
         .g-logo-actions button:hover { background:var(--bg-elev-2); color:var(--text-1); }
         .g-logo-actions button.danger:hover { background:rgba(248,113,113,0.12); color:var(--danger); }
+        .g-title-options { display:flex; flex-direction:column; gap:8px; }
+        .g-title-option {
+            width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:10px;
+            background:var(--bg-elev-1); color:var(--text-2); cursor:pointer;
+            display:flex; align-items:center; gap:10px; transition:all .15s; text-align:left;
+        }
+        .g-title-option:hover { border-color:var(--border-strong); color:var(--text-1); }
+        .g-title-option.active { border-color:var(--primary); box-shadow:0 0 0 1px var(--primary-ring); color:var(--text-1); }
+        .g-title-option img { width:86px; height:34px; object-fit:contain; border-radius:6px; background:rgba(255,255,255,0.04); flex-shrink:0; }
+        .g-title-option span { font-size:12px; line-height:1.35; }
 
         /* Modules */
         .module-actions { display:flex; gap:8px; margin-bottom:12px; }
@@ -4441,6 +4451,26 @@
         </div>
         <!-- 客态配置面板 -->
         <div class="panel-left-body" id="guestPanel" style="display:none">
+            <!-- 客态标题配置 -->
+            <div class="section" id="gSectionHeaderTitle">
+                <div class="section-title" onclick="toggleSection('gSectionHeaderTitle')">
+                    客态标题
+                    <span class="section-collapse-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+                <div class="section-body">
+                    <div class="g-title-options" role="group" aria-label="客态标题素材选择">
+                        <button type="button" class="g-title-option active" data-g-title-key="redpacket" onclick="updateGuestHeaderTitleAsset('redpacket')">
+                            <img src="assets/image/ketaibiaoti.png" alt="收到来自好友的红包">
+                            <span>收到来自好友的红包</span>
+                        </button>
+                        <button type="button" class="g-title-option" data-g-title-key="gift" onclick="updateGuestHeaderTitleAsset('gift')">
+                            <img src="assets/image/ketaibiaoti2.png" alt="助力好友一起拿好礼">
+                            <span>助力好友一起拿好礼</span>
+                        </button>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-3);line-height:1.5;margin-top:10px">只切换标题素材，预览中的标题位置保持不变。</div>
+                </div>
+            </div>
             <!-- 客态顶部按钮配置 -->
             <div class="section" id="gSectionTopButton">
                 <div class="section-title" onclick="toggleSection('gSectionTopButton')">
@@ -5775,6 +5805,8 @@ const RECHARGE_LIST_DATA_TEMPLATE = {
     subtitle: '累计充值领大奖，数量有限，先到先得',
     totalLabel: '当前已累计充值：',
     total: '1000元',
+    totalText: '当前已累计充值：1000元',
+    showTotalLine: true,
     items: [
         { amount: '6元', rewards: [
             { label: '5Q币', btnText: '领取', icon: RECHARGE_LIST_ASSETS.coin },
@@ -5855,6 +5887,8 @@ function _normalizeRechargeListData(d) {
     if(d.subtitle == null) d.subtitle = '';
     if(d.totalLabel == null) d.totalLabel = '当前已累计充值：';
     if(d.total == null) d.total = '1000元';
+    if(d.totalText == null) d.totalText = `${d.totalLabel || '当前已累计充值：'}${d.total || ''}`;
+    if(d.showTotalLine == null) d.showTotalLine = true;
     if(!Array.isArray(d.items)) d.items = [];
     d.items.forEach((it, idx) => {
         if(it.amount == null) it.amount = '充值档位';
@@ -5897,6 +5931,11 @@ let guestColors = { background:'#2B5B39', primary:'#63A545' };
 
 // 客态顶部标题（可直接在预览页面上编辑）
 let guestHeaderTitle = '收到来自好友的红包';
+const GUEST_HEADER_TITLE_OPTIONS = [
+    { key: 'redpacket', label: '收到来自好友的红包', url: 'assets/image/ketaibiaoti.png' },
+    { key: 'gift', label: '助力好友一起拿好礼', url: 'assets/image/ketaibiaoti2.png' },
+];
+let guestHeaderTitleAsset = GUEST_HEADER_TITLE_OPTIONS[0].key;
 
 // 客态顶部Logo配置
 let guestHeaderLogos = [
@@ -6134,6 +6173,27 @@ function onGuestHeaderTitleEdit(el) {
         renderPreview();
         pushSnapshot();
     }
+}
+
+function getGuestHeaderTitleOption() {
+    const cur = String(guestHeaderTitleAsset || '');
+    return GUEST_HEADER_TITLE_OPTIONS.find(opt => opt.key === cur || opt.url === cur) || GUEST_HEADER_TITLE_OPTIONS[0];
+}
+
+function syncGuestHeaderTitleControls() {
+    const cur = getGuestHeaderTitleOption();
+    document.querySelectorAll('[data-g-title-key]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.gTitleKey === cur.key);
+    });
+}
+
+function updateGuestHeaderTitleAsset(key) {
+    const next = GUEST_HEADER_TITLE_OPTIONS.find(opt => opt.key === key || opt.url === key) || GUEST_HEADER_TITLE_OPTIONS[0];
+    if(guestHeaderTitleAsset === next.key) return;
+    guestHeaderTitleAsset = next.key;
+    syncGuestHeaderTitleControls();
+    renderPreview();
+    pushSnapshot();
 }
 
 // ===== 主态顶部按钮 =====
@@ -8161,6 +8221,7 @@ function resetAllSilent() {
     currentView = 'host';
     guestColors = { background:'#2B5B39', primary:'#63A545' };
     guestHeaderTitle = '收到来自好友的红包';
+    guestHeaderTitleAsset = GUEST_HEADER_TITLE_OPTIONS[0].key;
     guestHeaderLogos = [
         { url: 'assets/image/wangzhelogo.png', name: '王者荣耀' },
         { url: 'assets/image/qblogo.png', name: 'QQ浏览器' },
@@ -8179,6 +8240,7 @@ function resetAllSilent() {
     gQbPullData = createDefaultGQbPullData();
     guestFooterData = { link1: '活动规则', link2: '中奖记录', link3: '意见反馈' };
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
     undoStack = [];
     redoStack = [];
 }
@@ -8216,6 +8278,7 @@ function init() {
 
     // 初始化客态 UI 控件
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
 
     // 确保视图 tab 正确
     switchView(currentView);
@@ -9903,6 +9966,10 @@ function getModuleDetailHtml(key) {
             <div class="detail-sub-section">
                 <div class="detail-sub-title">列表型充值返利</div>
                 <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">已按设计稿对齐：每行一个档位，每档最多 2 个奖品；档位、奖品文案和领取文字可编辑。</div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);cursor:pointer;user-select:none;margin-bottom:10px">
+                    <input type="checkbox" ${getRechargeListData(key).showTotalLine === false ? '' : 'checked'} onchange="setRechargeListTotalLineVisible('${key}', this.checked)" style="accent-color:var(--primary)">
+                    <span>显示累计充值行</span>
+                </label>
                 <div id="rechargeListItems_${key}"></div>
                 <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="addRechargeListItem('${key}')">＋ 添加档位（最多 ${RECHARGE_LIST_MAX_ITEMS} 档）</button>
             </div>`;
@@ -13969,11 +14036,11 @@ function renderRechargeList(pc, isBgMode, m) {
         </div>`;
     }).join('');
 
-    const totalHtml = `
+    const totalLineText = d.totalText || `${d.totalLabel || '当前已累计充值：'}${d.total || ''}`;
+    const totalHtml = d.showTotalLine === false ? '' : `
         <div style="display:flex;align-items:center;justify-content:center;gap:${8*S}px;margin-top:${36*S}px;height:${30*S}px;color:#242424;font-family:PingFang SC,sans-serif;font-size:${24*S}px;line-height:${30*S}px">
             <img src="assets/image/chongfan.png" style="width:${30*S}px;height:${30*S}px;object-fit:contain;display:block;flex-shrink:0" onerror="this.style.display='none'">
-            <span class="editable-text" ${editable} data-field="totalLabel" onblur="onRechargeListFieldEdit(this,'totalLabel','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(d.totalLabel || '当前已累计充值：')}</span>
-            <span class="editable-text" ${editable} data-field="total" onblur="onRechargeListFieldEdit(this,'total','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="${isBgMode ? 'visibility:hidden;' : ''}">${escapeHtml(d.total || '')}</span>
+            <span class="editable-text" ${editable} data-field="totalText" onblur="onRechargeListFieldEdit(this,'totalText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(totalLineText)}</span>
         </div>`;
 
     return renderModuleTemplate({
@@ -13989,7 +14056,11 @@ function renderRechargeList(pc, isBgMode, m) {
 
 function onRechargeListFieldEdit(el, field, instanceId) {
     const d = getRechargeListData(instanceId); if(!d) return;
-    const fallback = field === 'title' ? 'QQ浏览器渠道用户专属充值返利' : (field === 'total' ? '1000元' : (field === 'totalLabel' ? '当前已累计充值：' : '累计充值领大奖，数量有限，先到先得'));
+    const fallback = field === 'title'
+        ? 'QQ浏览器渠道用户专属充值返利'
+        : (field === 'totalText'
+            ? `${d.totalLabel || '当前已累计充值：'}${d.total || '1000元'}`
+            : (field === 'total' ? '1000元' : (field === 'totalLabel' ? '当前已累计充值：' : '累计充值领大奖，数量有限，先到先得')));
     const v = el.textContent.trim() || fallback;
     if(v !== d[field]) { d[field] = v; renderRechargeListItemPanel(instanceId); renderPreview(); pushSnapshot(); }
 }
@@ -14081,6 +14152,13 @@ function setRechargeListFieldProp(instanceId, field, value) {
     const d = getRechargeListData(instanceId); if(!d) return;
     const fallback = field === 'total' ? '1000元' : '';
     d[field] = String(value || '').trim() || fallback;
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function setRechargeListTotalLineVisible(instanceId, visible) {
+    const d = getRechargeListData(instanceId); if(!d) return;
+    d.showTotalLine = !!visible;
     renderRechargeListItemPanel(instanceId);
     renderPreview();
     pushSnapshot();
@@ -14474,7 +14552,8 @@ function renderGuestPreview() {
 
     // 客态 顶部标题切图（只位于头图海报上层，避免覆盖预览工具 UI）
     // 标注来自 @2x 设计稿，页面内统一除以 2：211 / 2 = 105.5
-    const titleOverlayHtml = `<img src="assets/image/ketaibiaoti.png" style="position:absolute;top:105.5px;left:50%;transform:translateX(-50%) scale(0.5);transform-origin:top center;height:auto;pointer-events:none;z-index:5;user-select:none;-webkit-user-drag:none">`;
+    const titleOption = getGuestHeaderTitleOption();
+    const titleOverlayHtml = `<img src="${titleOption.url}" style="position:absolute;top:105.5px;left:50%;transform:translateX(-50%) scale(0.5);transform-origin:top center;height:auto;pointer-events:none;z-index:5;user-select:none;-webkit-user-drag:none">`;
 
     // 客态 头图右上角 QQ 浏览器 Logo：固定素材，位置/大小由主态"头部区域配置 > 浏览器 Logo"控制
     if(!headerBrowserLogoImg) headerBrowserLogoImg = createDefaultHeaderBrowserLogo();
@@ -14715,6 +14794,7 @@ function resetAll() {
     currentView = 'host';
     guestColors = { background:'#2B5B39', primary:'#63A545' };
     guestHeaderTitle = '收到来自好友的红包';
+    guestHeaderTitleAsset = GUEST_HEADER_TITLE_OPTIONS[0].key;
     guestHeaderLogos = [
         { url: 'assets/image/wangzhelogo.png', name: '王者荣耀' },
         { url: 'assets/image/qblogo.png', name: 'QQ浏览器' },
@@ -14733,6 +14813,7 @@ function resetAll() {
     gQbPullData = createDefaultGQbPullData();
     guestFooterData = { link1: '活动规则', link2: '中奖记录', link3: '意见反馈' };
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
     switchView('host');
     loadDefaultHeaderAssets();
     renderPosterPreview(); renderHeaderTitlePreview(); renderHeaderLogoPreview(); renderHeaderBrowserLogoPreview(); _expandedModuleId = null; renderModuleList(); renderGuestModuleList(); renderGuestLogoList(); renderModuleBaseDeco(); renderPreview(); updateInfo();
@@ -14811,6 +14892,7 @@ function getSnapshot() {
         currentView,
         guestColors: {...guestColors},
         guestHeaderTitle,
+        guestHeaderTitleAsset: getGuestHeaderTitleOption().key,
         guestHeaderLogos: guestHeaderLogos.map(l => ({url:l.url, name:l.name})),
         guestTopButtonData: {...guestTopButtonData, buttons: (guestTopButtonData.buttons || []).map(b => ({...b}))},
         guestModules: guestModules.map(m => ({id:m.id, name:m.name, desc:m.desc, enabled:m.enabled})),
@@ -15163,6 +15245,7 @@ function restoreSnapshot(snapStr) {
     // ===== 恢复客态数据 =====
     if(snap.guestColors) guestColors = snap.guestColors;
     if(snap.guestHeaderTitle) guestHeaderTitle = snap.guestHeaderTitle;
+    guestHeaderTitleAsset = snap.guestHeaderTitleAsset || GUEST_HEADER_TITLE_OPTIONS[0].key;
     if(snap.guestHeaderLogos) {
         guestHeaderLogos = snap.guestHeaderLogos.map(l => ({url:l.url, name:l.name}));
     }
@@ -15217,6 +15300,7 @@ function restoreSnapshot(snapStr) {
     if(gPr) gPr.value = guestColors.primary;
     if(gPrH) gPrH.value = guestColors.primary;
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
 
     // 恢复当前视图
     if(snap.currentView && snap.currentView !== currentView) {
