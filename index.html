@@ -191,6 +191,21 @@
             background:#F7F8FA !important;
             border-color:#9EA4B0 !important;
         }
+        .light-mode .preview-export-menu {
+            background:#FFFFFF !important;
+            border-color:#BFC3CC !important;
+            box-shadow:0 8px 24px rgba(0,0,0,0.12) !important;
+        }
+        .light-mode .preview-export-option {
+            color:var(--text-1) !important;
+        }
+        .light-mode .preview-export-option:hover {
+            background:#F7F8FA !important;
+        }
+        .light-mode .preview-export-option-size,
+        .light-mode .preview-export-size {
+            color:var(--text-3) !important;
+        }
         .light-mode .tool-rail-shortcuts button {
             color:var(--text-3) !important;
         }
@@ -702,6 +717,16 @@
         }
         .g-logo-actions button:hover { background:var(--bg-elev-2); color:var(--text-1); }
         .g-logo-actions button.danger:hover { background:rgba(248,113,113,0.12); color:var(--danger); }
+        .g-title-options { display:flex; flex-direction:column; gap:8px; }
+        .g-title-option {
+            width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:10px;
+            background:var(--bg-elev-1); color:var(--text-2); cursor:pointer;
+            display:flex; align-items:center; gap:10px; transition:all .15s; text-align:left;
+        }
+        .g-title-option:hover { border-color:var(--border-strong); color:var(--text-1); }
+        .g-title-option.active { border-color:var(--primary); box-shadow:0 0 0 1px var(--primary-ring); color:var(--text-1); }
+        .g-title-option img { width:86px; height:34px; object-fit:contain; border-radius:6px; background:rgba(255,255,255,0.04); flex-shrink:0; }
+        .g-title-option span { font-size:12px; line-height:1.35; }
 
         /* Modules */
         .module-actions { display:flex; gap:8px; margin-bottom:12px; }
@@ -1695,6 +1720,64 @@
         .preview-export-btn:disabled {
             opacity:.55;
             cursor:not-allowed;
+        }
+        .preview-export-dropdown {
+            position:relative;
+            display:inline-flex;
+            margin-left:12px;
+        }
+        .preview-export-dropdown .preview-export-btn {
+            margin-left:0;
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+        }
+        .preview-export-arrow {
+            font-size:12px;
+            opacity:.8;
+            transform:translateY(-1px);
+        }
+        .preview-export-menu {
+            display:none;
+            position:absolute;
+            top:34px;
+            right:0;
+            min-width:190px;
+            padding:6px;
+            border:1px solid rgba(255,255,255,0.16);
+            border-radius:10px;
+            background:#1B1A1D;
+            box-shadow:0 10px 28px rgba(0,0,0,0.28);
+            z-index:80;
+        }
+        .preview-export-menu.show { display:block; }
+        .preview-export-option {
+            width:100%;
+            border:none;
+            background:transparent;
+            color:var(--text-1);
+            border-radius:8px;
+            padding:8px 10px;
+            font-size:13px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            text-align:left;
+            font-family:inherit;
+        }
+        .preview-export-option:hover { background:rgba(255,255,255,0.08); }
+        .preview-export-option-size {
+            font-size:11px;
+            color:rgba(255,255,255,0.55);
+            white-space:nowrap;
+        }
+        .preview-export-size {
+            font-size:12px;
+            color:rgba(255,255,255,0.60);
+            white-space:nowrap;
+            margin-left:2px;
         }
         .preview-column-label .label-icon { font-size:14px; }
         .preview-container { box-shadow:none; }
@@ -4368,6 +4451,26 @@
         </div>
         <!-- 客态配置面板 -->
         <div class="panel-left-body" id="guestPanel" style="display:none">
+            <!-- 客态标题配置 -->
+            <div class="section" id="gSectionHeaderTitle">
+                <div class="section-title" onclick="toggleSection('gSectionHeaderTitle')">
+                    客态标题
+                    <span class="section-collapse-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+                <div class="section-body">
+                    <div class="g-title-options" role="group" aria-label="客态标题素材选择">
+                        <button type="button" class="g-title-option active" data-g-title-key="redpacket" onclick="updateGuestHeaderTitleAsset('redpacket')">
+                            <img src="assets/image/ketaibiaoti.png" alt="收到来自好友的红包">
+                            <span>收到来自好友的红包</span>
+                        </button>
+                        <button type="button" class="g-title-option" data-g-title-key="gift" onclick="updateGuestHeaderTitleAsset('gift')">
+                            <img src="assets/image/ketaibiaoti2.png" alt="助力好友一起拿好礼">
+                            <span>助力好友一起拿好礼</span>
+                        </button>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-3);line-height:1.5;margin-top:10px">只切换标题素材，预览中的标题位置保持不变。</div>
+                </div>
+            </div>
             <!-- 客态顶部按钮配置 -->
             <div class="section" id="gSectionTopButton">
                 <div class="section-title" onclick="toggleSection('gSectionTopButton')">
@@ -4436,8 +4539,15 @@
             <div class="preview-column">
                 <div class="preview-column-label">
                     <span class="label-icon">🖼️</span> 页面底图
-                    <span class="label-sub">需配置的整张JPG</span>
-                    <button class="preview-export-btn" id="exportBgBtn" onclick="exportBgImage()">导出图片</button>
+                    <span class="label-sub">可导出 JPG / PNG</span>
+                    <div class="preview-export-dropdown" id="exportBgDropdown">
+                        <button class="preview-export-btn" id="exportBgBtn" onclick="toggleBgExportMenu(event)">导出图片 <span class="preview-export-arrow">⌄</span></button>
+                        <div class="preview-export-menu" id="exportBgMenu">
+                            <button type="button" class="preview-export-option" onclick="exportBgImage('jpg')"><span>导出 JPG</span><span class="preview-export-option-size" id="exportBgJpgSize">未导出</span></button>
+                            <button type="button" class="preview-export-option" onclick="exportBgImage('png')"><span>导出 PNG</span><span class="preview-export-option-size" id="exportBgPngSize">未导出</span></button>
+                        </div>
+                    </div>
+                    <span class="preview-export-size" id="exportBgSize"></span>
                 </div>
                 <div class="preview-container" id="previewContainerBg"></div>
             </div>
@@ -5695,6 +5805,8 @@ const RECHARGE_LIST_DATA_TEMPLATE = {
     subtitle: '累计充值领大奖，数量有限，先到先得',
     totalLabel: '当前已累计充值：',
     total: '1000元',
+    totalText: '当前已累计充值：1000元',
+    showTotalLine: true,
     items: [
         { amount: '6元', rewards: [
             { label: '5Q币', btnText: '领取', icon: RECHARGE_LIST_ASSETS.coin },
@@ -5775,6 +5887,8 @@ function _normalizeRechargeListData(d) {
     if(d.subtitle == null) d.subtitle = '';
     if(d.totalLabel == null) d.totalLabel = '当前已累计充值：';
     if(d.total == null) d.total = '1000元';
+    if(d.totalText == null) d.totalText = `${d.totalLabel || '当前已累计充值：'}${d.total || ''}`;
+    if(d.showTotalLine == null) d.showTotalLine = true;
     if(!Array.isArray(d.items)) d.items = [];
     d.items.forEach((it, idx) => {
         if(it.amount == null) it.amount = '充值档位';
@@ -5817,6 +5931,11 @@ let guestColors = { background:'#2B5B39', primary:'#63A545' };
 
 // 客态顶部标题（可直接在预览页面上编辑）
 let guestHeaderTitle = '收到来自好友的红包';
+const GUEST_HEADER_TITLE_OPTIONS = [
+    { key: 'redpacket', label: '收到来自好友的红包', url: 'assets/image/ketaibiaoti.png' },
+    { key: 'gift', label: '助力好友一起拿好礼', url: 'assets/image/ketaibiaoti2.png' },
+];
+let guestHeaderTitleAsset = GUEST_HEADER_TITLE_OPTIONS[0].key;
 
 // 客态顶部Logo配置
 let guestHeaderLogos = [
@@ -6054,6 +6173,27 @@ function onGuestHeaderTitleEdit(el) {
         renderPreview();
         pushSnapshot();
     }
+}
+
+function getGuestHeaderTitleOption() {
+    const cur = String(guestHeaderTitleAsset || '');
+    return GUEST_HEADER_TITLE_OPTIONS.find(opt => opt.key === cur || opt.url === cur) || GUEST_HEADER_TITLE_OPTIONS[0];
+}
+
+function syncGuestHeaderTitleControls() {
+    const cur = getGuestHeaderTitleOption();
+    document.querySelectorAll('[data-g-title-key]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.gTitleKey === cur.key);
+    });
+}
+
+function updateGuestHeaderTitleAsset(key) {
+    const next = GUEST_HEADER_TITLE_OPTIONS.find(opt => opt.key === key || opt.url === key) || GUEST_HEADER_TITLE_OPTIONS[0];
+    if(guestHeaderTitleAsset === next.key) return;
+    guestHeaderTitleAsset = next.key;
+    syncGuestHeaderTitleControls();
+    renderPreview();
+    pushSnapshot();
 }
 
 // ===== 主态顶部按钮 =====
@@ -8081,6 +8221,7 @@ function resetAllSilent() {
     currentView = 'host';
     guestColors = { background:'#2B5B39', primary:'#63A545' };
     guestHeaderTitle = '收到来自好友的红包';
+    guestHeaderTitleAsset = GUEST_HEADER_TITLE_OPTIONS[0].key;
     guestHeaderLogos = [
         { url: 'assets/image/wangzhelogo.png', name: '王者荣耀' },
         { url: 'assets/image/qblogo.png', name: 'QQ浏览器' },
@@ -8099,6 +8240,7 @@ function resetAllSilent() {
     gQbPullData = createDefaultGQbPullData();
     guestFooterData = { link1: '活动规则', link2: '中奖记录', link3: '意见反馈' };
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
     undoStack = [];
     redoStack = [];
 }
@@ -8136,6 +8278,7 @@ function init() {
 
     // 初始化客态 UI 控件
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
 
     // 确保视图 tab 正确
     switchView(currentView);
@@ -9823,6 +9966,10 @@ function getModuleDetailHtml(key) {
             <div class="detail-sub-section">
                 <div class="detail-sub-title">列表型充值返利</div>
                 <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">已按设计稿对齐：每行一个档位，每档最多 2 个奖品；档位、奖品文案和领取文字可编辑。</div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);cursor:pointer;user-select:none;margin-bottom:10px">
+                    <input type="checkbox" ${getRechargeListData(key).showTotalLine === false ? '' : 'checked'} onchange="setRechargeListTotalLineVisible('${key}', this.checked)" style="accent-color:var(--primary)">
+                    <span>显示累计充值行</span>
+                </label>
                 <div id="rechargeListItems_${key}"></div>
                 <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="addRechargeListItem('${key}')">＋ 添加档位（最多 ${RECHARGE_LIST_MAX_ITEMS} 档）</button>
             </div>`;
@@ -13889,11 +14036,11 @@ function renderRechargeList(pc, isBgMode, m) {
         </div>`;
     }).join('');
 
-    const totalHtml = `
+    const totalLineText = d.totalText || `${d.totalLabel || '当前已累计充值：'}${d.total || ''}`;
+    const totalHtml = d.showTotalLine === false ? '' : `
         <div style="display:flex;align-items:center;justify-content:center;gap:${8*S}px;margin-top:${36*S}px;height:${30*S}px;color:#242424;font-family:PingFang SC,sans-serif;font-size:${24*S}px;line-height:${30*S}px">
             <img src="assets/image/chongfan.png" style="width:${30*S}px;height:${30*S}px;object-fit:contain;display:block;flex-shrink:0" onerror="this.style.display='none'">
-            <span class="editable-text" ${editable} data-field="totalLabel" onblur="onRechargeListFieldEdit(this,'totalLabel','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(d.totalLabel || '当前已累计充值：')}</span>
-            <span class="editable-text" ${editable} data-field="total" onblur="onRechargeListFieldEdit(this,'total','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="${isBgMode ? 'visibility:hidden;' : ''}">${escapeHtml(d.total || '')}</span>
+            <span class="editable-text" ${editable} data-field="totalText" onblur="onRechargeListFieldEdit(this,'totalText','${iid}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(totalLineText)}</span>
         </div>`;
 
     return renderModuleTemplate({
@@ -13909,7 +14056,11 @@ function renderRechargeList(pc, isBgMode, m) {
 
 function onRechargeListFieldEdit(el, field, instanceId) {
     const d = getRechargeListData(instanceId); if(!d) return;
-    const fallback = field === 'title' ? 'QQ浏览器渠道用户专属充值返利' : (field === 'total' ? '1000元' : (field === 'totalLabel' ? '当前已累计充值：' : '累计充值领大奖，数量有限，先到先得'));
+    const fallback = field === 'title'
+        ? 'QQ浏览器渠道用户专属充值返利'
+        : (field === 'totalText'
+            ? `${d.totalLabel || '当前已累计充值：'}${d.total || '1000元'}`
+            : (field === 'total' ? '1000元' : (field === 'totalLabel' ? '当前已累计充值：' : '累计充值领大奖，数量有限，先到先得')));
     const v = el.textContent.trim() || fallback;
     if(v !== d[field]) { d[field] = v; renderRechargeListItemPanel(instanceId); renderPreview(); pushSnapshot(); }
 }
@@ -14001,6 +14152,13 @@ function setRechargeListFieldProp(instanceId, field, value) {
     const d = getRechargeListData(instanceId); if(!d) return;
     const fallback = field === 'total' ? '1000元' : '';
     d[field] = String(value || '').trim() || fallback;
+    renderRechargeListItemPanel(instanceId);
+    renderPreview();
+    pushSnapshot();
+}
+function setRechargeListTotalLineVisible(instanceId, visible) {
+    const d = getRechargeListData(instanceId); if(!d) return;
+    d.showTotalLine = !!visible;
     renderRechargeListItemPanel(instanceId);
     renderPreview();
     pushSnapshot();
@@ -14394,7 +14552,8 @@ function renderGuestPreview() {
 
     // 客态 顶部标题切图（只位于头图海报上层，避免覆盖预览工具 UI）
     // 标注来自 @2x 设计稿，页面内统一除以 2：211 / 2 = 105.5
-    const titleOverlayHtml = `<img src="assets/image/ketaibiaoti.png" style="position:absolute;top:105.5px;left:50%;transform:translateX(-50%) scale(0.5);transform-origin:top center;height:auto;pointer-events:none;z-index:5;user-select:none;-webkit-user-drag:none">`;
+    const titleOption = getGuestHeaderTitleOption();
+    const titleOverlayHtml = `<img src="${titleOption.url}" style="position:absolute;top:105.5px;left:50%;transform:translateX(-50%) scale(0.5);transform-origin:top center;height:auto;pointer-events:none;z-index:5;user-select:none;-webkit-user-drag:none">`;
 
     // 客态 头图右上角 QQ 浏览器 Logo：固定素材，位置/大小由主态"头部区域配置 > 浏览器 Logo"控制
     if(!headerBrowserLogoImg) headerBrowserLogoImg = createDefaultHeaderBrowserLogo();
@@ -14635,6 +14794,7 @@ function resetAll() {
     currentView = 'host';
     guestColors = { background:'#2B5B39', primary:'#63A545' };
     guestHeaderTitle = '收到来自好友的红包';
+    guestHeaderTitleAsset = GUEST_HEADER_TITLE_OPTIONS[0].key;
     guestHeaderLogos = [
         { url: 'assets/image/wangzhelogo.png', name: '王者荣耀' },
         { url: 'assets/image/qblogo.png', name: 'QQ浏览器' },
@@ -14653,6 +14813,7 @@ function resetAll() {
     gQbPullData = createDefaultGQbPullData();
     guestFooterData = { link1: '活动规则', link2: '中奖记录', link3: '意见反馈' };
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
     switchView('host');
     loadDefaultHeaderAssets();
     renderPosterPreview(); renderHeaderTitlePreview(); renderHeaderLogoPreview(); renderHeaderBrowserLogoPreview(); _expandedModuleId = null; renderModuleList(); renderGuestModuleList(); renderGuestLogoList(); renderModuleBaseDeco(); renderPreview(); updateInfo();
@@ -14731,6 +14892,7 @@ function getSnapshot() {
         currentView,
         guestColors: {...guestColors},
         guestHeaderTitle,
+        guestHeaderTitleAsset: getGuestHeaderTitleOption().key,
         guestHeaderLogos: guestHeaderLogos.map(l => ({url:l.url, name:l.name})),
         guestTopButtonData: {...guestTopButtonData, buttons: (guestTopButtonData.buttons || []).map(b => ({...b}))},
         guestModules: guestModules.map(m => ({id:m.id, name:m.name, desc:m.desc, enabled:m.enabled})),
@@ -15083,6 +15245,7 @@ function restoreSnapshot(snapStr) {
     // ===== 恢复客态数据 =====
     if(snap.guestColors) guestColors = snap.guestColors;
     if(snap.guestHeaderTitle) guestHeaderTitle = snap.guestHeaderTitle;
+    guestHeaderTitleAsset = snap.guestHeaderTitleAsset || GUEST_HEADER_TITLE_OPTIONS[0].key;
     if(snap.guestHeaderLogos) {
         guestHeaderLogos = snap.guestHeaderLogos.map(l => ({url:l.url, name:l.name}));
     }
@@ -15137,6 +15300,7 @@ function restoreSnapshot(snapStr) {
     if(gPr) gPr.value = guestColors.primary;
     if(gPrH) gPrH.value = guestColors.primary;
     syncGuestTopButtonInputs();
+    syncGuestHeaderTitleControls();
 
     // 恢复当前视图
     if(snap.currentView && snap.currentView !== currentView) {
@@ -15268,6 +15432,30 @@ async function convertImagesToBase64(container) {
 }
 
 let isExporting = false;
+let bgExportFileSizes = { jpg: '', png: '' };
+
+function toggleBgExportMenu(e) {
+    if(e) e.stopPropagation();
+    const menu = document.getElementById('exportBgMenu');
+    if(menu) menu.classList.toggle('show');
+}
+
+function closeBgExportMenu() {
+    const menu = document.getElementById('exportBgMenu');
+    if(menu) menu.classList.remove('show');
+}
+
+function renderBgExportFileSizes(activeFormat) {
+    const jpgEl = document.getElementById('exportBgJpgSize');
+    const pngEl = document.getElementById('exportBgPngSize');
+    const summaryEl = document.getElementById('exportBgSize');
+    if(jpgEl) jpgEl.textContent = bgExportFileSizes.jpg || '未导出';
+    if(pngEl) pngEl.textContent = bgExportFileSizes.png || '未导出';
+    if(summaryEl) {
+        const size = bgExportFileSizes[activeFormat];
+        summaryEl.textContent = size ? `${activeFormat.toUpperCase()}：${size}` : '';
+    }
+}
 
 // 检查是否通过 file:// 协议访问，如果是则提示并自动跳转
 function checkExportProtocol() {
@@ -15279,6 +15467,36 @@ function checkExportProtocol() {
         return false;
     }
     return true;
+}
+
+function formatFileSize(bytes) {
+    const n = Number(bytes) || 0;
+    if(n < 1024) return `${n} B`;
+    if(n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+    return `${(n / 1024 / 1024).toFixed(2)} MB`;
+}
+
+function getBgExportFormat(format) {
+    return format === 'png' ? 'png' : 'jpg';
+}
+
+async function exportNodeImageDataUrl(node, format, options = {}) {
+    const commonOptions = {
+        pixelRatio: 2,
+        width: node.offsetWidth,
+        height: node.offsetHeight,
+        cacheBust: true,
+        style: { transform: 'none', borderRadius: '0', overflow: 'visible' },
+        ...options,
+    };
+    if(format === 'jpg') {
+        return htmlToImage.toJpeg(node, {
+            ...commonOptions,
+            quality: 0.92,
+            backgroundColor: options.backgroundColor || colors.background || '#FFFFFF',
+        });
+    }
+    return htmlToImage.toPng(node, commonOptions);
 }
 
 async function exportActualImage() {
@@ -15326,7 +15544,8 @@ async function exportActualImage() {
     }
 }
 
-async function exportBgImage() {
+async function exportBgImage(format = 'jpg') {
+    closeBgExportMenu();
     if(!checkExportProtocol()) return;
     if(isExporting) return;
     isExporting = true;
@@ -15334,11 +15553,15 @@ async function exportBgImage() {
     const bar = document.getElementById('progressBar');
     const txt = document.getElementById('progressText');
     const btn = document.getElementById('exportBgBtn');
+    const sizeEl = document.getElementById('exportBgSize');
+    format = getBgExportFormat(format);
+    const ext = format === 'png' ? 'png' : 'jpg';
     overlay.classList.remove('hidden');
     btn.disabled = true;
+    if(sizeEl) sizeEl.textContent = `${ext.toUpperCase()}：生成中…`;
 
     try {
-        bar.style.width='10%'; txt.textContent='正在渲染页面底图...';
+        bar.style.width='10%'; txt.textContent=`正在渲染页面底图（${ext.toUpperCase()}）...`;
         await new Promise(r=>setTimeout(r,200));
         const c2 = document.getElementById('previewContainerBg');
 
@@ -15347,23 +15570,26 @@ async function exportBgImage() {
 
         bar.style.width='30%'; txt.textContent='正在预处理图片资源...';
         await convertImagesToBase64(c2);
-        bar.style.width='50%'; txt.textContent='正在生成底图图片...';
-        const dataUrl = await htmlToImage.toPng(c2, {
-            pixelRatio: 2,
-            width: c2.offsetWidth,
-            height: c2.offsetHeight,
-            cacheBust: true,
-            backgroundColor: null,
-            // 导出 PNG 不要继承预览容器的圆角裁切；只保留界面预览的圆角。
-            style: { transform: 'none', borderRadius: '0', overflow: 'visible' },
+        bar.style.width='50%'; txt.textContent=`正在生成 ${ext.toUpperCase()} 底图...`;
+        const dataUrl = await exportNodeImageDataUrl(c2, format, {
+            backgroundColor: format === 'jpg' ? (colors.background || '#FFFFFF') : null,
         });
+        bar.style.width='82%'; txt.textContent='正在计算文件体积...';
+        const blob = await dataUrlToBlob(dataUrl);
+        const sizeText = formatFileSize(blob.size);
+        bgExportFileSizes[format] = sizeText;
+        renderBgExportFileSizes(format);
+
+        const url = URL.createObjectURL(blob);
         const link2 = document.createElement('a');
-        link2.download = `活动页_底图_${Date.now()}.png`;
-        link2.href = dataUrl;
+        link2.download = `活动页_底图_${Date.now()}.${ext}`;
+        link2.href = url;
         link2.click();
-        bar.style.width='100%'; txt.textContent='导出完成！';
-        await new Promise(r=>setTimeout(r,600));
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        bar.style.width='100%'; txt.textContent=`导出完成！${ext.toUpperCase()} 文件大小：${sizeText}`;
+        await new Promise(r=>setTimeout(r,900));
     } catch(e) {
+        if(sizeEl) sizeEl.textContent = `${ext.toUpperCase()}：导出失败`;
         alert('导出失败：'+e.message);
     } finally {
         overlay.classList.add('hidden');
@@ -15825,18 +16051,21 @@ let sliceScale = 2; // 默认2倍图
 let _sliceBubbleTimer = null;
 let _sliceBubbleEl = null;
 let _sliceHoverTarget = null;
-const ENTER_BUTTON_SLICE_STATES = ['进入游戏', '下载游戏', '注册领福利', '极速更新', '极速更新中'];
 const REDPACKET_COPY_BUTTON_SLICE_STATES = ['生成', '复制', '已领取'];
 const REDPACKET_USE_BUTTON_SLICE_STATES = ['去使用'];
 const LOTTERY_TASK_BUTTON_SLICE_STATES = ['领取', '已领取'];
 
+function getSliceButtonText(el, fallback = '按钮') {
+    return ((el && el.querySelector ? el.querySelector('.editable-text') : null) || el)?.textContent?.trim() || fallback;
+}
+
 function getSigninButtonSliceStates(el) {
-    const text = ((el.querySelector('.editable-text') || el).textContent || '').trim() || '签到领取';
+    const text = getSliceButtonText(el, '签到领取');
     return [text, getCompletedText(text)];
 }
 
 function getMoreBenefitButtonSliceStates(el) {
-    const text = ((el.querySelector('.editable-text') || el).textContent || '').trim() || '立即领取';
+    const text = getSliceButtonText(el, '立即领取');
     return [text, getCompletedText(text)];
 }
 
@@ -15899,7 +16128,6 @@ function removeSliceBubble() {
 function showSliceBubble(target) {
     removeSliceBubble();
     const rect = target.getBoundingClientRect();
-    const isEnterButton = target.classList.contains('m-role-enter-btn');
     const isRedpacketCopyButton = target.classList.contains('redpacket-copy-btn');
     const isRedpacketUseButton = target.classList.contains('redpacket-use-btn');
     const isLotteryTaskButton = target.classList.contains('lottery-task-slice-btn');
@@ -15919,10 +16147,8 @@ function showSliceBubble(target) {
                 </div>
             </div>
             <div class="slice-bubble-extra">
-                ${isEnterButton
-                    ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：进入游戏 / 下载游戏 / 注册领福利 / 极速更新 / 极速更新中</span>'
-                    : isRedpacketCopyButton
-                        ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：生成 / 复制 / 已领取</span>'
+                ${isRedpacketCopyButton
+                    ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：生成 / 复制 / 已领取</span>'
                     : isRedpacketUseButton
                         ? '<span style="font-size:11px;color:var(--text-2)">将固定导出：去使用</span>'
                     : isLotteryTaskButton
@@ -16233,10 +16459,6 @@ async function captureSliceTarget(target, textOverride) {
     }
 }
 
-async function addFixedEnterButtonSlices(target) {
-    await addFixedTextButtonSlices(target, ENTER_BUTTON_SLICE_STATES);
-}
-
 async function addFixedTextButtonSlices(target, states) {
     const moduleName = getSliceModuleNameFromTarget(target);
     for(const state of states) {
@@ -16256,13 +16478,6 @@ async function confirmSlice(e) {
     const wantCompleted = completedCheck ? completedCheck.checked : false;
 
     try {
-        if(target.classList.contains('m-role-enter-btn')) {
-            await addFixedEnterButtonSlices(target);
-            renderSliceList();
-            showPanelRight();
-            removeSliceBubble();
-            return;
-        }
         if(target.classList.contains('redpacket-copy-btn')) {
             await addFixedTextButtonSlices(target, REDPACKET_COPY_BUTTON_SLICE_STATES);
             renderSliceList();
@@ -16299,14 +16514,15 @@ async function confirmSlice(e) {
             return;
         }
 
-        const nameText = target.textContent.trim().substring(0, 20) || '按钮';
+        const nameText = getSliceButtonText(target).substring(0, 20) || '按钮';
+        const moduleName = getSliceModuleNameFromTarget(target);
         // 纯文字按钮直接用 Canvas 绘制，避免 htmlToImage 网络字体基线偏移裁切；
         // 含图标/图片等复杂结构的按钮才回退 htmlToImage 截图
         const dataUrl = isPureTextSliceButton(target)
             ? drawEnterButtonState(target, nameText)
             : await captureSliceTarget(target);
         const id = 'slice_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
-        sliceItems.push({ id, name: nameText, dataUrl });
+        sliceItems.push({ id, name: nameText, dataUrl, moduleName });
 
         // 如果勾选了完成态，额外生成一张完成态按钮切图
         if(wantCompleted) {
@@ -16314,7 +16530,7 @@ async function confirmSlice(e) {
             // 完成态统一走主题色去饱和，保持与一键导出一致
             const completedDataUrl = drawEnterButtonState(target, completedText);
             const completedId = 'slice_' + Date.now() + '_c_' + Math.random().toString(36).substr(2,5);
-            sliceItems.push({ id: completedId, name: completedText, dataUrl: completedDataUrl, isCompleted: true });
+            sliceItems.push({ id: completedId, name: completedText, dataUrl: completedDataUrl, isCompleted: true, moduleName });
         }
 
         renderSliceList();
@@ -16473,16 +16689,9 @@ async function exportAllSlices() {
 // 自动扫描预览区中所有可切图按钮，按"实例"导出全部状态切图，直接打包 ZIP 下载。
 // 不污染当前 sliceItems 列表。
 //
-// 状态生成策略：
-//   1) m-role-enter-btn（顶部进入游戏按钮）：固定 5 状态枚举（进入游戏/下载游戏/注册领福利/极速更新/极速更新中）
-//      —— 因为它本质是"同一个按钮位置的不同业务状态"，文字固定可枚举
-//   2) 其他所有按钮（无论已知 className 还是普通按钮）：按"按钮当前文字 + 自动派生的完成态"导出 2 张
-//      —— 这样一行 2 / 3 个按钮，每个的真实文字都会各自导出
-//
-// 去重策略：相同 className + 相同文字 + 相同尺寸 → 只导一份；尺寸不同 → 视为不同按钮
-const _BUTTON_FIXED_STATES_RULES = [
-    { className: 'm-role-enter-btn', states: ENTER_BUTTON_SLICE_STATES, label: '进入游戏按钮' },
-];
+// 状态生成策略：一键导出按"页面当前文字 + 自动派生的完成态"导出，确保切图文案与预览页一致。
+// 去重策略：同一模块 + 相同 className + 相同文字 + 相同尺寸 → 只导一份；尺寸不同 → 视为不同按钮
+const _BUTTON_FIXED_STATES_RULES = [];
 
 function _matchFixedStatesRule(el) {
     for(const r of _BUTTON_FIXED_STATES_RULES) {
@@ -16493,7 +16702,7 @@ function _matchFixedStatesRule(el) {
 
 /** 给按钮判断一个易读的"类型标签"，用于文件名分组 */
 function _btnTypeLabel(el) {
-    if(el.classList.contains('m-role-enter-btn'))       return '进入游戏';
+    if(el.classList.contains('m-role-enter-btn'))       return '顶部按钮';
     if(el.classList.contains('redpacket-copy-btn'))     return '口令码复制';
     if(el.classList.contains('redpacket-use-btn'))      return '口令码使用';
     if(el.classList.contains('redpacket2-share-btn'))   return '口令码分享';
@@ -17032,10 +17241,17 @@ document.addEventListener('click', function(e) {
     if(_btnInfoBubbleEl && !_btnInfoBubbleEl.contains(e.target)) {
         removeBtnInfoBubble();
     }
+    const bgDropdown = document.getElementById('exportBgDropdown');
+    if(bgDropdown && !bgDropdown.contains(e.target)) {
+        closeBgExportMenu();
+    }
 });
 
 // Esc 键关闭按钮信息浮层
 document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape') {
+        closeBgExportMenu();
+    }
     if(e.key === 'Escape' && _btnInfoBubbleEl) {
         removeBtnInfoBubble();
     }
